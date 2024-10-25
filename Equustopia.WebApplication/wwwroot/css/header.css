@@ -62,7 +62,7 @@
     color: var(--white-color-semitransparent-50);
 }
 
-.search-bar:focus, .search-bar:hover {
+.search-bar:focus, .search-bar:hover, .search-icon.hover, .search-icon.focus{
     color: var(--black-color);
 }
 
