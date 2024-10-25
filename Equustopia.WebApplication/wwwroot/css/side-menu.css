@@ -1,0 +1,32 @@
+﻿.side-menu {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: var(--brown-color);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    transition: left 0.3s ease;
+    padding-top: 60px;
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu a {
+    padding: 10px 0 10px 35px;
+    align-content: center;
+    color: var(--white-color);
+    font-size: 16px;
+    display: block;
+    text-decoration: none;
+    transition: margin 0.3s;
+}
+
+.side-menu a:hover {
+    background-color: var(--hover-brown-color);
+    margin-top: -4px;         /* Moves the text upwards on hover */
+    margin-bottom: 4px;
+}

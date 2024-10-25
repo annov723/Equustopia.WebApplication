@@ -16,14 +16,17 @@
 
     <ItemGroup>
       <Folder Include="Migrations\" />
-      <Folder Include="Resources\Icons\" />
+      <Folder Include="wwwroot\resources\" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="Resources\Icons\menubar_semitransparent.svg" />
-      <Resource Include="Resources\Icons\menubar_semitransparent.svg" />
       <None Remove="Resources\Icons\search_semitransparent.svg" />
-      <Resource Include="Resources\Icons\search_semitransparent.svg" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="wwwroot\resources\icons\side-menu-semitransparent.svg" />
+      <Resource Include="wwwroot\resources\icons\search-semitransparent.svg" />
     </ItemGroup>
 
 </Project>
