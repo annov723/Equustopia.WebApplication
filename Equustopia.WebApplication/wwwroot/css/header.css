@@ -7,7 +7,7 @@
     background-color: var(--blue-color);
     color: var(--white-color);
     box-shadow: 0 17px 15px rgba(0, 0, 0, 0.25);
-    align-content: center;
+    display:flex;
 }
 
 .side-menu-button {
@@ -15,7 +15,7 @@
     border: none;
     cursor: pointer;
     position: fixed;
-    margin: 8px 0 0 35px;
+    margin: 25px 0 0 35px;
 }
 
 .site-title {
@@ -24,5 +24,49 @@
     font-weight: bold;
     color: var(--white-color);
     text-decoration: none;
-    margin-left: 100px;
+    margin: 18px 0 0 100px;
+}
+
+.classic-button, .border-button{
+    margin: 17px 10px 0 10px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: var(--white-color-semitransparent-25);
+    border: none;
+    border-radius: 8px;
+    width: 400px;
+    height: 40px;
+    margin: 17px 10px 0 970px;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.search-container:hover, .search-container:focus-within{
+    background-color: var(--white-color);
+    transform: translateY(-2px);
+}
+
+.search-icon{
+    margin: 0 10px 0 10px;
+}
+
+.search-bar{
+    border: none;
+    background: none;
+    outline: none;
+    width: 100%;
+    font-size: 16px;
+    color: var(--white-color-semitransparent-50);
+}
+
+.search-bar:focus, .search-bar:hover {
+    color: var(--black-color);
+}
+
+.search-bar::placeholder{
+    font-size: 16px;
+    color: var(--white-color-semitransparent-50);
 }

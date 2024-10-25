@@ -14,28 +14,29 @@
 <body>
 <header class="main-header">
         
-    <button class="side-menu-button" onclick="toggleSideMenu()">
+    <button id="side-menu-toggle" class="side-menu-button">
         <img src="~/resources/icons/side-menu-semitransparent.svg" height="20" width="20" alt="side menu icon" />
     </button>
     <a asp-controller="Home" asp-action="Index" class="site-title">Equustopia</a>
-    @* <div class="search-box"> *@
-    @*     <input type="text" placeholder="search..."> *@
-    @* </div> *@
-    <div class="header-buttons">
-        <button class="btn">Button 1</button>
-        <button class="btn">Button 2</button>
+
+    <div class="search-container">
+        <img src="~/resources/icons/search-semitransparent.svg" height="20" width="20" alt="search icon" class="search-icon" />
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search..." />
     </div>
+    
+    <button class="classic-button">log in</button>
+    <button class="border-button">sign up</button>
 </header>
 
-<div class="main-content">
-    @RenderBody()
-</div>
-
-<div class="side-menu">
+<div id="side-menu" class="side-menu">
     <a href="#">Home</a>
     <a href="#">About</a>
     <a href="#">Services</a>
     <a href="#">Contact</a>
+</div>
+
+<div id="main-content" class="main-content">
+    @RenderBody()
 </div>
 
 <script src="~/js/site.js"></script>
