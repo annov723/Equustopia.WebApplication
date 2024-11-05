@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -27,7 +29,14 @@
             <input type="text" id="search-bar" class="search-bar" placeholder="Search..." />
         </div>
 
-        <button class="classic-button" onclick="openLoginModal()">log in</button>
+        @if (string.IsNullOrEmpty(HttpContextAccessor.HttpContext?.Session.GetString("LoggedUser")))
+        {
+        <button id="loginButton" class="classic-button" onclick="openLoginModal()">Log in</button>
+        }
+        else
+        {
+        <span>Welcome, @HttpContextAccessor.HttpContext.Session.GetString("LoggedUser")</span>
+        }
         <button class="border-button" onclick="openSignupModal()">sign up</button>
     </div>
 </header>
