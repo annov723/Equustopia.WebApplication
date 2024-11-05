@@ -1,0 +1,21 @@
+﻿@model Equustopia.WebApplication.Models.ViewModels.LoginViewModel
+
+<div id="loginModal" class="modal" style="display: none;">
+    <div class="login-content">
+        <form method="post" asp-action="Login" class="login-form">
+            <input type="text" id="email" name="Email" class="login-input" placeholder="email" required>
+            <input type="password" id="password" name="Password" class="login-input" placeholder="password" required>
+            
+            <button type="submit" class="classic-button-long">login</button>
+        </form>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="error-message">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+    </div>
+</div>

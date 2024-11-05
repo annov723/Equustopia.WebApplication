@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/css/site.css">
     <link rel="stylesheet" href="~/css/header.css">
     <link rel="stylesheet" href="~/css/side-menu.css">
-    <link rel="stylesheet" href="~/css/login.css" />
+    <link rel="stylesheet" href="~/css/account/login.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans+SC:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -27,13 +27,13 @@
             <input type="text" id="search-bar" class="search-bar" placeholder="Search..." />
         </div>
 
-        <button class="classic-button" onclick="openModal()">log in</button>
-        <button class="border-button">sign up</button>
+        <button class="classic-button" onclick="openLoginModal()">log in</button>
+        <button class="border-button" onclick="openSignupModal()">sign up</button>
     </div>
 </header>
 
 <div id="side-menu" class="side-menu">
-    <a href="#">Home</a>
+    <a asp-controller="Home" asp-action="Index">Home</a>
     <a href="#">About</a>
     <a href="#">Services</a>
     <a href="#">Contact</a>
@@ -44,9 +44,10 @@
 </div>
 
 <script src="~/js/site.js"></script>
-<script src="~/js/login.js"></script>
+<script src="~/js/account/login.js"></script>
 
-@await Html.PartialAsync("_Login")
+@await Html.PartialAsync("../Account/_Login")
+@await Html.PartialAsync("../Account/_Signup")
 </body>
 
 </html>

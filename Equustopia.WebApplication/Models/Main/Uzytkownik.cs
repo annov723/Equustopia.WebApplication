@@ -2,9 +2,10 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Microsoft.AspNetCore.Identity;
 
     [Table("Uzytkownik", Schema = "main")]
-    public class Uzytkownik
+    public class Uzytkownik : IdentityUser
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
