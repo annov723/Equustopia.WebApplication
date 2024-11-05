@@ -8,20 +8,20 @@
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int id { get; set; }
         
         [Required]
         [MaxLength(250)]
-        public string Nazwa { get; set; }
+        public string nazwa { get; set; }
         
         [Required]
-        public int UzytkownikId { get; set; }
+        public int uzytkownikId { get; set; }
         
-        public double? SzerokoscGeograficzna { get; set; }
-        public double? WysokoscGeograficzna { get; set; }
+        public double? szerokoscGeograficzna { get; set; }
+        public double? wysokoscGeograficzna { get; set; }
 
         [MaxLength(250)]
-        public string Adres { get; set; }
+        public string adres { get; set; }
         
         public Uzytkownik Uzytkownik { get; set; }
         public ICollection<Kon> Konie { get; set; }

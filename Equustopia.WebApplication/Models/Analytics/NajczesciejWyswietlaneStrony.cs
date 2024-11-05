@@ -5,13 +5,13 @@
     [Table("NajczesciejWyswietlaneStrony", Schema = "analytics")]
     public class NajczesciejWyswietlaneStrony
     {
-        public int StronaId { get; set; }
+        public int stronaId { get; set; }
     
         [Column(TypeName = "varchar(50)")]
-        public string StronaTyp { get; set; }
+        public string stronaTyp { get; set; }
     
-        public int IloscWyswietlen { get; set; }
+        public int iloscWyswietlen { get; set; }
     
-        public int Pozycja { get; set; }
+        public int pozycja { get; set; }
     }
 }

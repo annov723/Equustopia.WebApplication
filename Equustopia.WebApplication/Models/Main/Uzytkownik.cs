@@ -2,27 +2,26 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.AspNetCore.Identity;
 
     [Table("Uzytkownik", Schema = "main")]
-    public class Uzytkownik : IdentityUser
+    public class Uzytkownik
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int id { get; set; }
         
         [Required]
         [StringLength(50)]
-        public string Nazwa { get; set; }
+        public string nazwa { get; set; }
         
         [Required]
         [StringLength(255)]
         [EmailAddress]
-        public string Email { get; set; }
+        public string email { get; set; }
         
         [Required]
         [StringLength(60)]
-        public string Haslo { get; set; }
+        public string haslo { get; set; }
         
         public ICollection<Osrodek> Osrodki { get; set; }
         public ICollection<Kon> Konie { get; set; }

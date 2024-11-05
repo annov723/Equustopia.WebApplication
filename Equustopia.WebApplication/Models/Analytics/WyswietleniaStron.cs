@@ -8,21 +8,21 @@
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int id { get; set; }
 
-        public int? UzytkownikId { get; set; }
+        public int? uzytkownikId { get; set; }
 
         [Required]
-        public int StronaId { get; set; }
+        public int stronaId { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string StronaTyp { get; set; }
+        public string stronaTyp { get; set; }
 
-        public DateTime ZnacznikCzasu { get; set; } = DateTime.Now;
+        public DateTime znacznikCzasu { get; set; } = DateTime.Now;
 
         [MaxLength(45)]
-        public string AdresIp { get; set; }
+        public string adresIp { get; set; }
         
         public Uzytkownik Uzytkownik { get; set; }
     }

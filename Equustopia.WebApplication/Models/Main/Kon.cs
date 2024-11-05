@@ -8,16 +8,16 @@
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int id { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string Nazwa { get; set; }
+        public string nazwa { get; set; }
 
         [Required]
-        public int UzytkownikId { get; set; }
+        public int uzytkownikId { get; set; }
 
-        public int? OsrodekId { get; set; }
+        public int? osrodekId { get; set; }
         
         public Uzytkownik Uzytkownik { get; set; }
         public Osrodek Osrodek { get; set; }
