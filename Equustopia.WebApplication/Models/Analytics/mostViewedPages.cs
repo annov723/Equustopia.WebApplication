@@ -3,15 +3,15 @@
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table("NajczesciejWyswietlaneStrony", Schema = "analytics")]
-    public class NajczesciejWyswietlaneStrony
+    public class mostViewedPages
     {
-        public int stronaId { get; set; }
+        public int pageId { get; set; }
     
         [Column(TypeName = "varchar(50)")]
-        public string stronaTyp { get; set; }
+        public string pageType { get; set; }
     
-        public int iloscWyswietlen { get; set; }
+        public int viewsCount { get; set; }
     
-        public int pozycja { get; set; }
+        public int position { get; set; }
     }
 }

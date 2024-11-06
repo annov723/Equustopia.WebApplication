@@ -3,8 +3,8 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Uzytkownik", Schema = "main")]
-    public class Uzytkownik
+    [Table("userData", Schema = "main")]
+    public class UserData
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,7 +12,7 @@
         
         [Required]
         [StringLength(50)]
-        public string nazwa { get; set; }
+        public string name { get; set; }
         
         [Required]
         [StringLength(255)]
@@ -21,10 +21,10 @@
         
         [Required]
         [StringLength(60)]
-        public string haslo { get; set; }
+        public string password { get; set; }
         
-        public ICollection<Osrodek> Osrodki { get; set; }
-        public ICollection<Kon> Konie { get; set; }
-        public ICollection<WyswietleniaStron> WyswietleniaStron { get; set; }
+        public ICollection<EquestrianCentre> EquestrianCentres { get; set; }
+        public ICollection<Horse> Horses { get; set; }
+        public ICollection<pageViews> pagesViews { get; set; }
     }
 }

@@ -3,8 +3,8 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Osrodek", Schema = "main")]
-    public class Osrodek
+    [Table("equestrianCentre", Schema = "main")]
+    public class EquestrianCentre
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,19 +12,19 @@
         
         [Required]
         [MaxLength(250)]
-        public string nazwa { get; set; }
+        public string name { get; set; }
         
         [Required]
-        public int uzytkownikId { get; set; }
+        public int userId { get; set; }
         
-        public double? szerokoscGeograficzna { get; set; }
-        public double? wysokoscGeograficzna { get; set; }
+        public double? latitude { get; set; }
+        public double? Longitude { get; set; }
 
         [MaxLength(250)]
-        public string adres { get; set; }
+        public string address { get; set; }
         
-        public Uzytkownik Uzytkownik { get; set; }
-        public ICollection<Kon> Konie { get; set; }
+        public UserData UserData { get; set; }
+        public ICollection<Horse> Horses { get; set; }
         
         
     }

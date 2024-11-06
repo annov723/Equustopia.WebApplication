@@ -1,12 +1,9 @@
 ﻿<div id="loginModal" class="modal" style="display: none;">
     <div class="login-content">
-        <span id="loginError" class="error-message"></span>
-        
-        <form method="post" asp-controller="Login" asp-action="Login" class="login-form">
-        <input type="text" id="email" name="Email" class="login-input" placeholder="email" required>
-        <input type="password" id="password" name="Password" class="login-input" placeholder="password" required>
+        <span id="loginError" class="login-error"></span>
+        <input type="text" id="loginEmail" name="Email" class="login-input" placeholder="email" required>
+        <input type="password" id="loginPassword" name="Password" class="login-input" placeholder="password" onkeydown="if(event.key === 'Enter') attemptLogin()" required>
 
-        <button type="submit" class="classic-button-long">log in</button>
-        </form>
+        <button type="submit" class="classic-button-long" onclick="attemptLogin()">log in</button>
     </div>
 </div>

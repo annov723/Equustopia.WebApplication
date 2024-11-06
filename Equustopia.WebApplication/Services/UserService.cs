@@ -13,9 +13,9 @@
             _context = context;
         }
 
-        public async Task<List<Uzytkownik>> GetUsersAsync()
+        public async Task<List<UserData>> GetUsersAsync()
         {
-            return await _context.Uzytkownicy.ToListAsync();
+            return await _context.UsersData.ToListAsync();
         }
     }
 }

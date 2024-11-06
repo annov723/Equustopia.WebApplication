@@ -11,17 +11,21 @@ function openSignupModal() {
 function closeAllModals() {
     document.getElementById("loginModal").style.display = "none";
     document.getElementById("signupModal").style.display = "none";
+
+    ["loginEmail", "loginPassword", "signupName", "signupEmail", "signupPassword", "signupPasswordRepeat"].forEach(id => {
+        document.getElementById(id).value = "";
+    });
+
+    document.getElementById("loginError").textContent = "";
 }
 
 window.onbeforeunload = closeAllModals;
 
 function attemptLogin() {
-    // Get the form data
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
-    // Send login data via AJAX
-    fetch("/Account/Login", {
+    fetch("/Login/Login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -31,15 +35,59 @@ function attemptLogin() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Hide the login modal and login button
                 document.getElementById("loginModal").style.display = "none";
                 document.getElementById("loginButton").style.display = "none";
-
-                // Optionally show the logged-in user's information
-                alert("Login successful!");
+                document.getElementById("signupButton").style.display = "none";
+                window.location.reload(true);
             } else {
-                // Show error message in modal
                 document.getElementById("loginError").textContent = data.message;
+            }
+        })
+        .catch(error => console.error("Error during login:", error));
+}
+
+function logout(){
+    fetch("/Login/Logout", { //NameOfController/NameOfAction
+        method: "POST"
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload(true);
+            } else {
+                console.error("Error during logout:", data.message);
+            }
+        })
+        .catch(error => console.error("Error during logout:", error));
+}
+
+function attemptSignUp(){
+    const name = document.getElementById("signupName").value;
+    const email = document.getElementById("signupEmail").value;
+    const password = document.getElementById("signupPassword").value;
+    const passwordRepeat = document.getElementById("signupPasswordRepeat").value;
+
+    if(password !== passwordRepeat){
+        document.getElementById("signupError").textContent = "Passwords do not match";
+        return;
+    }
+
+    fetch("/Login/Signup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name: name, email: email, password: password })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("loginModal").style.display = "none";
+                document.getElementById("loginButton").style.display = "none";
+                document.getElementById("signupButton").style.display = "none";
+                window.location.reload(true);
+            } else {
+                document.getElementById("signupError").textContent = data.message;
             }
         })
         .catch(error => console.error("Error during login:", error));

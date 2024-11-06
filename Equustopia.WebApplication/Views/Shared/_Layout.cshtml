@@ -31,13 +31,14 @@
 
         @if (string.IsNullOrEmpty(HttpContextAccessor.HttpContext?.Session.GetString("LoggedUser")))
         {
-        <button id="loginButton" class="classic-button" onclick="openLoginModal()">Log in</button>
+            <button id="loginButton" class="classic-button" onclick="openLoginModal()">log in</button>
+            <button id="signupButton" class="border-button" onclick="openSignupModal()">sign up</button>
         }
         else
         {
-        <span>Welcome, @HttpContextAccessor.HttpContext.Session.GetString("LoggedUser")</span>
+            <span class="welcomeSpan">Welcome, @HttpContextAccessor.HttpContext.Session.GetString("LoggedUser")</span>
+            <button id="logoutButton" class="classic-button" onclick="logout()">log out</button>
         }
-        <button class="border-button" onclick="openSignupModal()">sign up</button>
     </div>
 </header>
 

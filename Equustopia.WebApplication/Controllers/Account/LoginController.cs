@@ -3,6 +3,7 @@
     using Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Models.Requests;
 
     public class LoginController : Controller
     {
@@ -14,27 +15,34 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            // Retrieve user with matching email
-            var user = await _context.Uzytkownicy
-                .FirstOrDefaultAsync(u => u.email == email && u.haslo == password);
+            if (string.IsNullOrEmpty(loginRequest.Email) || string.IsNullOrEmpty(loginRequest.Password))
+            {
+                return Json(new { success = false, message = "Email and password cannot be empty." });
+            }
+            
+            var user = await _context.UsersData
+                .FirstOrDefaultAsync(u => u.email == loginRequest.Email && u.password == loginRequest.Password);
 
             if (user != null)
             {
-                // Login success logic - set session or authentication
-                HttpContext.Session.SetString("LoggedUser", user.id.ToString());
+                HttpContext.Session.SetString("LoggedUser", user.name);
                 HttpContext.Session.SetInt32("UserId", user.id);
 
-                // Hide the login modal and return a success response
-                // return Json(new { success = true });
-                return RedirectToAction("Index", "Home");
+                return Json(new { success = true });
             }
         
-            // Invalid credentials
-            // return Json(new { success = false, message = "Invalid email or password." });
-            TempData["LoginError"] = "Invalid email or password.";
-            return RedirectToAction("Index", "Home"); 
+            return Json(new { success = false, message = "Wrong credentials provided." });
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.Remove("LoggedUser");
+            HttpContext.Session.Remove("UserId");
+
+            return Json(new { success = true });
         }
     }
 }

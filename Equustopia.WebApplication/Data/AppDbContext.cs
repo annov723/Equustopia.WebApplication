@@ -9,44 +9,44 @@
         {
         }
         
-        public DbSet<Kon> Konie { get; set; }
-        public DbSet<Osrodek> Osrodki { get; set; }
-        public DbSet<Uzytkownik> Uzytkownicy { get; set; }
+        public DbSet<Horse> Horses { get; set; }
+        public DbSet<EquestrianCentre> EquestrianCentres { get; set; }
+        public DbSet<UserData> UsersData { get; set; }
         
-        public DbSet<WyswietleniaStron> WyswietleniaStron { get; set; }
-        public DbSet<NajczesciejWyswietlaneStrony> NajczesciejWyswietlaneStrony { get; set; }
+        public DbSet<pageViews> PagesViews { get; set; }
+        public DbSet<mostViewedPages> MostViewedPages { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             
-            modelBuilder.Entity<Uzytkownik>().ToTable("uzytkownik", "main");
+            modelBuilder.Entity<UserData>().ToTable("userData", "main");
 
-            modelBuilder.Entity<Uzytkownik>().HasMany(u => u.Osrodki).WithOne(o => o.Uzytkownik)
-                .HasForeignKey(o => o.uzytkownikId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<UserData>().HasMany(u => u.EquestrianCentres).WithOne(o => o.UserData)
+                .HasForeignKey(o => o.userId).OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<Uzytkownik>().HasMany(u => u.Konie).WithOne(k => k.Uzytkownik)
-                .HasForeignKey(k => k.uzytkownikId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<UserData>().HasMany(u => u.Horses).WithOne(k => k.UserData)
+                .HasForeignKey(k => k.userId).OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<Uzytkownik>().HasMany(u => u.WyswietleniaStron).WithOne(ws => ws.Uzytkownik)
-                .HasForeignKey(ws => ws.uzytkownikId).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<UserData>().HasMany(u => u.pagesViews).WithOne(ws => ws.UserData)
+                .HasForeignKey(ws => ws.userId).OnDelete(DeleteBehavior.NoAction);
             
-            modelBuilder.Entity<Osrodek>().HasOne(o => o.Uzytkownik).WithMany(u => u.Osrodki)
-                .HasForeignKey(o => o.uzytkownikId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<EquestrianCentre>().HasOne(o => o.UserData).WithMany(u => u.EquestrianCentres)
+                .HasForeignKey(o => o.userId).OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<Osrodek>().HasMany(o => o.Konie).WithOne(u => u.Osrodek)
-                .HasForeignKey(o => o.osrodekId).OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<EquestrianCentre>().HasMany(o => o.Horses).WithOne(u => u.EquestrianCentre)
+                .HasForeignKey(o => o.centreId).OnDelete(DeleteBehavior.SetNull);
             
-            modelBuilder.Entity<Kon>().HasOne(k => k.Uzytkownik).WithMany(u => u.Konie)
-                .HasForeignKey(k => k.uzytkownikId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Horse>().HasOne(k => k.UserData).WithMany(u => u.Horses)
+                .HasForeignKey(k => k.userId).OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<Kon>().HasOne(k => k.Osrodek).WithMany(o => o.Konie)
-                .HasForeignKey(k => k.osrodekId).OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Horse>().HasOne(k => k.EquestrianCentre).WithMany(o => o.Horses)
+                .HasForeignKey(k => k.centreId).OnDelete(DeleteBehavior.SetNull);
             
-            modelBuilder.Entity<WyswietleniaStron>().HasOne(ws => ws.Uzytkownik).WithMany(u => u.WyswietleniaStron)
-                .HasForeignKey(ws => ws.uzytkownikId).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<pageViews>().HasOne(ws => ws.UserData).WithMany(u => u.pagesViews)
+                .HasForeignKey(ws => ws.userId).OnDelete(DeleteBehavior.NoAction);
             
-            modelBuilder.Entity<NajczesciejWyswietlaneStrony>().HasNoKey().ToView("najczesciejWyswietlaneStrony", "analytics");
+            modelBuilder.Entity<mostViewedPages>().HasNoKey().ToView("mostViewedPages", "analytics");
         }
     }
 
