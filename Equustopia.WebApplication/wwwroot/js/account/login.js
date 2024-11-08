@@ -36,8 +36,6 @@ function attemptLogin() {
         .then(data => {
             if (data.success) {
                 document.getElementById("loginModal").style.display = "none";
-                document.getElementById("loginButton").style.display = "none";
-                document.getElementById("signupButton").style.display = "none";
                 window.location.reload(true);
             } else {
                 document.getElementById("loginError").textContent = data.message;
@@ -82,13 +80,11 @@ function attemptSignUp(){
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                document.getElementById("loginModal").style.display = "none";
-                document.getElementById("loginButton").style.display = "none";
-                document.getElementById("signupButton").style.display = "none";
+                document.getElementById("signupModal").style.display = "none";
                 window.location.reload(true);
             } else {
                 document.getElementById("signupError").textContent = data.message;
             }
         })
-        .catch(error => console.error("Error during login:", error));
+        .catch(error => console.error("Error during sign up:", error));
 }

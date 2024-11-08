@@ -44,5 +44,12 @@
 
             return Json(new { success = true });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Signup()
+        {
+            
+            return Json(new { success = true });
+        }
     }
 }

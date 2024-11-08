@@ -1,8 +1,8 @@
 ﻿<div id="loginModal" class="modal" style="display: none;">
     <div class="login-content">
         <span id="loginError" class="login-error"></span>
-        <input type="text" id="loginEmail" name="Email" class="login-input" placeholder="email" required>
-        <input type="password" id="loginPassword" name="Password" class="login-input" placeholder="password" onkeydown="if(event.key === 'Enter') attemptLogin()" required>
+        <input type="email" id="loginEmail" name="Email" class="login-input" placeholder="email" min="3" max="255" required>
+        <input type="password" id="loginPassword" name="Password" class="login-input" placeholder="password" onkeydown="if(event.key === 'Enter') attemptLogin()" min="4" max="60" required>
 
         <button type="submit" class="classic-button-long" onclick="attemptLogin()">log in</button>
     </div>
