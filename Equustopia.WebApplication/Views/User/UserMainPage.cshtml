@@ -14,7 +14,7 @@
     <img src="~/resources/icons/profile-picture-icon.svg" class="user-icon" alt="user profile icon" />
     <span class="user-name">@Model.Name</span>
     
-    <div class="frames-storage">
+    <div class="frames-storage" style="margin-bottom: 50px">
         <span class="left-aligned-text">My horses</span>
         <div id="my-horses" class="items-frame">
             @foreach (var horse in Model.Horses)
@@ -24,7 +24,7 @@
                     <span class="horse-name">@horse.name</span>
                 </button>
             }
-            <button id="new-horse-button" class="element-button" onclick="addNewHorse()">
+            <button id="new-horse-button" class="element-button" onclick="openAddHorseView()">
                 <span class="new-element-text">add new <br/> horse</span>
                 <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
             </button>
@@ -43,3 +43,5 @@
 </div>
 
 <script src="~/js/user/userMainPage.js"></script>
+
+@await Html.PartialAsync("../User/AddNewHorsePartialView")

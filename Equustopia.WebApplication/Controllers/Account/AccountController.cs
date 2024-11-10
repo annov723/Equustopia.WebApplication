@@ -58,10 +58,7 @@
                 return Json(new { success = false, message = "Fields cannot be empty.", constraintName = "" });
             }
             
-            var user = await _context.UsersData
-                .FirstOrDefaultAsync(u => u.email == signUpRequest.Email && u.password == signUpRequest.Password);
-            
-            user = new UserData
+            var user = new UserData
             {
                 name = signUpRequest.Name,
                 email = signUpRequest.Email,
