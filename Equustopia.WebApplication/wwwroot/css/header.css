@@ -100,3 +100,9 @@
     color: var(--white-color-semitransparent-50);
     font-family: 'Alegreya Sans', sans-serif;
 }
+
+.welcome-span{
+    font-weight: bold;
+    margin-right: 30px;
+    margin-left: 80px;
+}

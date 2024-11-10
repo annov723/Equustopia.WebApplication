@@ -2,7 +2,7 @@
     ViewData["Title"] = "Equustopia";
 }
 
-@model List<Equustopia.WebApplication.Models.Uzytkownik>
+@model List<Equustopia.WebApplication.Models.Main.UserData>
 
 <h1>Users</h1>
 
@@ -19,7 +19,7 @@
     {
         <tr>
             <td>@user.id</td>
-            <td>@user.nazwa</td>
+            <td>@user.name</td>
             <td>@user.email</td>
         </tr>
     }

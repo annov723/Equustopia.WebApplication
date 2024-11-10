@@ -2,9 +2,10 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Main;
 
-    [Table("Kon", Schema = "main")]
-    public class Kon
+    [Table("horse", Schema = "main")]
+    public class Horse
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,14 +13,14 @@
 
         [Required]
         [MaxLength(50)]
-        public string nazwa { get; set; }
+        public required string name { get; set; }
 
         [Required]
-        public int uzytkownikId { get; set; }
+        public required int userId { get; set; }
 
-        public int? osrodekId { get; set; }
+        public int? centreId { get; set; }
         
-        public Uzytkownik Uzytkownik { get; set; }
-        public Osrodek Osrodek { get; set; }
+        public required UserData UserData { get; set; }
+        public EquestrianCentre EquestrianCentre { get; set; }
     }
 }
