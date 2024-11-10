@@ -1,0 +1,24 @@
+﻿<div id="signUpModal" class="modal" style="display: none;">
+    <div class="logIn-content">
+        <span id="signUpError" class="logIn-error" style="margin-bottom: 20px"></span>
+
+        <div class="input-div">
+            <input type="text" id="signUpName" class="logIn-input" placeholder="name" maxlength="50" required>
+            <span id="signUpErrorName" class="logIn-error" style="margin-bottom: 20px; margin-top: 10px"></span>
+        </div>
+        <div class="input-div">
+            <input type="email" id="signUpEmail" class="logIn-input" placeholder="email" maxlength="255" required>
+            <span id="signUpErrorEmail" class="logIn-error" style="margin-bottom: 20px; margin-top: 10px"></span>
+        </div>
+        <div class="input-div">
+            <input type="password" id="signUpPassword" class="logIn-input" placeholder="password" maxlength="60" required>
+            <span id="signUpErrorPassword" class="logIn-error" style="margin-bottom: 20px; margin-top: 10px"></span>
+        </div>
+        <div class="input-div">
+            <input type="password" id="signUpPasswordRepeat" class="logIn-input" placeholder="repeat password" onkeydown="if(event.key == 'Enter') attemptsignUp()" maxlength="60" required>
+            <span id="signUpErrorPasswordRepeat" class="logIn-error" style="margin-bottom: 20px; margin-top: 10px"></span>
+        </div>
+
+        <button type="submit" class="classic-button-long" onclick="attemptSignUp()">sign up</button>
+    </div>
+</div>

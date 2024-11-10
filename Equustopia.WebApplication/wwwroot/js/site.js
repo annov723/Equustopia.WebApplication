@@ -1,5 +1,5 @@
 ﻿const menuToggle = document.getElementById('side-menu-toggle');
-const sideMenu = document.getElementById('side-menu');
+const sideMenu = document.getElementById('sideMenu');
 
 menuToggle.addEventListener('click', function(e){
    sideMenu.classList.toggle('open');

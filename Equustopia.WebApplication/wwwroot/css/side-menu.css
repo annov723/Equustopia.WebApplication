@@ -4,7 +4,7 @@
     left: -250px;
     width: 250px;
     height: 100%;
-    background-color: var(--brown-color);
+    background-color: var(--green-color);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
     transition: left 0.3s ease;
     padding-top: 60px;
@@ -26,7 +26,7 @@
 }
 
 .side-menu a:hover {
-    background-color: var(--hover-brown-color);
+    background-color: var(--hover-green-color);
     margin-top: -4px;         /* Moves the text upwards on hover */
     margin-bottom: 4px;
 }

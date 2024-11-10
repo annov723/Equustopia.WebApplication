@@ -2,9 +2,10 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Main;
 
     [Table("pageViews", Schema = "analytics")]
-    public class pageViews
+    public class PageViews
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -2,6 +2,7 @@
 {
     using Microsoft.EntityFrameworkCore;
     using Models;
+    using Models.Main;
 
     public class AppDbContext : DbContext
     {
@@ -13,8 +14,8 @@
         public DbSet<EquestrianCentre> EquestrianCentres { get; set; }
         public DbSet<UserData> UsersData { get; set; }
         
-        public DbSet<pageViews> PagesViews { get; set; }
-        public DbSet<mostViewedPages> MostViewedPages { get; set; }
+        public DbSet<PageViews> PagesViews { get; set; }
+        public DbSet<MostViewedPages> MostViewedPages { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,10 +44,10 @@
             modelBuilder.Entity<Horse>().HasOne(k => k.EquestrianCentre).WithMany(o => o.Horses)
                 .HasForeignKey(k => k.centreId).OnDelete(DeleteBehavior.SetNull);
             
-            modelBuilder.Entity<pageViews>().HasOne(ws => ws.UserData).WithMany(u => u.pagesViews)
+            modelBuilder.Entity<PageViews>().HasOne(ws => ws.UserData).WithMany(u => u.pagesViews)
                 .HasForeignKey(ws => ws.userId).OnDelete(DeleteBehavior.NoAction);
             
-            modelBuilder.Entity<mostViewedPages>().HasNoKey().ToView("mostViewedPages", "analytics");
+            modelBuilder.Entity<MostViewedPages>().HasNoKey().ToView("mostViewedPages", "analytics");
         }
     }
 

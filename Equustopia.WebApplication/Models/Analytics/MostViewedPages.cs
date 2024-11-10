@@ -3,7 +3,7 @@
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table("NajczesciejWyswietlaneStrony", Schema = "analytics")]
-    public class mostViewedPages
+    public class MostViewedPages
     {
         public int pageId { get; set; }
     
