@@ -2,10 +2,44 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = Model.Name + " Main Page";
+    ViewData["Title"] = " - " + Model.Name;
 }
 
-<h2>User Main Page</h2>
-<p>Welcome, @Model.Name!</p>
-<p>Your email: @Model.Email</p>
-<p>This is your main user page.</p>
+<head>
+    <link rel="stylesheet" href="~/css/user/user-main-page.css" />
+</head>
+
+<div class="user-main-container">
+    <div class="brown-rectangle"></div>
+    <img src="~/resources/icons/profile-picture-icon.svg" class="user-icon" alt="user profile icon" />
+    <span class="user-name">@Model.Name</span>
+    
+    <div class="frames-storage">
+        <span class="left-aligned-text">My horses</span>
+        <div id="my-horses" class="items-frame">
+            @foreach (var horse in Model.Horses)
+            {
+                <button class="element-button" onclick="viewHorseDetails(@horse.id)">
+                    <img src="" class="horse-photo" alt="horse photo"/>
+                    <span class="horse-name">@horse.name</span>
+                </button>
+            }
+            <button id="new-horse-button" class="element-button" onclick="addNewHorse()">
+                <span class="new-element-text">add new <br/> horse</span>
+                <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
+            </button>
+        </div>
+        
+        <span class="left-aligned-text">My riding centres</span>
+        <div id="my-centres" class="items-frame">
+            <button id="new-centre-button" class="element-button" onclick="addNewCentre()">
+                <span class="new-element-text">add new <br/> riding centre</span>
+                <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
+            </button>
+        </div>
+    </div>
+    
+    
+</div>
+
+<script src="~/js/user/userMainPage.js"></script>

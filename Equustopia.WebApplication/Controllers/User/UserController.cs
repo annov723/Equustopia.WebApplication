@@ -2,6 +2,7 @@
 {
     using Data;
     using Microsoft.AspNetCore.Mvc;
+    using Models;
     using ViewModels;
 
     public class UserController : Controller
@@ -26,11 +27,14 @@
             {
                 return RedirectToAction("LogOut", "Account");
             }
+            
+            var userHorses = _context.Horses.Where(h => h.userId == userId).ToList();
 
             var userViewModel = new UserViewModel
             {
                 Name = userData.name,
-                Email = userData.email
+                Email = userData.email,
+                Horses = userHorses
             };
             
             return View(userViewModel);
