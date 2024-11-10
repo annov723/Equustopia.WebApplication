@@ -28,6 +28,14 @@
     <ItemGroup>
       <Resource Include="wwwroot\resources\icons\side-menu-semitransparent.svg" />
       <Resource Include="wwwroot\resources\icons\search-semitransparent.svg" />
+      <Content Remove="wwwroot\resources\icons\plus-blue.svg" />
+      <Resource Include="wwwroot\resources\icons\plus-blue.svg" />
+      <Content Remove="wwwroot\resources\icons\profile-picture-icon.svg" />
+      <Resource Include="wwwroot\resources\icons\profile-picture-icon.svg" />
+      <Content Remove="wwwroot\resources\icons\user-brown.svg" />
+      <Resource Include="wwwroot\resources\icons\user-brown.svg" />
+      <Content Remove="wwwroot\resources\icons\user-white.svg" />
+      <Resource Include="wwwroot\resources\icons\user-white.svg" />
     </ItemGroup>
 
 </Project>
