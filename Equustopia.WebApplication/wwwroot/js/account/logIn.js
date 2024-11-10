@@ -31,7 +31,7 @@ function attemptLogIn() {
     const email = document.getElementById("logInEmail").value;
     const password = document.getElementById("logInPassword").value;
 
-    fetch("/logIn/logIn", {
+    fetch("/Account/logIn", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -52,13 +52,13 @@ function attemptLogIn() {
 }
 
 function logOut(){
-    fetch("/logIn/LogOut", { //NameOfController/NameOfAction
+    fetch("/Account/LogOut", { //NameOfController/NameOfAction
         method: "POST"
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                window.location.reload(true);
+                window.location.href = "/";
             } else {
                 console.error("Error during logout:", data.message);
             }
@@ -84,7 +84,7 @@ function attemptSignUp(){
         return;
     }
 
-    fetch("/logIn/signUp", {
+    fetch("/Account/signUp", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

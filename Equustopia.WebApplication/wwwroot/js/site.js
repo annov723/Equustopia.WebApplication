@@ -1,4 +1,4 @@
-﻿const menuToggle = document.getElementById('side-menu-toggle');
+﻿const menuToggle = document.getElementById('sideMenuButton');
 const sideMenu = document.getElementById('sideMenu');
 
 menuToggle.addEventListener('click', function(e){

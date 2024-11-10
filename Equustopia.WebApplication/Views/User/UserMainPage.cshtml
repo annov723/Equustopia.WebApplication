@@ -1,0 +1,11 @@
+﻿@model Equustopia.WebApplication.ViewModels.UserViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = Model.Name + " Main Page";
+}
+
+<h2>User Main Page</h2>
+<p>Welcome, @Model.Name!</p>
+<p>Your email: @Model.Email</p>
+<p>This is your main user page.</p>

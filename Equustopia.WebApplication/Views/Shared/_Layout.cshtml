@@ -17,7 +17,7 @@
 <body>
 <header class="main-header">
     <div class="left-container">
-        <button id="side-menu-toggle" class="side-menu-button">
+        <button id="sideMenuButton" class="side-menu-button">
             <img src="~/resources/icons/side-menu-semitransparent.svg" height="20" width="20" alt="side menu icon" />
         </button>
         <a asp-controller="Home" asp-action="Index" class="site-title">Equustopia</a>
@@ -37,9 +37,9 @@
         else
         {
             <span class="welcome-span">Welcome, @HttpContextAccessor.HttpContext.Session.GetString("LoggedUser")</span>
-            @* <button id="side-menu-toggle" class="side-menu-button"> *@
-            @*     <img src="~/resources/icons/side-menu-semitransparent.svg" height="20" width="20" alt="side menu icon" /> *@
-            @* </button> *@
+            <button id="UserMainPageButton" class="user-main-page-button" onclick="window.location.href='@Url.Action("UserMainPage", "User")'" type="button">
+                <img src="~/resources/icons/side-menu-semitransparent.svg" height="20" width="20" alt="side menu icon" />
+            </button>
             <button id="logOutButton" class="classic-button" onclick="logOut()">log out</button>
         }
     </div>
@@ -58,11 +58,6 @@
 
 <script src="~/js/site.js"></script>
 <script src="~/js/account/logIn.js"></script>
-
-<!--client-side validation-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 
 @await Html.PartialAsync("../Account/LogIn")
 @await Html.PartialAsync("../Account/SignUp")
