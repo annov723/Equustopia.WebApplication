@@ -30,7 +30,7 @@
     min-height: 40px;
     object-fit: cover;
     margin-top: -63px;
-    z-index: 1000;
+    z-index: 900;
 }
 
 .user-name{
@@ -118,4 +118,10 @@
     font-weight: bold;
     text-align: left;
     padding-left: 30px;
+}
+
+.horse-date{
+    margin-top: 7px;
+    font-size: 14px;
+    color: var(--white-color-semitransparent-50);
 }

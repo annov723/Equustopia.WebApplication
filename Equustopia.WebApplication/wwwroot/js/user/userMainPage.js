@@ -1,6 +1,7 @@
 ﻿function addNewHorse(){
     const name = document.getElementById("name").value;
-    const birthDate = new Date(document.getElementById("birthDate").value).toISOString();
+    const birthDateValue = document.getElementById("birthDate").value;
+    const birthDate = birthDateValue ? new Date(birthDateValue).toISOString() : null;
 
     fetch("/User/AddHorse", {
         method: "POST",

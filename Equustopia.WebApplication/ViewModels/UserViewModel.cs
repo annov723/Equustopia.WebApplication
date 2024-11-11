@@ -1,6 +1,7 @@
 ﻿namespace Equustopia.WebApplication.ViewModels
 {
     using Models;
+    using Models.Main;
 
     public class UserViewModel
     {

@@ -3,8 +3,10 @@
   --hover-blue-color: #2895b5;
   --light-blue-color: #d3eef6;
   --white-color: #ffffff;
+  --hover-white-color: #e0e0e0;
   --white-color-semitransparent-25: rgba(255, 255, 255, 0.25);
   --white-color-semitransparent-50: rgba(255, 255, 255, 0.5);
+  --white-color-semitransparent-75: rgba(255, 255, 255, 0.75);
   --black-color: #000000;
   --green-color: #9ede5e;
   --green-color-semitransparent-50: rgba(158, 222, 94, 0.5);
@@ -68,4 +70,30 @@ body {
   position: relative;
   z-index: 1;
   flex: 1;
+}
+
+.search-results-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.search-result-item a {
+  color: #333;
+  text-decoration: none;
+}
+
+.search-result-item a:hover {
+  color: #007bff;
 }

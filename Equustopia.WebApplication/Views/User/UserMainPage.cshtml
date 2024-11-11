@@ -21,7 +21,9 @@
             {
                 <button class="element-button" onclick="viewHorseDetails(@horse.id)">
                     <img src="" class="horse-photo" alt="horse photo"/>
-                    <span class="horse-name">@horse.name</span>
+                    <span class="horse-name">@horse.name
+                        <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
+                    </span>
                 </button>
             }
             <button id="new-horse-button" class="element-button" onclick="openAddHorseView()">

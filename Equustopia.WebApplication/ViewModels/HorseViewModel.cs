@@ -1,5 +1,6 @@
 ﻿namespace Equustopia.WebApplication.ViewModels
 {
+    using System.ComponentModel.DataAnnotations;
     using Models;
     using Models.Main;
 
