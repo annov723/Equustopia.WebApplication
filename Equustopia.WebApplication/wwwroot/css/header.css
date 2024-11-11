@@ -1,4 +1,4 @@
-﻿.main-header {
+﻿.header-content {
     position: sticky;
     top: 0;
     left: 0;
@@ -7,7 +7,7 @@
     background-color: var(--blue-color);
     color: var(--white-color);
     box-shadow: 0 17px 15px rgba(0, 0, 0, 0.25);
-    display:flex;
+    display: flex;
     z-index: 1000;
     align-items: center;
     justify-content: space-between;
@@ -103,6 +103,14 @@
 
 .welcome-span{
     font-weight: bold;
-    margin-right: 30px;
-    margin-left: 80px;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.user-main-page-button{
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-top: 5px;
 }

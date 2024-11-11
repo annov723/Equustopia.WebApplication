@@ -1,27 +1,13 @@
-﻿@{
-    ViewData["Title"] = "Equustopia";
-}
+﻿<head>
+    <link rel="stylesheet" href="~/css/index.css" />
+</head>
 
-@model List<Equustopia.WebApplication.Models.Main.UserData>
+<div class="index-container">
+    <div class="frames-storage">
+        <span class="left-aligned-text">Most viewed</span>
+        <div id="most-viewed" class="items-frame">
 
-<h1>Users</h1>
+        </div>
+    </div>
+</div>
 
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var user in Model)
-    {
-        <tr>
-            <td>@user.id</td>
-            <td>@user.name</td>
-            <td>@user.email</td>
-        </tr>
-    }
-    </tbody>
-</table>

@@ -1,4 +1,4 @@
-﻿namespace Equustopia.WebApplication.Models
+﻿namespace Equustopia.WebApplication.Models.Main
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -12,7 +12,7 @@
         public int id { get; set; }
 
         [Required]
-        [MaxLength(50)]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Username must be between 2 and 50 characters.")]
         public required string name { get; set; }
 
         [Required]
@@ -20,7 +20,9 @@
 
         public int? centreId { get; set; }
         
+        public DateTime? birthDate { get; set; }
+        
         public required UserData UserData { get; set; }
-        public EquestrianCentre EquestrianCentre { get; set; }
+        public EquestrianCentre? EquestrianCentre { get; set; }
     }
 }

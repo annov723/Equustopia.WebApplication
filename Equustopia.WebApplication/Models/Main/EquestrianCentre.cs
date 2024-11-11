@@ -19,7 +19,7 @@
         public required int userId { get; set; }
         
         public double? latitude { get; set; }
-        public double? Longitude { get; set; }
+        public double? longitude { get; set; }
 
         [MaxLength(250)]
         public string address { get; set; }

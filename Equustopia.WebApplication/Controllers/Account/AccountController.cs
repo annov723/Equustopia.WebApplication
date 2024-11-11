@@ -9,11 +9,11 @@
     using Models.Requests;
     using Npgsql;
 
-    public class LogInController : Controller
+    public class AccountController : Controller
     {
         private readonly AppDbContext _context;
 
-        public LogInController(AppDbContext context)
+        public AccountController(AppDbContext context)
         {
             _context = context;
         }
@@ -58,10 +58,7 @@
                 return Json(new { success = false, message = "Fields cannot be empty.", constraintName = "" });
             }
             
-            var user = await _context.UsersData
-                .FirstOrDefaultAsync(u => u.email == signUpRequest.Email && u.password == signUpRequest.Password);
-            
-            user = new UserData
+            var user = new UserData
             {
                 name = signUpRequest.Name,
                 email = signUpRequest.Email,
