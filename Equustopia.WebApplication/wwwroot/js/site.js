@@ -15,7 +15,7 @@ document.addEventListener('click', function(e){
 
 
 window.addEventListener('scroll', function () {
-    var footer = document.querySelector('.footer-content');
+    let footer = document.querySelector('.footer-content');
 
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
         footer.classList.add('show');
@@ -37,6 +37,7 @@ function handleSearch(event) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    console.log("Received search results:", data.data);
                     displaySearchResults(data.data);
                 } else {
                     alert("No results found.");
@@ -47,6 +48,8 @@ function handleSearch(event) {
 }
 
 function displaySearchResults(results) {
+    console.log("Received search results:", results);
+    
     const resultsContainer = document.getElementById("search-results");
     resultsContainer.innerHTML = "";
 
@@ -54,15 +57,17 @@ function displaySearchResults(results) {
         const item = document.createElement("div");
         item.classList.add("search-result-item");
 
-        // Create a link based on the type of the result
-        const link = document.createElement("a");
-        link.textContent = `${result.Type}: ${result.Name}`;
-        link.href = `/${result.Type}/Details/${result.Id}`;
-        item.appendChild(link);
+        if (id && type) {
+            const link = document.createElement("a");
+            link.textContent = `${type}: ${name}`;
+            link.href = `/${type}/Details/${id}`;
+            item.appendChild(link);
+        } else {
+            item.textContent = name + " " + id + " " + type;
+        }
 
         resultsContainer.appendChild(item);
     });
 
-    // Show the results container
     resultsContainer.style.display = "block";
 }
