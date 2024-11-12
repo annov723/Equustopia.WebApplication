@@ -48,14 +48,18 @@
 
 <div id="sideMenu" class="side-menu">
     <a asp-controller="Home" asp-action="Index">Home</a>
-    <a asp-controller="User" asp-action="UserMainPage">My profile</a>
+    @if (!string.IsNullOrEmpty(HttpContextAccessor.HttpContext?.Session.GetString("LoggedUser")))
+    {
+        <a asp-controller="User" asp-action="UserMainPage">My profile</a>
+    }
+    
     <a href="#">Services</a>
     <a href="#">Contact</a>
 </div>
 
 <div id="mainContent" class="main-content">
     @RenderBody()
-    <div id="search-results" class="search-results-container"></div>
+    <div id="searchResults" class="search-results-container"></div>
 </div>
 
 <footer>

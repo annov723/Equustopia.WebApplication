@@ -1,4 +1,4 @@
-﻿namespace Equustopia.WebApplication.Models
+﻿namespace Equustopia.WebApplication.Models.Main
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;

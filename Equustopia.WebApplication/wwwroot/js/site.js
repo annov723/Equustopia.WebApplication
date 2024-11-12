@@ -37,7 +37,6 @@ function handleSearch(event) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log("Received search results:", data.data);
                     displaySearchResults(data.data);
                 } else {
                     alert("No results found.");
@@ -50,20 +49,20 @@ function handleSearch(event) {
 function displaySearchResults(results) {
     console.log("Received search results:", results);
     
-    const resultsContainer = document.getElementById("search-results");
+    const resultsContainer = document.getElementById("searchResults");
     resultsContainer.innerHTML = "";
 
     results.forEach(result => {
         const item = document.createElement("div");
         item.classList.add("search-result-item");
 
-        if (id && type) {
+        if (result.id && result.type) {
             const link = document.createElement("a");
-            link.textContent = `${type}: ${name}`;
-            link.href = `/${type}/Details/${id}`;
+            link.textContent = `${result.type}: ${result.name}`;
+            link.href = `/${result.type}/Details/${result.id}`;
             item.appendChild(link);
         } else {
-            item.textContent = name + " " + id + " " + type;
+            item.textContent = result.name + " " + result.id + " " + result.type;
         }
 
         resultsContainer.appendChild(item);

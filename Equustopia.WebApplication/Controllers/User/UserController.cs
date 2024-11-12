@@ -17,6 +17,18 @@
             _context = context;
         }
         
+        // GET: /User/Details/{id}
+        public IActionResult Details(int id)
+        {
+            var user = _context.UsersData.FirstOrDefault(u => u.id == id);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            return View(user);
+        }
+        
         public IActionResult UserMainPage()
         {
             var userId = HttpContext.Session.GetInt32("UserId");

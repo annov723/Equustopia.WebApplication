@@ -2,6 +2,7 @@
 {
     using Data;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
 
     public class HorseController : Controller
     {
@@ -20,6 +21,7 @@
             {
                 return NotFound("Horse not found");
             }
+            Console.WriteLine($"Horse Data: Name = {horse.name}, Birthdate = {horse.birthDate}");
 
             return View(horse);
         }
