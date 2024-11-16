@@ -8,24 +8,7 @@ function openSignUpModal() {
     document.getElementById("signUpModal").style.display = "block";
 }
 
-function closeAllModals() {
-    document.getElementById("logInModal").style.display = "none";
-    document.getElementById("signUpModal").style.display = "none";
 
-    ["logInEmail", "logInPassword", "signUpName", "signUpEmail", "signUpPassword", "signUpPasswordRepeat"].forEach(id => {
-        document.getElementById(id).value = "";
-    });
-
-    document.getElementById("logInError").textContent = "";
-    
-    document.getElementById("signUpError").textContent = "";
-    document.getElementById("signUpErrorName").textContent = "";
-    document.getElementById("signUpErrorEmail").textContent = "";
-    document.getElementById("signUpErrorPassword").textContent = "";
-    document.getElementById("signUpErrorPasswordRepeat").textContent = "";
-}
-
-window.onbeforeunload = closeAllModals;
 
 function attemptLogIn() {
     const email = document.getElementById("logInEmail").value;
@@ -136,4 +119,4 @@ function attemptSignUp(){
 const logInNameConstraint = "chk_name_length";
 const logInEmailConstraint = "chk_email_length";
 const logInPasswordConstraint = "chk_password_length";
-const logInEmailExistsConstraint = "uzytkownik_email_key";
+const logInEmailExistsConstraint = "userdata_email_key";
