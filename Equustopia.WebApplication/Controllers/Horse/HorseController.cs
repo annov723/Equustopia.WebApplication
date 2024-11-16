@@ -21,7 +21,6 @@
             {
                 return NotFound("Horse not found");
             }
-            Console.WriteLine($"Horse Data: Name = {horse.name}, Birthdate = {horse.birthDate}");
 
             return View(horse);
         }

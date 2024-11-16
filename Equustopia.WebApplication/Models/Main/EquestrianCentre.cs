@@ -22,7 +22,7 @@
         public double? longitude { get; set; }
 
         [MaxLength(250)]
-        public string address { get; set; }
+        public string? address { get; set; }
         
         public required UserData UserData { get; set; }
         public ICollection<Horse> Horses { get; set; }

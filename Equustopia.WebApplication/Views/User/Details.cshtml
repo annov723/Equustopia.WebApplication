@@ -1,5 +1,10 @@
 ﻿@model Equustopia.WebApplication.Models.Main.UserData
 
+@{
+ViewBag.Title = "title";
+Layout = "_Layout";
+}
+
 <h2>User Details</h2>
 <p><strong>Username:</strong> @Model.name</p>
 <p><strong>Email:</strong> @Model.email</p>

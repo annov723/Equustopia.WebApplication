@@ -27,7 +27,7 @@
 
             var stables = _context.EquestrianCentres
                 .Where(s => s.name.ToLower().Contains(query.ToLower()))
-                .Select(s => new { Type = "Stable", Id = s.id, Name = s.name })
+                .Select(s => new { Type = "EquestrianCentre", Id = s.id, Name = s.name })
                 .ToList();
 
             var users = _context.UsersData

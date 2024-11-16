@@ -12,13 +12,13 @@
             _context = context;
         }
 
-        // GET: /Stable/Details/{id}
+        // GET: /EquestrianCentre/Details/{id}
         public IActionResult Details(int id)
         {
             var stable = _context.EquestrianCentres.FirstOrDefault(s => s.id == id);
             if (stable == null)
             {
-                return NotFound("Stable not found");
+                return NotFound("Equestrian centre not found");
             }
 
             return View(stable);
