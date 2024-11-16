@@ -21,6 +21,8 @@ function closeAllModals() {
     document.getElementById("signUpErrorPasswordRepeat").textContent = "";
 
     document.getElementById("search-bar").value = "";
+    searchResults.style.display = "none";
+    searchResults.innerHTML = "";
 }
 
 window.onbeforeunload = closeAllModals;
@@ -28,6 +30,8 @@ window.onbeforeunload = closeAllModals;
 //side menu
 menuToggle.addEventListener('click', function(e){
    sideMenu.classList.toggle('open');
+    searchResults.style.display = "none";
+    searchResults.innerHTML = "";
    e.stopPropagation();
 });
 
@@ -39,17 +43,21 @@ document.addEventListener('click', function(e){
 
 //search bar
 searchBar.addEventListener("blur", function() {
-    // Use a small delay to ensure results are not hidden immediately after selection
-    setTimeout(() => {
-        searchResults.style.display = "none";  // Hide the results container
-    }, 100);
+    searchResults.style.display = "none";
+    searchResults.innerHTML = "";
 });
 
 document.addEventListener("click", function(event) {
     if (!searchBar.contains(event.target) && !searchResults.contains(event.target)) {
         searchResults.style.display = "none";
+        searchResults.innerHTML = "";
     }
 });
+
+window.onblur = function() {
+    searchResults.style.display = "none";
+    searchResults.innerHTML = "";
+};
 
 
 // hiding footer
@@ -70,7 +78,6 @@ function handleSearch(event) {
         const query = document.getElementById("search-bar").value.trim();
 
         if (!query) {
-            alert("Please enter a search term.");
             return;
         }
 

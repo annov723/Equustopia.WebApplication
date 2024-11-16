@@ -1,7 +1,6 @@
 ﻿namespace Equustopia.WebApplication.Controllers
 {
     using Data;
-    using Microsoft.AspNetCore.Http.HttpResults;
     using Microsoft.AspNetCore.Mvc;
 
     public class SearchController : Controller
@@ -35,7 +34,6 @@
                 .Where(u => u.name.ToLower().Contains(query.ToLower()))
                 .Select(u => new { Type = "User", Id = u.id, Name = u.name })
                 .ToList();
-
             
             var results = horses.Concat(stables).Concat(users).ToList();
 
