@@ -68,5 +68,5 @@ function displaySearchResults(results) {
         resultsContainer.appendChild(item);
     });
 
-    resultsContainer.style.display = "block";
+    document.getElementById("searchResultsModal").style.display = "block";
 }

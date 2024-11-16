@@ -11,6 +11,7 @@ function openSignUpModal() {
 function closeAllModals() {
     document.getElementById("logInModal").style.display = "none";
     document.getElementById("signUpModal").style.display = "none";
+    document.getElementById("searchResultsModal").style.display = "none";
 
     ["logInEmail", "logInPassword", "signUpName", "signUpEmail", "signUpPassword", "signUpPasswordRepeat"].forEach(id => {
         document.getElementById(id).value = "";
@@ -23,6 +24,8 @@ function closeAllModals() {
     document.getElementById("signUpErrorEmail").textContent = "";
     document.getElementById("signUpErrorPassword").textContent = "";
     document.getElementById("signUpErrorPasswordRepeat").textContent = "";
+    
+    document.getElementById("search-bar").value = "";
 }
 
 window.onbeforeunload = closeAllModals;

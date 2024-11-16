@@ -48,6 +48,9 @@ function openAddHorseView(){
 
 function closeAddHorseView(){
     document.getElementById("addHorseModal").style.display = "none";
+
+    document.getElementById("name").textContent = "";
+    document.getElementById("birthDate").value = "";
 }
 
 
