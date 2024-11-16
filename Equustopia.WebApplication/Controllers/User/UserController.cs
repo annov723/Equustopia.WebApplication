@@ -2,6 +2,7 @@
 {
     using Data;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Models;
     using Models.Main;
     using Models.Requests;
@@ -20,7 +21,7 @@
         // GET: /User/Details/{id}
         public IActionResult Details(int id)
         {
-            var user = _context.UsersData.FirstOrDefault(u => u.id == id);
+            var user = _context.UsersData.Include(h => h.Horses).Include(h => h.EquestrianCentres).FirstOrDefault(u => u.id == id);
             if (user == null)
             {
                 return NotFound("User not found");
@@ -44,12 +45,14 @@
             }
             
             var userHorses = _context.Horses.Where(h => h.userId == userId).ToList();
+            var userCentres = _context.EquestrianCentres.Where(h => h.userId == userId).ToList();
 
             var userViewModel = new UserViewModel
             {
                 Name = userData.name,
                 Email = userData.email,
-                Horses = userHorses
+                Horses = userHorses,
+                EquestrianCentres = userCentres
             };
             
             return View(userViewModel);

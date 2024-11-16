@@ -16,7 +16,7 @@
         // GET: /Horse/Details/{id}
         public IActionResult Details(int id)
         {
-            var horse = _context.Horses.FirstOrDefault(h => h.id == id);
+            var horse = _context.Horses.Include(h => h.UserData).FirstOrDefault(h => h.id == id);
             if (horse == null)
             {
                 return NotFound("Horse not found");

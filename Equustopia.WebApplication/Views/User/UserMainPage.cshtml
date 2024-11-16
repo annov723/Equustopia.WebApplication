@@ -7,6 +7,7 @@
 
 <head>
     <link rel="stylesheet" href="~/css/user/user-main-page.css" />
+    <link rel="stylesheet" href="~/css/frames-storage.css" />
 </head>
 
 <div class="user-main-container">
@@ -34,6 +35,15 @@
         
         <span class="left-aligned-text">My riding centres</span>
         <div id="my-centres" class="items-frame">
+            @foreach (var centre in Model.EquestrianCentres)
+            {
+            <button class="element-button" onclick="viewCentreDetails(@centre.id)">
+                <img src="" class="horse-photo" alt="centre photo"/>
+                <span class="horse-name">@centre.name
+                    <p class="horse-date">@centre.address</p>
+                </span>
+            </button>
+            }
             <button id="new-centre-button" class="element-button" onclick="addNewCentre()">
                 <span class="new-element-text">add new <br/> riding centre</span>
                 <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>

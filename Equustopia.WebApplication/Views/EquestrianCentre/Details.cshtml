@@ -1,9 +1,37 @@
 ﻿@model Equustopia.WebApplication.Models.Main.EquestrianCentre
 
 @{
-ViewBag.Title = "title";
-Layout = "_Layout";
+    ViewBag.Title = " - " + Model.name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Equestrian Centre Details</h2>
-<p><strong>Name:</strong> @Model.name</p>
+<head>
+    <link rel="stylesheet" href="~/css/details/details.css">
+    <link rel="stylesheet" href="~/css/frames-storage.css" />
+</head>
+
+<div class="main-info">
+    <div class="brown-rectangle"></div>
+    <div class="details-info">
+        <img src="~/resources/icons/profile-picture-icon.svg" class="user-icon" alt="user profile icon"/>
+
+        <div class="text-info">
+            <span class="user-name">@Model.name</span>
+            <span class="birth-date">@Model.address</span>
+            <a class="owner" href="~/User/Details/@Model.UserData.id">@Model.UserData.name</a>
+        </div>
+    </div>
+
+    <span class="left-aligned-text">My horses</span>
+    <div id="my-horses" class="items-frame">
+        @foreach (var horse in Model.Horses)
+        {
+        <button class="element-button" onclick="viewHorseDetails(@horse.id)">
+            <img src="" class="horse-photo" alt="horse photo"/>
+            <span class="horse-name">@horse.name
+                <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
+                    </span>
+        </button>
+        }
+    </div>
+</div>

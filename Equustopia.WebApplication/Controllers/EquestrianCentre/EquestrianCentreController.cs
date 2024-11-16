@@ -2,6 +2,7 @@
 {
     using Data;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
 
     public class EquestrianCentreController : Controller
     {
@@ -15,7 +16,7 @@
         // GET: /EquestrianCentre/Details/{id}
         public IActionResult Details(int id)
         {
-            var stable = _context.EquestrianCentres.FirstOrDefault(s => s.id == id);
+            var stable = _context.EquestrianCentres.Include(h => h.UserData).Include(h => h.Horses).FirstOrDefault(s => s.id == id);
             if (stable == null)
             {
                 return NotFound("Equestrian centre not found");
