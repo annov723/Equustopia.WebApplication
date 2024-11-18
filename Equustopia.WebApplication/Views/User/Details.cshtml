@@ -6,8 +6,9 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/details/details.css">
+    <link rel="stylesheet" href="~/css/details/details.css" />
     <link rel="stylesheet" href="~/css/frames-storage.css" />
+    <link rel="stylesheet" href="~/css/buttons.css" />
 </head>
 
 <div class="main-info">
@@ -19,29 +20,33 @@
         </div>
     </div>
 
-    <span class="left-aligned-text">My horses</span>
-    <div id="my-horses" class="items-frame">
-        @foreach (var horse in Model.Horses)
-        {
-        <button class="element-button" onclick="viewHorseDetails(@horse.id)">
-            <img src="" class="horse-photo" alt="horse photo"/>
-            <span class="horse-name">@horse.name
-                <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
+    <div class="frames-storage" style="margin-bottom: 50px">
+        <span class="left-aligned-text">Horses</span>
+        <div id="my-horses" class="items-frame">
+            @foreach (var horse in Model.Horses)
+            {
+                <button class="element-button" onclick="viewHorseDetails(@horse.id)">
+                    <img src="" class="horse-photo" alt="horse photo"/>
+                    <span class="horse-name">@horse.name
+                        <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
                     </span>
-        </button>
-        }
-    
-        <span class="left-aligned-text">My riding centres</span>
+                </button>
+            }
+        </div>
+
+        <span class="left-aligned-text">Riding centres</span>
         <div id="my-centres" class="items-frame">
             @foreach (var centre in Model.EquestrianCentres)
             {
-            <button class="element-button" onclick="viewCentreDetails(@centre.id)">
-                <img src="" class="horse-photo" alt="horse photo"/>
-                <span class="horse-name">@centre.name
-                    <p class="horse-date">@centre.address</p>
-                </span>
-            </button>
+                <button class="element-button" onclick="viewCentreDetails(@centre.id)">
+                    <img src="" class="horse-photo" alt="horse photo"/>
+                    <span class="horse-name">@centre.name
+                        <p class="horse-date">@centre.address</p>
+                    </span>
+                </button>
             }
         </div>
     </div>
 </div>
+
+<script src="~/js/shared.js"></script>

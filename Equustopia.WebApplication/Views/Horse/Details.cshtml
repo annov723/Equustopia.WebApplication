@@ -6,7 +6,8 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/details/details.css">
+    <link rel="stylesheet" href="~/css/details/details.css" />
+    <link rel="stylesheet" href="~/css/buttons.css" />
 </head>
 
 <div class="main-info">
@@ -19,5 +20,14 @@
             <span class="birth-date">@Model.birthDate?.ToString("dd/MM/yyyy")</span>
             <a class="owner" href="~/User/Details/@Model.UserData.id">@Model.UserData.name</a>
         </div>
+
+        <div id="owner-buttons" style="display: none;">
+            <button class="normal-button" onclick="editHorse()">edit</button>
+            <button class="normal-button" onclick="removeHorse()">remove</button>
+        </div>
     </div>
 </div>
+
+<script src="~/js/shared.js"></script>
+
+@* @await Html.PartialAsync("EditHorsePartialView") *@

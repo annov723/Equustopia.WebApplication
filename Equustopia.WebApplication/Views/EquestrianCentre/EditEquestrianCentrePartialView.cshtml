@@ -1,0 +1,43 @@
+﻿@* <head> *@
+@*     <link rel="stylesheet" href="~/css/equestrianCentre/equestrian-centre-partial-view.css" /> *@
+@* </head> *@
+@* *@
+@* <div id="addHorseModal" class="modal" style="display: none;"> *@
+@*     <div class="modal-content"> *@
+@*         <div class="form-content"> *@
+@*             <p class="form-title">add new horse</p> *@
+@* *@
+@*             <div class="form-group"> *@
+@*                 <label for="name">horse name</label> *@
+@*                 <input type="text" id="name" name="name" class="form-control" placeholder="name" required/> *@
+@*             </div> *@
+@*             $1$ <div class="form-group"> #1# *@
+@*             $1$     <label for="breed">Breed</label> #1# *@
+@*             $1$     <input type="text" id="breed" name="breed" class="form-control" required /> #1# *@
+@*             $1$ </div> #1# *@
+@*             <div class="form-group"> *@
+@*                 <label for="birthDate">birth date</label> *@
+@*                 <input type="date" id="birthDate" name="birthDate" class="form-control" required/> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label for="owner">owner</label> *@
+@*                 <input type="text" id="owner" name="owner" class="form-control-readonly" value=@Model.Name readonly/> *@
+@*             </div> *@
+@* *@
+@*             <span id="addHorseError" class="add-horse-error"></span> *@
+@* *@
+@*             <button type="submit" class="btn btn-primary" onclick="addNewHorse()">add horse</button> *@
+@*         </div> *@
+@* *@
+@*         <div class="photo-content"> *@
+@*             <p class="form-title">upload horse photo</p> *@
+@*             <img src="~/resources/icons/horse-icon.svg" class="horse-icon" alt="horse icon" /> *@
+@*             <input type="file" id="photo" name="photo" accept="image/*" style="display: none" /> *@
+@*             <button class="upload-photo-button" onclick="document.getElementById('photo').click()">upload photo</button> *@
+@*             <span class="close" onclick="closeAddHorseView()">&times;</span> *@
+@*         </div> *@
+@* *@
+@* *@
+@*     </div> *@
+@* </div> *@
+@* *@
