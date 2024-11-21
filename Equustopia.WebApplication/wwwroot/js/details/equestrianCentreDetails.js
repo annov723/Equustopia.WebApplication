@@ -1,0 +1,7 @@
+function editEquestrianCentre() {
+
+}
+
+function removeEquestrianCentre() {
+
+}

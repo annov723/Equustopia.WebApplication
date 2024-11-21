@@ -25,7 +25,6 @@
 
 .details-info{
     z-index: 900;
-    margin: 0 100px 0 150px;
     display: flex;
     flex-direction: row;
     position: relative;
@@ -77,4 +76,26 @@
     font-weight: bold;
     color: var(--white-color);
     text-decoration: none;
+}
+
+.owner-buttons{
+    flex-direction: row;
+    margin-top: -150px;
+    justify-content: left;
+    display: flex;
+    align-items: center;
+}
+
+.position-div{
+    justify-content: space-between;
+    width: 100%;
+    padding: 50px 25px 50px 50px;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    margin-top: -60px;
+}
+
+.owner-buttons .classic-button{
+    margin: 0 10px 0 10px;
 }

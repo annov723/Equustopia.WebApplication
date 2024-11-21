@@ -1,26 +1,27 @@
 ﻿function addNewHorse(){
-    const name = document.getElementById("name").value;
+    const name = document.getElementById("horseName").value;
     const birthDateValue = document.getElementById("birthDate").value;
     const birthDate = birthDateValue ? new Date(birthDateValue).toISOString() : null;
+    const centre = document.getElementById("equestrianCentreSelect").value;
 
     fetch("/User/AddHorse", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ Name: name, BirthDate: birthDate })
+        body: JSON.stringify({ Name: name, BirthDate: birthDate, EquestrianCentreId: centre })
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                document.getElementById("logInModal").style.display = "none";
+                document.getElementById("addHorseModal").style.display = "none";
                 window.location.reload(true);
             } else {
                 if(data.message === ""){
                     switch (data.constraintName){
                         case horseNameConstraint:
                             document.getElementById("addHorseError").textContent = "Name must be between 2 and 50 characters.";
-                            document.getElementById("name").value = "";
+                            document.getElementById("horseName").value = "";
                             break;
                         default:
                             document.getElementById("addHorseError").textContent = "An error occurred while creating a new horse.";
@@ -33,22 +34,90 @@
         .catch(error => console.error("Error adding horse:", error));
 }
 
-function addNewCentre(){
-    
+function populateStableDropdown() {
+    fetch("/User/GetEquestrianCentres")
+        .then(response => response.json())
+        .then(data => {
+            const stableSelect = document.getElementById("equestrianCentreSelect");
+            stableSelect.innerHTML = '<option value="" disabled selected>choose a centre</option>'; // Reset options
+
+            data.forEach(stable => {
+                const option = document.createElement("option");
+                option.value = stable.id;
+                option.textContent = stable.name;
+                stableSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error("Error fetching stables:", error));
 }
 
 function openAddHorseView(){
     closeAllModals();
+    populateStableDropdown();
     document.getElementById("addHorseModal").style.display = "block";
 }
 
 function closeAddHorseView(){
     document.getElementById("addHorseModal").style.display = "none";
 
-    document.getElementById("name").textContent = "";
+    document.getElementById("horseName").textContent = "";
     document.getElementById("birthDate").value = "";
+    document.getElementById("addHorseError").textContent = "";
+}
+
+function addNewEquestrianCentre(){
+    const name = document.getElementById("centreName").value;
+    const address = document.getElementById("address").value;
+
+    fetch("/User/AddEquestrianCentre", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ Name: name, Address: address })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("addCentreModal").style.display = "none";
+                window.location.reload(true);
+            } else {
+                if(data.message === ""){
+                    switch (data.constraintName){
+                        case centreNameConstraint:
+                            document.getElementById("addCentreError").textContent = "Name must be between 2 and 250 characters.";
+                            document.getElementById("centreName").value = "";
+                            break;
+                        case centreAddressConstraint:
+                            document.getElementById("addCentreError").textContent = "Address must be between 2 and 250 characters.";
+                            document.getElementById("address").value = "";
+                            break;
+                        default:
+                            document.getElementById("addCentreError").textContent = "An error occurred while creating a new equestrian centre.";
+                    }
+                    return;
+                }
+                document.getElementById("addCentreError").textContent = data.message;
+            }
+        })
+        .catch(error => console.error("Error adding centre:", error));
+}
+
+function openAddEquestrianCentreView(){
+    closeAllModals();
+    document.getElementById("addCentreModal").style.display = "block";
+}
+
+function closeAddEquestrianCentreView(){
+    document.getElementById("addCentreModal").style.display = "none";
+
+    document.getElementById("centreName").textContent = "";
+    document.getElementById("address").textContent = "";
+    document.getElementById("addCentreError").textContent = "";
 }
 
 
 
 const horseNameConstraint = "chk_name_length";
+const centreNameConstraint = "chk_name_length";
+const centreAddressConstraint = "chk_address_length";

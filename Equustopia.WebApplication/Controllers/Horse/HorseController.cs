@@ -1,5 +1,6 @@
 ﻿namespace Equustopia.WebApplication.Controllers.Horse
 {
+    using System.Security.Claims;
     using Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,10 @@
             {
                 return NotFound("Horse not found");
             }
+            
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            bool isOwner = currentUserId != null && int.Parse(currentUserId) == horse.userId;
+            ViewBag.IsOwner = isOwner;
 
             return View(horse);
         }

@@ -72,14 +72,14 @@
                 return Json(new { success = false, message = "Owner does not exist.", constraintName = "" });
             }
 
-            var centre = _context.EquestrianCentres.FirstOrDefault(c => c.id == addHorseRequest.HouseId);
+            var centre = _context.EquestrianCentres.FirstOrDefault(c => c.id == addHorseRequest.EquestrianCentreId);
             
             var horse = new Horse
             {
                 name = addHorseRequest.Name,
                 birthDate = addHorseRequest.BirthDate,
                 userId = owner.id,
-                centreId = addHorseRequest.HouseId,
+                centreId = addHorseRequest.EquestrianCentreId,
                 UserData = owner,
                 EquestrianCentre = centre
             };
@@ -99,6 +99,60 @@
             }
             
             return Json(new { success = true });
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> AddEquestrianCentre([FromBody] AddEquestrianCentreRequest addEquestrianCentreRequest)
+        {
+            if (string.IsNullOrEmpty(addEquestrianCentreRequest.Name))
+            {
+                return Json(new { success = false, message = "Name cannot be empty.", constraintName = "" });
+            }
+            
+            if (!string.IsNullOrEmpty(addEquestrianCentreRequest.Address) && (addEquestrianCentreRequest.Address.Length > 250 || addEquestrianCentreRequest.Address.Length < 2))
+            {
+                return Json(new { success = false, message = "", constraintName = "chk_address_length" });
+            }
+            
+            var owner = _context.UsersData.FirstOrDefault(u => u.id == HttpContext.Session.GetInt32("UserId")!.Value);
+            if(owner == null)
+            {
+                return Json(new { success = false, message = "Owner does not exist.", constraintName = "" });
+            }
+
+            var centre = new EquestrianCentre
+            {
+                name = addEquestrianCentreRequest.Name,
+                address = addEquestrianCentreRequest.Address,
+                userId = owner.id,
+                UserData = owner
+            };
+            
+            try
+            {
+                _context.EquestrianCentres.Add(centre);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                if(e.InnerException is PostgresException postgresException)
+                {
+                    return Json(new { success = false, message = "", constraintName = postgresException.ConstraintName });
+                }
+                return Json(new { success = false, message = "An error occurred while creating a new equestrian centre.", constraintName = "" });
+            }
+            
+            return Json(new { success = true });
+        }
+        
+        [HttpGet]
+        public IActionResult GetEquestrianCentres()
+        {
+            var centres = _context.EquestrianCentres
+                .Select(s => new { s.id, s.name })
+                .ToList();
+
+            return Ok(centres);
         }
     }
 }

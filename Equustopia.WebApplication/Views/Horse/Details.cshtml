@@ -12,22 +12,29 @@
 
 <div class="main-info">
     <div class="brown-rectangle"></div>
-    <div class="details-info">
-        <img src="~/resources/icons/profile-picture-icon.svg" class="user-icon" alt="user profile icon"/>
-        
-        <div class="text-info">
-            <span class="user-name">@Model.name</span>
-            <span class="birth-date">@Model.birthDate?.ToString("dd/MM/yyyy")</span>
-            <a class="owner" href="~/User/Details/@Model.UserData.id">@Model.UserData.name</a>
-        </div>
+    <div class="position-div">
+        <div class="details-info">
+            <img src="~/resources/icons/profile-picture-icon.svg" class="user-icon" alt="user profile icon"/>
 
-        <div id="owner-buttons" style="display: none;">
-            <button class="normal-button" onclick="editHorse()">edit</button>
-            <button class="normal-button" onclick="removeHorse()">remove</button>
+            <div class="text-info">
+                <span class="user-name">@Model.name</span>
+                <span class="birth-date">@Model.birthDate?.ToString("dd/MM/yyyy")</span>
+                <a class="owner" href="~/User/Details/@Model.UserData.id">@Model.UserData.name</a>
+            </div>
+        </div>
+        
+        @if(ViewBag.IsOwner)
+        {
+            <button class="classic-button" onclick="addHorse()">add horse</button>
+        }
+        <div class="owner-buttons">
+            <button class="classic-button" onclick="editHorse()">edit</button>
+            <button class="classic-button" onclick="removeHorse()">remove</button>
         </div>
     </div>
 </div>
 
 <script src="~/js/shared.js"></script>
+<script src="~/js/details/horseDetails.js"></script>
 
 @* @await Html.PartialAsync("EditHorsePartialView") *@

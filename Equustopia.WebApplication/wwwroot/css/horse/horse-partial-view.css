@@ -11,7 +11,7 @@
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.modal-content {
+#addHorseModal .modal-content {
     background-color: var(--green-color);
     display: flex;
     flex-direction: row;
@@ -21,7 +21,7 @@
     margin-left: calc(50% - 350px);
     border: none;
     width: 700px;
-    height: 450px;
+    height: 500px;
     position: relative;
     border-radius: 15px;
 }

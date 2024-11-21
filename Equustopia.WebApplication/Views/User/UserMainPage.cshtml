@@ -44,7 +44,7 @@
                 </span>
             </button>
             }
-            <button id="new-centre-button" class="element-button" onclick="addNewCentre()">
+            <button id="new-centre-button" class="element-button" onclick="openAddEquestrianCentreView()">
                 <span class="new-element-text">add new <br/> riding centre</span>
                 <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
             </button>
@@ -58,3 +58,4 @@
 <script src="~/js/shared.js"></script>
 
 @await Html.PartialAsync("../User/AddNewHorsePartialView")
+@await Html.PartialAsync("../User/AddNewEquestrianCentrePartialView")
