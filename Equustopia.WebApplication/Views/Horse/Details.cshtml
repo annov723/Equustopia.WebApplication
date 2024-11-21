@@ -23,18 +23,17 @@
             </div>
         </div>
         
-        @if(ViewBag.IsOwner)
+        @if((bool)ViewBag.IsOwner)
         {
-            <button class="classic-button" onclick="addHorse()">add horse</button>
-        }
         <div class="owner-buttons">
-            <button class="classic-button" onclick="editHorse()">edit</button>
-            <button class="classic-button" onclick="removeHorse()">remove</button>
+            <button class="classic-button" onclick="openEditHorseView()">edit</button>
+            <button class="classic-button" onclick="openRemoveHorseView()">remove</button>
         </div>
+        }
     </div>
 </div>
 
 <script src="~/js/shared.js"></script>
 <script src="~/js/details/horseDetails.js"></script>
 
-@* @await Html.PartialAsync("EditHorsePartialView") *@
+@await Html.PartialAsync("EditHorsePartialView")

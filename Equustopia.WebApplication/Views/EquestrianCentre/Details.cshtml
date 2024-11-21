@@ -24,10 +24,13 @@
             </div>
         </div>
 
-        <div class="owner-buttons">
-            <button class="classic-button" onclick="editEquestrianCentre()">edit</button>
-            <button class="classic-button" onclick="removeEquestrianCentre()">remove</button>
-        </div>
+        @if ((bool)ViewBag.IsOwner)
+        {
+            <div class="owner-buttons">
+                <button class="classic-button" onclick="editEquestrianCentre()">edit</button>
+                <button class="classic-button" onclick="removeEquestrianCentre()">remove</button>
+            </div>
+        }
     </div>
 
     <div class="frames-storage" style="margin-bottom: 50px">

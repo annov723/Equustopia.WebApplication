@@ -12,7 +12,7 @@
                 <input type="text" id="horseName" name="name" class="form-control" placeholder="name" required/>
             </div>
             <div class="form-group">
-                <label for="breed">equestrian centre</label>
+                <label for="equestrianCentreSelect">equestrian centre</label>
                 <select id="equestrianCentreSelect" name="equestrianCentre" class="form-control">
                     <option value="" disabled selected>choose a centre</option>
                 </select>
@@ -34,8 +34,8 @@
         <div class="photo-content">
             <p class="form-title">upload horse photo</p>
             <img src="~/resources/icons/horse-icon.svg" class="horse-icon" alt="horse icon" />
-            <input type="file" id="photo" name="photo" accept="image/*" style="display: none" />
-            <button class="upload-photo-button" onclick="document.getElementById('photo').click()">upload photo</button>
+            <input type="file" id="horsePhoto" name="photo" accept="image/*" style="display: none" />
+            <button class="upload-photo-button" onclick="document.getElementById('horsePhoto').click()">upload photo</button>
             <span class="close" onclick="closeAddHorseView()">&times;</span>
         </div>
     </div>

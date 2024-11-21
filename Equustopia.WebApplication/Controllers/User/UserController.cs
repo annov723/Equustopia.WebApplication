@@ -59,8 +59,13 @@
         }
        
         [HttpPost]
-        public async Task<IActionResult> AddHorse([FromBody] AddHorseRequest addHorseRequest)
+        public async Task<IActionResult> AddHorse([FromBody] AddHorseRequest? addHorseRequest)
         {
+            if (addHorseRequest == null)
+            {
+                return Json(new { success = false, message = "An error occurred while creating a new horse.", constraintName = "" });
+            }
+            
             if (string.IsNullOrEmpty(addHorseRequest.Name))
             {
                 return Json(new { success = false, message = "Name cannot be empty.", constraintName = "" });
@@ -72,7 +77,8 @@
                 return Json(new { success = false, message = "Owner does not exist.", constraintName = "" });
             }
 
-            var centre = _context.EquestrianCentres.FirstOrDefault(c => c.id == addHorseRequest.EquestrianCentreId);
+            EquestrianCentre? centre;
+            centre = addHorseRequest.EquestrianCentreId == null ? null : _context.EquestrianCentres.FirstOrDefault(c => c.id == addHorseRequest.EquestrianCentreId);
             
             var horse = new Horse
             {

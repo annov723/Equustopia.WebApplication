@@ -16,13 +16,15 @@
         // GET: /EquestrianCentre/Details/{id}
         public IActionResult Details(int id)
         {
-            var stable = _context.EquestrianCentres.Include(h => h.UserData).Include(h => h.Horses).FirstOrDefault(s => s.id == id);
-            if (stable == null)
+            var centre = _context.EquestrianCentres.Include(h => h.UserData).Include(h => h.Horses).FirstOrDefault(s => s.id == id);
+            if (centre == null)
             {
                 return NotFound("Equestrian centre not found");
             }
+            var isOwner = HttpContext.Session.GetInt32("UserId") != null && centre.userId == HttpContext.Session.GetInt32("UserId");
+            ViewBag.IsOwner = isOwner;
 
-            return View(stable);
+            return View(centre);
         }
     }
 }

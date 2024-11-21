@@ -3,13 +3,17 @@
     const birthDateValue = document.getElementById("birthDate").value;
     const birthDate = birthDateValue ? new Date(birthDateValue).toISOString() : null;
     const centre = document.getElementById("equestrianCentreSelect").value;
+    let centreId = parseInt(centre, 10);
+    if (!isNaN(centreId)){
+        centreId =  null;
+    }
 
     fetch("/User/AddHorse", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ Name: name, BirthDate: birthDate, EquestrianCentreId: centre })
+        body: JSON.stringify({ Name: name, BirthDate: birthDate, EquestrianCentreId: centreId })
     })
         .then(response => response.json())
         .then(data => {
@@ -34,26 +38,9 @@
         .catch(error => console.error("Error adding horse:", error));
 }
 
-function populateStableDropdown() {
-    fetch("/User/GetEquestrianCentres")
-        .then(response => response.json())
-        .then(data => {
-            const stableSelect = document.getElementById("equestrianCentreSelect");
-            stableSelect.innerHTML = '<option value="" disabled selected>choose a centre</option>'; // Reset options
-
-            data.forEach(stable => {
-                const option = document.createElement("option");
-                option.value = stable.id;
-                option.textContent = stable.name;
-                stableSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error("Error fetching stables:", error));
-}
-
 function openAddHorseView(){
     closeAllModals();
-    populateStableDropdown();
+    populateCentreDropdown("equestrianCentreSelect");
     document.getElementById("addHorseModal").style.display = "block";
 }
 
