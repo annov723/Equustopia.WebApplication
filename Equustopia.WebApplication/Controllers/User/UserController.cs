@@ -59,7 +59,7 @@
         }
        
         [HttpPost]
-        public async Task<IActionResult> AddHorse([FromBody] AddHorseRequest? addHorseRequest)
+        public async Task<IActionResult> AddHorse([FromBody] HorseRequest? addHorseRequest)
         {
             if (addHorseRequest == null)
             {

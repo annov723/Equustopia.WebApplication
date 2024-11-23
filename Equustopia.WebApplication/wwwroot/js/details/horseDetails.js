@@ -14,36 +14,44 @@ function closeEditHorseView(){
     document.getElementById("editHorseError").textContent = "";
 }
 
-function editHorse() {
-    const horseId = document.getElementById("editHorseId").value;
-    const horseName = document.getElementById("editHorseName").value;
-    const equestrianCentreId = document.getElementById("editEquestrianCentreSelect").value;
-    const birthDate = document.getElementById("editBirthDate").value;
+function editHorse(id) {
+    const name = document.getElementById("editHorseName").value;
+    const birthDateValue = document.getElementById("editBirthDate").value;
+    const birthDate = birthDateValue ? new Date(birthDateValue).toISOString() : null;
+    const centre = document.getElementById("editEquestrianCentreSelect").value;
+    let centreId = parseInt(centre, 10);
+    if (Number.isNaN(centreId) || centreId === -1){
+        centreId =  null;
+    }
 
-    const horseData = {
-        id: horseId,
-        name: horseName,
-        centreId: equestrianCentreId,
-        birthDate: birthDate
-    };
-
-    fetch(`/Horse/Edit/${horseId}`, {
+    fetch(`/Horse/Edit`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(horseData)
+        body: JSON.stringify({ Id: id, Name: name, BirthDate: birthDate, EquestrianCentreId: centreId })
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert("Horse details updated successfully.");
-                window.location.href = `/Horse/Details/${horseId}`;  // Redirect after success
+                document.getElementById("editHorseModal").style.display = "none";
+                window.location.reload(true);
             } else {
-                alert("Error updating horse details.");
+                if(data.message === ""){
+                    switch (data.constraintName){
+                        case horseNameConstraint:
+                            document.getElementById("addHorseError").textContent = "Name must be between 2 and 50 characters.";
+                            document.getElementById("horseName").value = "";
+                            break;
+                        default:
+                            document.getElementById("addHorseError").textContent = "An error occurred while creating a new horse.";
+                    }
+                    return;
+                }
+                document.getElementById("addHorseError").textContent = data.message;
             }
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => console.error("Error editing horse:", error));
 }
 
 function openRemoveHorseView() {

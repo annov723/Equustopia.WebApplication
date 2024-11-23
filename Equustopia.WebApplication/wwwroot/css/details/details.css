@@ -70,7 +70,7 @@
     color: var(--white-color);
 }
 
-.owner, .owner:hover, .owner:visited, .owner:active{
+.owner, .owner:hover, .owner:visited, .owner:active, .home, .home:hover, .home:visited, .home:active{
     font-size: 22px;
     margin-top: 10px;
     font-weight: bold;

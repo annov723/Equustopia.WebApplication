@@ -3,6 +3,7 @@
     using Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Models.Requests;
 
     public class HorseController : Controller
     {
@@ -16,7 +17,7 @@
         // GET: /Horse/Details/{id}
         public IActionResult Details(int id)
         {
-            var horse = _context.Horses.Include(h => h.UserData).FirstOrDefault(h => h.id == id);
+            var horse = _context.Horses.Include(h => h.UserData).Include(h => h.EquestrianCentre).FirstOrDefault(h => h.id == id);
             if (horse == null)
             {
                 return NotFound("Horse not found");
@@ -29,17 +30,33 @@
         }
         
         // POST: /Horse/Edit/{id}
-        public IActionResult EditHorse(int id)
+        [HttpPost]
+        public async Task<IActionResult> Edit([FromBody] HorseRequest? horseData)
         {
-            var horse = _context.Horses.Include(h => h.UserData).FirstOrDefault(h => h.id == id);
-            if (horse == null)
+            if (horseData == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Horse data is missing." });
             }
 
-            // TO DO!!!
+            var horse = await _context.Horses.FirstOrDefaultAsync(h => h.id == horseData.Id);
+            if (horse == null)
+            {
+                return Json(new { success = false, message = "Horse not found." });
+            }
 
-            return View(horse);
+            horse.name = horseData.Name;
+            horse.birthDate = horseData.BirthDate;
+            horse.centreId = horseData.EquestrianCentreId;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while updating the horse.", exception = ex.Message });
+            }
         }
     }
 }

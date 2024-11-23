@@ -16,7 +16,7 @@
             <div class="form-group">
                 <label for="editEquestrianCentreSelect">equestrian centre</label>
                 <select id="editEquestrianCentreSelect" name="equestrianCentre" class="form-control">
-                    <option value="" disabled selected>choose a centre</option>
+                    <option value="-1">choose a centre</option>
                 </select>
             </div>
             <div class="form-group">
@@ -30,7 +30,7 @@
         
             <span id="editHorseError" class="add-horse-error"></span>
         
-            <button type="submit" class="btn btn-primary" onclick="editHorse()">edit horse</button>
+            <button type="submit" class="btn btn-primary" onclick="editHorse(@Model.id)">edit horse</button>
         </div>
         
         <div class="photo-content">

@@ -1,7 +1,8 @@
 ﻿namespace Equustopia.WebApplication.Models.Requests
 {
-    public class AddHorseRequest
+    public class HorseRequest
     {
+        public int? Id { get; set; } = null;
         public string Name { get; set; }
         //public string Breed { get; set; }
         public DateTime? BirthDate { get; set; } = null;

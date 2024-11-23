@@ -4,7 +4,7 @@
     const birthDate = birthDateValue ? new Date(birthDateValue).toISOString() : null;
     const centre = document.getElementById("equestrianCentreSelect").value;
     let centreId = parseInt(centre, 10);
-    if (!isNaN(centreId)){
+    if (Number.isNaN(centreId) || centreId === -1){
         centreId =  null;
     }
 

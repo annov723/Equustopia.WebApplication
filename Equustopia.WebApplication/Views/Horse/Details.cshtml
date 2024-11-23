@@ -20,6 +20,7 @@
                 <span class="user-name">@Model.name</span>
                 <span class="birth-date">@Model.birthDate?.ToString("dd/MM/yyyy")</span>
                 <a class="owner" href="~/User/Details/@Model.UserData.id">@Model.UserData.name</a>
+                <a class="home" href="~/EquestrianCentre/Details/@Model.EquestrianCentre?.id">@Model.EquestrianCentre?.name</a>
             </div>
         </div>
         
