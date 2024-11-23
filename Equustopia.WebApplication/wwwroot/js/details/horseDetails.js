@@ -55,9 +55,13 @@ function editHorse(id) {
 }
 
 function openRemoveHorseView() {
-    
+    document.getElementById("removeHorseModal").style.display = "block";
 }
 
-function removeHorse() {
+function removeHorse(id) {
 
+}
+
+function closeRemoveHorseView(){
+    document.getElementById("removeHorseModal").style.display = "none";
 }

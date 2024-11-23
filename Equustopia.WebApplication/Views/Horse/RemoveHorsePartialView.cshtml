@@ -1,0 +1,17 @@
+﻿@model Equustopia.WebApplication.Models.Main.Horse
+
+<head>
+    <link rel="stylesheet" href="~/css/horse/horse-partial-view.css" />
+</head>
+
+<div id="removeHorseModal" class="modal" style="display: none;">
+    <div class="remove-content">
+        <p class="form-title">remove horse</p>
+        <p>Are you sure you want to remove @Model.name?</p>
+        <button class="classic-button" onclick="closeRemoveHorseView()">cancel</button>
+        <button class="classic-button" onclick="removeHorse(@Model.id)">remove</button>
+    </div>
+</div>
+
+
+<script src="~/js/details/horseDetails.js"></script>
