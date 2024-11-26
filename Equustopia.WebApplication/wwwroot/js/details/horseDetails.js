@@ -34,34 +34,55 @@ function editHorse(id) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                document.getElementById("editHorseModal").style.display = "none";
+                closeEditHorseView();
                 window.location.reload(true);
             } else {
                 if(data.message === ""){
                     switch (data.constraintName){
                         case horseNameConstraint:
-                            document.getElementById("addHorseError").textContent = "Name must be between 2 and 50 characters.";
+                            document.getElementById("editHorseError").textContent = "Name must be between 2 and 50 characters.";
                             document.getElementById("horseName").value = "";
                             break;
                         default:
-                            document.getElementById("addHorseError").textContent = "An error occurred while creating a new horse.";
+                            document.getElementById("editHorseError").textContent = "An error occurred while creating a new horse.";
                     }
                     return;
                 }
-                document.getElementById("addHorseError").textContent = data.message;
+                document.getElementById("editHorseError").textContent = data.message;
             }
         })
         .catch(error => console.error("Error editing horse:", error));
 }
 
+
+
 function openRemoveHorseView() {
     document.getElementById("removeHorseModal").style.display = "block";
 }
 
-function removeHorse(id) {
-
-}
-
 function closeRemoveHorseView(){
     document.getElementById("removeHorseModal").style.display = "none";
+    document.getElementById("removeHorseError").textContent = "";
 }
+
+function removeHorse(id) {
+    fetch(`/Horse/Remove`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = `/User/UserMainPage`;
+                closeRemoveHorseView();
+            } else {
+                document.getElementById("removeHorseError").textContent = "An error occurred while removing a horse.";
+            }
+        })
+        .catch(error => console.error("Error removing horse:", error));
+}
+
+const horseNameConstraint = "chk_name_length";

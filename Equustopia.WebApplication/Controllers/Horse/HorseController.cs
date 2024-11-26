@@ -4,6 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Models.Requests;
+    using Npgsql;
 
     public class HorseController : Controller
     {
@@ -53,10 +54,36 @@
                 await _context.SaveChangesAsync();
                 return Json(new { success = true });
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return Json(new { success = false, message = "An error occurred while updating the horse.", exception = ex.Message });
+                if(e.InnerException is PostgresException postgresException)
+                {
+                    return Json(new { success = false, message = "", constraintName = postgresException.ConstraintName });
+                }
+                return Json(new { success = false, message = "An error occurred while updating the horse. " + e.Message });
             }
+        }
+        
+        // POST: /Horse/Remove/{id}
+        [HttpPost]
+        public IActionResult Remove([FromBody] HorseRequest? request)
+        {
+            if (request == null || request.Id <= 0)
+            {
+                return Json(new { success = false, message = "Invalid horse id." });
+            }
+
+            var horse = _context.Horses.FirstOrDefault(h => h.id == request.Id);
+
+            if (horse == null)
+            {
+                return Json(new { success = false, message = "Horse not found." });
+            }
+            
+            _context.Horses.Remove(horse);
+            _context.SaveChanges();
+
+            return Json(new { success = true });
         }
     }
 }

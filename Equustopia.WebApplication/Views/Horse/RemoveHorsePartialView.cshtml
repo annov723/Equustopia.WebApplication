@@ -2,16 +2,20 @@
 
 <head>
     <link rel="stylesheet" href="~/css/horse/horse-partial-view.css" />
+    <link rel="stylesheet" href="~/css/buttons.css" />
 </head>
 
 <div id="removeHorseModal" class="modal" style="display: none;">
     <div class="remove-content">
         <p class="form-title">remove horse</p>
         <p>Are you sure you want to remove @Model.name?</p>
-        <button class="classic-button" onclick="closeRemoveHorseView()">cancel</button>
-        <button class="classic-button" onclick="removeHorse(@Model.id)">remove</button>
+        <span id="removeHorseError" class="horse-error"></span>
+        
+        <div class="remove-buttons-div">
+            <button class="border-button-green" onclick="closeRemoveHorseView()">cancel</button>
+            <button class="classic-button" onclick="removeHorse(@Model.id)">remove</button>
+        </div>
     </div>
 </div>
-
 
 <script src="~/js/details/horseDetails.js"></script>

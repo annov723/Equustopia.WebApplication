@@ -12,15 +12,16 @@
     width: 100%;
 }
 
-.brown-rectangle {
+.details-green-rectangle {
     background-color: var(--green-color-semitransparent-50);
     width: 100%;
     height: 200px;
     box-shadow: 0 17px 15px rgba(0, 0, 0, 0.25);
     position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0 35px 10px 35px;
 }
 
 .details-info{
@@ -30,6 +31,7 @@
     position: relative;
     height: 100%;
     width: 100%;
+    padding-left: 10px;
 }
 
 .user-icon {
@@ -84,16 +86,6 @@
     justify-content: left;
     display: flex;
     align-items: center;
-}
-
-.position-div{
-    justify-content: space-between;
-    width: 100%;
-    padding: 50px 25px 50px 50px;
-    display: flex;
-    flex-direction: row;
-    position: relative;
-    margin-top: -60px;
 }
 
 .owner-buttons .classic-button{

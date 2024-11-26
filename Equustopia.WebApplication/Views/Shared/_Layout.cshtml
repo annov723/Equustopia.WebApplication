@@ -36,7 +36,7 @@
         @if (string.IsNullOrEmpty(HttpContextAccessor.HttpContext?.Session.GetString("LoggedUser")))
         {
             <button id="logInButton" class="classic-button" onclick="openLogInModal()">log in</button>
-            <button id="signUpButton" class="border-button" style="margin-right: 0" onclick="openSignUpModal()">sign up</button>
+            <button id="signUpButton" class="border-button-blue" style="margin-right: 0" onclick="openSignUpModal()">sign up</button>
         }
         else
         {

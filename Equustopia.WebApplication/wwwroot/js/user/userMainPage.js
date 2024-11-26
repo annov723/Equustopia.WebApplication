@@ -104,6 +104,36 @@ function closeAddEquestrianCentreView(){
 }
 
 
+function openRemoveUserView() {
+    document.getElementById("removeUserModal").style.display = "block";
+}
+
+function removeUser(id) {
+    fetch(`/User/Remove`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ Id: id })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = `/`;
+                closeRemoveHorseView();
+            } else {
+                document.getElementById("removeUserError").textContent = "An error occurred while removing your user profile. " + data.message;
+            }
+        })
+        .catch(error => console.error("Error removing user profile:", error));
+}
+
+function closeRemoveUserView(){
+    document.getElementById("removeUserModal").style.display = "none";
+    document.getElementById("removeUserError").textContent = "";
+}
+
+
 
 const horseNameConstraint = "chk_name_length";
 const centreNameConstraint = "chk_name_length";

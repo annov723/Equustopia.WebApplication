@@ -1,0 +1,21 @@
+﻿@model Equustopia.WebApplication.Models.Main.EquestrianCentre
+
+<head>
+    <link rel="stylesheet" href="~/css/equestrianCentre/equestrian-centre-partial-view.css" />
+    <link rel="stylesheet" href="~/css/buttons.css" />
+</head>
+
+<div id="removeCentreModal" class="modal" style="display: none;">
+    <div class="remove-content">
+        <p class="form-title">remove horse</p>
+        <p>Are you sure you want to remove @Model.name?</p>
+        <span id="removeCentreError" class="centre-error"></span>
+        
+        <div class="remove-buttons-div">
+            <button class="border-button-green" onclick="closeRemoveCentreView()">cancel</button>
+            <button class="classic-button" onclick="removeEquestrianCentre(@Model.id)">remove</button>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/details/equestrianCentreDetails.js"></script>

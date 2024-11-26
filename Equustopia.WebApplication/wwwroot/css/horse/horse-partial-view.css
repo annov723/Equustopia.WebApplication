@@ -24,6 +24,7 @@
     height: 500px;
     position: relative;
     border-radius: 15px;
+    box-shadow: 0 17px 15px rgba(0, 0, 0, 0.25);
 }
 
 .form-content{
@@ -116,7 +117,7 @@
     color: var(--white-color-semitransparent-75);
 }
 
-button[type="submit"] {
+.edit-button {
     height: 40px;
     border-radius: 8px;
     cursor: pointer;
@@ -128,12 +129,12 @@ button[type="submit"] {
     border: none;
 }
 
-button[type="submit"]:hover {
+.edit-button:hover {
     background-color: var(--hover-blue-color);
     transform: translateY(-2px);
 }
 
-.add-horse-error{
+.horse-error{
     color: white;
     font-size: 14px;
     margin-top: 10px;
@@ -162,4 +163,28 @@ button[type="submit"]:hover {
 .upload-photo-button:hover {
     background-color: var(--hover-blue-color);
     transform: translateY(-2px);
+}
+
+.remove-content{
+    background-color: var(--green-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    margin-left: calc(50% - 350px);
+    border: none;
+    width: 700px;
+    height: 200px;
+    position: relative;
+    border-radius: 15px;
+    box-shadow: 0 17px 15px rgba(0, 0, 0, 0.25);
+}
+
+.remove-buttons-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }

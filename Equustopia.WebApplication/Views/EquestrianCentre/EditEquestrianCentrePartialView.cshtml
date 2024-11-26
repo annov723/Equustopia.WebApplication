@@ -11,20 +11,20 @@
 
             <div class="form-group">
                 <label for="editCentreName">centre name</label>
-                <input type="text" id="editCentreName" name="name" class="form-control" placeholder="name" required/>
+                <input type="text" id="editCentreName" name="name" class="form-control" placeholder="name" data-default-value="@Model.name" value="@Model.name" required/>
             </div>
             <div class="form-group">
                 <label for="editAddress">address</label>
-                <input type="text" id="editAddress" name="address" class="form-control" placeholder="address" required/>
+                <input type="text" id="editAddress" name="address" class="form-control" placeholder="address" data-default-value="@Model.address" value="@Model.address" required/>
             </div>
             <div class="form-group">
                 <label>owner</label>
                 <input type="text" name="owner" class="form-control-readonly" value="@Model.UserData.name" readonly/>
             </div>
 
-            <span id="editCentreError" class="add-centre-error"></span>
+            <span id="editCentreError" class="centre-error"></span>
 
-            <button type="submit" class="btn btn-primary" onclick="addNewEquestrianCentre()">edit centre</button>
+            <button type="submit" class="edit-button" onclick="editEquestrianCentre(@Model.id)">edit centre</button>
         </div>
 
         <div class="photo-content">
@@ -32,7 +32,7 @@
             <img src="~/resources/icons/centre-icon.svg" class="centre-icon" alt="centre icon" />
             <input type="file" id="editCentrePhoto" name="photo" accept="image/*" style="display: none" />
             <button class="upload-photo-button" onclick="document.getElementById('editCentrePhoto').click()">upload photo</button>
-            <span class="close" onclick="closeAddEquestrianCentreView()">&times;</span>
+            <span class="close" onclick="closeEditCentreView()">&times;</span>
         </div>
     </div>
 </div>
