@@ -1,0 +1,21 @@
+﻿@model Equustopia.WebApplication.ViewModels.UserViewModel
+
+<head>
+    <link rel="stylesheet" href="~/css/user/user-main-page.css" />
+    <link rel="stylesheet" href="~/css/buttons.css" />
+</head>
+
+<div id="removeUserModal" class="modal" style="display: none;">
+    <div class="user-remove-content">
+        <p class="form-title">remove user profile</p>
+        <p>Are you sure you want to remove your profile @Model.Name?</p>
+        <span id="removeUserError" class="user-error"></span>
+        
+        <div class="user-remove-buttons-div">
+            <button class="border-button-green" onclick="closeRemoveUserView()">cancel</button>
+            <button class="classic-button" onclick="removeUser(@Model.Id)">remove</button>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/user/userMainPage.js"></script>

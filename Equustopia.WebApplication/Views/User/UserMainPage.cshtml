@@ -7,13 +7,16 @@
 
 <head>
     <link rel="stylesheet" href="~/css/user/user-main-page.css" />
+    <link rel="stylesheet" href="~/css/frames-storage.css" />
 </head>
 
 <div class="user-main-container">
-    <div class="brown-rectangle"></div>
-    <img src="~/resources/icons/profile-picture-icon.svg" class="user-icon" alt="user profile icon" />
+    <div class="green-rectangle">
+        <button class="border-button-green" onclick="openRemoveUserView()">remove</button>
+    </div>
+    <img src="~/resources/icons/profile-picture-icon.svg" class="user-icon" alt="user profile icon"/>
     <span class="user-name">@Model.Name</span>
-    
+
     <div class="frames-storage" style="margin-bottom: 50px">
         <span class="left-aligned-text">My horses</span>
         <div id="my-horses" class="items-frame">
@@ -31,19 +34,31 @@
                 <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
             </button>
         </div>
-        
+
         <span class="left-aligned-text">My riding centres</span>
         <div id="my-centres" class="items-frame">
-            <button id="new-centre-button" class="element-button" onclick="addNewCentre()">
+            @foreach (var centre in Model.EquestrianCentres)
+            {
+                <button class="element-button" onclick="viewCentreDetails(@centre.id)">
+                    <img src="" class="horse-photo" alt="centre photo"/>
+                    <span class="horse-name">@centre.name
+                        <p class="horse-date">@centre.address</p>
+                    </span>
+                </button>
+            }
+            <button id="new-centre-button" class="element-button" onclick="openAddEquestrianCentreView()">
                 <span class="new-element-text">add new <br/> riding centre</span>
                 <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
             </button>
         </div>
     </div>
-    
-    
+
+
 </div>
 
 <script src="~/js/user/userMainPage.js"></script>
+<script src="~/js/shared.js"></script>
 
 @await Html.PartialAsync("../User/AddNewHorsePartialView")
+@await Html.PartialAsync("../User/AddNewEquestrianCentrePartialView")
+@await Html.PartialAsync("../User/RemoveUserPartialView")

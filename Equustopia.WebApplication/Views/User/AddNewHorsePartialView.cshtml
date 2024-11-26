@@ -1,5 +1,5 @@
 ﻿<head>
-    <link rel="stylesheet" href="~/css/user/add-new-horse-partial-view.css" />
+    <link rel="stylesheet" href="~/css/horse/horse-partial-view.css" />
 </head>
 
 <div id="addHorseModal" class="modal" style="display: none;">
@@ -8,36 +8,38 @@
             <p class="form-title">add new horse</p>
 
             <div class="form-group">
-                <label for="name">horse name</label>
-                <input type="text" id="name" name="name" class="form-control" placeholder="name" required/>
+                <label for="horseName">horse name</label>
+                <input type="text" id="horseName" name="name" class="form-control" placeholder="name" required/>
             </div>
-            @* <div class="form-group"> *@
-            @*     <label for="breed">Breed</label> *@
-            @*     <input type="text" id="breed" name="breed" class="form-control" required /> *@
-            @* </div> *@
+            <div class="form-group">
+                <label for="equestrianCentreSelect">equestrian centre</label>
+                <select id="equestrianCentreSelect" name="equestrianCentre" class="form-control">
+                    <option value="-1">choose a centre</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label for="birthDate">birth date</label>
                 <input type="date" id="birthDate" name="birthDate" class="form-control" required/>
             </div>
             <div class="form-group">
-                <label for="owner">owner</label>
-                <input type="text" id="owner" name="owner" class="form-control-readonly" value=@Model.Name readonly/>
+                <label for="horseOwner">owner</label>
+                <input type="text" id="horseOwner" name="owner" class="form-control-readonly" value=@Model.Name readonly/>
             </div>
 
-            <span id="addHorseError" class="add-horse-error"></span>
+            <span id="addHorseError" class="horse-error"></span>
 
-            <button type="submit" class="btn btn-primary" onclick="addNewHorse()">add horse</button>
+            <button type="submit" class="edit-button" onclick="addNewHorse()">add horse</button>
         </div>
         
         <div class="photo-content">
             <p class="form-title">upload horse photo</p>
             <img src="~/resources/icons/horse-icon.svg" class="horse-icon" alt="horse icon" />
-            <input type="file" id="photo" name="photo" accept="image/*" style="display: none" />
-            <button class="upload-photo-button" onclick="document.getElementById('photo').click()">upload photo</button>
+            <input type="file" id="horsePhoto" name="photo" accept="image/*" style="display: none" />
+            <button class="upload-photo-button" onclick="document.getElementById('horsePhoto').click()">upload photo</button>
             <span class="close" onclick="closeAddHorseView()">&times;</span>
         </div>
-        
-
     </div>
 </div>
+
+<script src="~/js/user/userMainPage.js"></script>
 

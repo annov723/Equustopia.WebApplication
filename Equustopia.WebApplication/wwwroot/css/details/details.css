@@ -1,0 +1,93 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+.main-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.details-green-rectangle {
+    background-color: var(--green-color-semitransparent-50);
+    width: 100%;
+    height: 200px;
+    box-shadow: 0 17px 15px rgba(0, 0, 0, 0.25);
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0 35px 10px 35px;
+}
+
+.details-info{
+    z-index: 900;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding-left: 10px;
+}
+
+.user-icon {
+    width: 250px;
+    min-width: 40px;
+    height: 250px;
+    min-height: 40px;
+    object-fit: cover;
+    margin-top: -150px;
+    z-index: 900;
+}
+
+.text-info{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+    width: 500px;
+    margin-left: -100px;
+    padding: 20px 20px 20px 100px;
+    margin-top: -80px;
+    background-color: var(--blue-color);
+    border-radius: 15px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+}
+
+.user-name{
+    font-family: 'Alegreya Sans SC', sans-serif;
+    font-size: 40px;
+    font-weight: bold;
+    color: var(--white-color);
+}
+
+.birth-date{
+    font-size: 22px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--white-color);
+}
+
+.owner, .owner:hover, .owner:visited, .owner:active, .home, .home:hover, .home:visited, .home:active{
+    font-size: 22px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--white-color);
+    text-decoration: none;
+}
+
+.owner-buttons{
+    flex-direction: row;
+    margin-top: -150px;
+    justify-content: left;
+    display: flex;
+    align-items: center;
+}
+
+.owner-buttons .classic-button{
+    margin: 0 10px 0 10px;
+}

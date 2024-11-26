@@ -1,0 +1,47 @@
+﻿@model Equustopia.WebApplication.Models.Main.Horse
+
+<head>
+    <link rel="stylesheet" href="~/css/horse/horse-partial-view.css" />
+</head>
+
+<div id="editHorseModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="form-content">
+            <p class="form-title">edit horse</p>
+
+            <div class="form-group">
+                <label for="editHorseName">horse name</label>
+                <input type="text" id="editHorseName" name="name" class="form-control" placeholder="name" data-default-value="@Model.name" value="@Model.name" required/>
+            </div>
+            <div class="form-group">
+                <label for="editEquestrianCentreSelect">equestrian centre</label>
+                <select id="editEquestrianCentreSelect" name="equestrianCentre" class="form-control">
+                    <option value="-1">choose a centre</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editBirthDate">birth date</label>
+                <input type="date" id="editBirthDate" name="birthDate" class="form-control" data-default-value="@Model.birthDate?.ToString("yyyy-MM-dd")" value="@Model.birthDate?.ToString("yyyy-MM-dd")" required/>
+            </div>
+            <div class="form-group">
+                <label>owner</label>
+                <input type="text" name="owner" class="form-control-readonly" value="@Model.UserData.name" readonly/>
+            </div>
+        
+            <span id="editHorseError" class="horse-error"></span>
+        
+            <button type="submit" class="edit-button" onclick="editHorse(@Model.id)">edit horse</button>
+        </div>
+        
+        <div class="photo-content">
+            <p class="form-title">upload horse photo</p>
+            <img src="~/resources/icons/horse-icon.svg" class="horse-icon" alt="horse icon" />
+            <input type="file" id="editHorsePhoto" name="photo" accept="image/*" style="display: none" />
+            <button class="upload-photo-button" onclick="document.getElementById('editHorsePhoto').click()">upload photo</button>
+            <span class="close" onclick="closeEditHorseView()">&times;</span>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/details/horseDetails.js"></script>
+
