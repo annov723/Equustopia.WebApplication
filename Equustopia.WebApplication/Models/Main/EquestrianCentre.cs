@@ -25,7 +25,7 @@
         public string? address { get; set; }
         
         public required UserData UserData { get; set; }
-        public ICollection<Horse> Horses { get; set; }
+        public ICollection<Horse>? Horses { get; set; }
         
         
     }

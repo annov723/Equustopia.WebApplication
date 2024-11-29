@@ -5,18 +5,21 @@
     using Microsoft.EntityFrameworkCore;
     using Models.Requests;
     using Npgsql;
+    using Services;
 
     public class HorseController : Controller
     {
+        private readonly PageViewLoggerService _pageViewLogger;
         private readonly AppDbContext _context;
 
-        public HorseController(AppDbContext context)
+        public HorseController(AppDbContext context, PageViewLoggerService pageViewLogger)
         {
             _context = context;
+            _pageViewLogger = pageViewLogger;
         }
         
         // GET: /Horse/Details/{id}
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var horse = _context.Horses.Include(h => h.UserData).Include(h => h.EquestrianCentre).FirstOrDefault(h => h.id == id);
             if (horse == null)
@@ -24,8 +27,15 @@
                 return NotFound("Horse not found");
             }
             
-            var isOwner = HttpContext.Session.GetInt32("UserId") != null && horse.userId == HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId") ?? null;
+            var isOwner = userId != null && horse.userId == userId;
             ViewBag.IsOwner = isOwner;
+
+            if (!isOwner)
+            {
+                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                await _pageViewLogger.LogPageViewAsync(userId, "horse", id, ipAddress);
+            }
 
             return View(horse);
         }

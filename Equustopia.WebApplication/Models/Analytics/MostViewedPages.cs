@@ -1,13 +1,16 @@
-﻿namespace Equustopia.WebApplication.Models
+﻿namespace Equustopia.WebApplication.Models.Analytics
 {
+    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("NajczesciejWyswietlaneStrony", Schema = "analytics")]
+    [Table("mostViewedPages", Schema = "analytics")]
     public class MostViewedPages
     {
+        [Key]
         public int pageId { get; set; }
     
-        [Column(TypeName = "varchar(50)")]
+        [Required]
+        [StringLength(2, MinimumLength = 50, ErrorMessage = "PageType must be between 2 and 50 characters.")]
         public string pageType { get; set; }
     
         public int viewsCount { get; set; }
