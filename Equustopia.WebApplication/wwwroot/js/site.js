@@ -124,7 +124,7 @@ function displayEmpty(){
     resultsContainer.innerHTML = "";
     const item = document.createElement("div");
     item.classList.add("search-result-item");
-    const elem = document.createElement("p");
+    const elem = document.createElement("a");
     elem.textContent = `No results found.`;
     item.appendChild(elem);
     resultsContainer.appendChild(item);

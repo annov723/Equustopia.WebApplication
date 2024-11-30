@@ -26,8 +26,8 @@
             @foreach (var horse in Model.Horses)
             {
                 <button class="element-button" onclick="viewHorseDetails(@horse.id)">
-                    <img src="" class="horse-photo" alt="horse photo"/>
-                    <span class="horse-name">@horse.name
+                    <img src="" class="item-photo" alt="horse photo"/>
+                    <span class="item-name">@horse.name
                         <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
                     </span>
                 </button>
@@ -39,8 +39,8 @@
             @foreach (var centre in Model.EquestrianCentres)
             {
                 <button class="element-button" onclick="viewCentreDetails(@centre.id)">
-                    <img src="" class="horse-photo" alt="centre photo"/>
-                    <span class="horse-name">@centre.name
+                    <img src="" class="item-photo" alt="centre photo"/>
+                    <span class="item-name">@centre.name
                         <p class="horse-date">@centre.address</p>
                     </span>
                 </button>

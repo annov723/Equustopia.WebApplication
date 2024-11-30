@@ -192,7 +192,7 @@
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "An error occurred while removing the user." });
+                return Json(new { success = false, message = "An error occurred while removing the user. " + ex });
             }
         }
     }

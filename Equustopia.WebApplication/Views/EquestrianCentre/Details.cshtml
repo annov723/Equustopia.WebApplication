@@ -34,11 +34,11 @@
     <div class="frames-storage" style="margin-bottom: 50px">
         <span class="left-aligned-text">My horses</span>
         <div id="my-horses" class="items-frame">
-            @foreach (var horse in Model.Horses)
+            @foreach (var horse in Model.Horses!)
             {
                 <button class="element-button" onclick="viewHorseDetails(@horse.id)">
-                    <img src="" class="horse-photo" alt="horse photo"/>
-                    <span class="horse-name">@horse.name
+                    <img src="" class="item-photo" alt="horse photo"/>
+                    <span class="item-name">@horse.name
                         <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
                     </span>
                 </button>

@@ -22,7 +22,7 @@
         <button id="sideMenuButton" class="side-menu-button">
             <img src="~/resources/icons/side-menu-semitransparent.svg" height="20" width="20" alt="side menu icon" />
         </button>
-        <a asp-controller="Home" asp-action="Index" class="site-title">Equustopia</a>
+        <a asp-controller="Index" asp-action="Index" class="site-title">Equustopia</a>
     </div>
     
     <div class="right-container">
@@ -50,7 +50,7 @@
 </header>
 
 <div id="sideMenu" class="side-menu">
-    <a asp-controller="Home" asp-action="Index">Home</a>
+    <a asp-controller="Index" asp-action="Index">Home</a>
     @if (!string.IsNullOrEmpty(HttpContextAccessor.HttpContext?.Session.GetString("LoggedUser")))
     {
         <a asp-controller="User" asp-action="UserMainPage">My profile</a>
