@@ -60,18 +60,6 @@ window.onblur = function() {
 };
 
 
-// hiding footer
-window.addEventListener('scroll', function () {
-    let footer = document.querySelector('.footer-content');
-
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-        footer.classList.add('show');
-    } else {
-        footer.classList.remove('show');
-    }
-});
-
-
 
 function handleSearch(event) {
     if (event.key === "Enter") {

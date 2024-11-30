@@ -30,25 +30,36 @@
             <a class="owner" href="~/User/Details/@Model.UserData.id">@Model.UserData.name</a>
         </div>
     </div>
-
+    
     <div class="frames-storage" style="margin-bottom: 50px">
-        <span class="left-aligned-text">My horses</span>
-        <div id="my-horses" class="items-frame">
-            @foreach (var horse in Model.Horses!)
-            {
-                <button class="element-button" onclick="viewHorseDetails(@horse.id)">
-                    <img src="" class="item-photo" alt="horse photo"/>
-                    <span class="item-name">@horse.name
-                        <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
-                    </span>
-                </button>
-            }
-        </div>
+        @if (Model.Horses is { Count: > 0 })
+        {
+            <span class="left-aligned-text">My horses</span>
+            <div id="my-horses" class="items-frame">
+                @foreach (var horse in Model.Horses)
+                {
+                    <button class="element-button" onclick="viewHorseDetails(@horse.id)">
+                        <img src="" class="item-photo" alt="horse photo"/>
+                        <span class="item-name">@horse.name
+                            <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
+                        </span>
+                    </button>
+                }
+            </div>
+        }
+
+        @if ((bool)ViewBag.IsOwner)
+        {
+            <div class="items-frame">
+                <canvas id="viewsBarChart" width="400" height="200"></canvas>
+            </div>
+        }
     </div>
 </div>
 
 <script src="~/js/shared.js"></script>
 <script src="~/js/details/equestrianCentreDetails.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 @await Html.PartialAsync("EditEquestrianCentrePartialView")
 @await Html.PartialAsync("RemoveEquestrianCentrePartialView")

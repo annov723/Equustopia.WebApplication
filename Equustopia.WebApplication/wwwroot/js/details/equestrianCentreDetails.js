@@ -82,5 +82,58 @@ function removeEquestrianCentre(id) {
         .catch(error => console.error("Error removing centre:", error));
 }
 
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const startDate = "2024-11-30"; // Start date
+    const endDate = "2024-12-31"; // End date
+    const centreId = 5; // Example: Equestrian Centre ID
+
+    fetch(`/EquestrianCentre/GetCentreViews?centreId=${centreId}&startDate=${startDate}&endDate=${endDate}`)
+        .then(response => response.json())
+        .then(data => {
+            // Extract the dates and view counts
+            const labels = data.map(item => item.date);
+            const views = data.map(item => item.views);
+
+            // Create the bar chart using Chart.js
+            const ctx = document.getElementById('viewsBarChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar', // Bar chart
+                data: {
+                    labels: labels, // X-axis (dates)
+                    datasets: [{
+                        label: 'Views per Day', // Label for the graph
+                        data: views, // Y-axis (view counts)
+                        backgroundColor: '#2895b5', // Bar color
+                        borderColor: '#1c6d8c', // Bar border color
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Number of Views'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error("Error fetching data:", error));
+});
+
+
+
 const centreNameConstraint = "chk_name_length";
 const centreAddressConstraint = "chk_address_length";

@@ -1,9 +1,8 @@
-﻿namespace Equustopia.WebApplication.Controllers.User
+﻿namespace Equustopia.WebApplication.Controllers
 {
     using Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-    using Models;
     using Models.Main;
     using Models.Requests;
     using Npgsql;
@@ -86,7 +85,7 @@
             EquestrianCentre? centre;
             centre = addHorseRequest.EquestrianCentreId == null ? null : _context.EquestrianCentres.FirstOrDefault(c => c.id == addHorseRequest.EquestrianCentreId);
             
-            var horse = new Horse
+            var horse = new Models.Main.Horse
             {
                 name = addHorseRequest.Name,
                 birthDate = addHorseRequest.BirthDate,

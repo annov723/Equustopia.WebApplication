@@ -29,3 +29,7 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.main-content, .main-info{
+  flex: 1;
+}

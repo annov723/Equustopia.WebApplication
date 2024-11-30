@@ -1,4 +1,4 @@
-﻿namespace Equustopia.WebApplication.Controllers.EquestrianCentre
+﻿namespace Equustopia.WebApplication.Controllers
 {
     using Data;
     using Microsoft.AspNetCore.Mvc;
@@ -21,7 +21,8 @@
         // GET: /EquestrianCentre/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
-            var centre = _context.EquestrianCentres.Include(h => h.UserData).Include(h => h.Horses).FirstOrDefault(s => s.id == id);
+            var centre = _context.EquestrianCentres.Include(h => h.UserData).
+                Include(h => h.Horses).FirstOrDefault(s => s.id == id);
             if (centre == null)
             {
                 return NotFound("Equestrian centre not found");
@@ -100,6 +101,26 @@
             _context.SaveChanges();
 
             return Json(new { success = true });
+        }
+        
+        public async Task<IActionResult> GetCentreViews(int centreId, DateTime startDate, DateTime endDate)
+        {
+            startDate = startDate.ToUniversalTime();
+            endDate = endDate.ToUniversalTime();
+            
+            var viewsData = await _context.PagesViews
+                .Where(pv => pv.pageType == "equestrianCentre" && pv.pageId == centreId
+                                                               && pv.timestamp >= startDate && pv.timestamp <= endDate)
+                .GroupBy(pv => pv.timestamp.Date)
+                .Select(g => new 
+                {
+                    Date = g.Key,
+                    Views = g.Count()
+                })
+                .OrderBy(g => g.Date)
+                .ToListAsync();
+
+            return Json(viewsData);
         }
     }
 }
