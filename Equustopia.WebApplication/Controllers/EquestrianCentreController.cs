@@ -109,8 +109,7 @@
             endDate = endDate.ToUniversalTime();
             
             var viewsData = await _context.PagesViews
-                .Where(pv => pv.pageType == "equestrianCentre" && pv.pageId == centreId
-                                                               && pv.timestamp >= startDate && pv.timestamp <= endDate)
+                .Where(pv => pv.pageType == "equestrianCentre" && pv.pageId == centreId && pv.timestamp >= startDate && pv.timestamp <= endDate)
                 .GroupBy(pv => pv.timestamp.Date)
                 .Select(g => new 
                 {

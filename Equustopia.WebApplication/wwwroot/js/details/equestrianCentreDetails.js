@@ -116,7 +116,7 @@ function generateChart(id){
 }
 
 function generateViewsChart(id, startDate, endDate){
-    fetch(`/EquestrianCentre/GetCentreViews?centreId=${id}&startDate=${startDate}&endDate=${endDate}`)
+    fetch(`/EquestrianCentre/GetCentreViews?centreId=${id}&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
         .then(response => response.json())
         .then(data => {
             const labels = data.map(item => item.date);
@@ -179,10 +179,13 @@ function generateHorseAgeChart(id){
         .then(data => {
             const ctx = document.getElementById('chartCanvas').getContext('2d');
 
-            // Destroy previous chart instance if exists
             if (window.myChart) {
                 window.myChart.destroy();
             }
+
+
+
+            console.log("Data:", data);
 
             window.myChart = new Chart(ctx, {
                 type: 'pie',
@@ -191,10 +194,10 @@ function generateHorseAgeChart(id){
                     datasets: [{
                         label: 'Horse Age Groups',
                         data: [
-                            data.AgeGroup_0_3,
-                            data.AgeGroup_3_10,
-                            data.AgeGroup_10_19,
-                            data.AgeGroup_19_Plus
+                            data.ageGroup_0_3,
+                            data.ageGroup_3_10,
+                            data.ageGroup_10_19,
+                            data.ageGroup_19_Plus
                         ],
                         backgroundColor: [
                             '#3cb3d7', '#f4b400', '#f15c24', '#6a737b'
