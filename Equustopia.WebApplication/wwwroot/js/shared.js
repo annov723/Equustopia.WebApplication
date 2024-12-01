@@ -26,11 +26,13 @@ function populateCentreDropdown(selectName) {
 document.addEventListener('DOMContentLoaded', () => {
     const itemsFrame = document.querySelector('.items-frame');
 
-    itemsFrame.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        itemsFrame.scrollBy({
-            left: e.deltaY < 0 ? -150 : 150,
-            behavior: 'smooth'
+    if(itemsFrame){
+        itemsFrame.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            itemsFrame.scrollBy({
+                left: e.deltaY < 0 ? -150 : 150,
+                behavior: 'smooth'
+            });
         });
-    });
+    }
 });

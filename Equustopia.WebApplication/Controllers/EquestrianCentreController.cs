@@ -122,5 +122,25 @@
 
             return Json(viewsData);
         }
+        
+        public async Task<IActionResult> GetHorsesAgeGroups(int centreId)
+        {
+            var equestrianCentre = _context.EquestrianCentres.Include(h => h.UserData).
+                Include(h => h.Horses).FirstOrDefault(s => s.id == centreId);
+        
+            if (equestrianCentre?.Horses == null) return NotFound();
+    
+            var currentYear = DateTime.UtcNow.Year;
+    
+            var horseAgeGroups = new
+            {
+                AgeGroup_0_3 = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year <= 3),
+                AgeGroup_3_10 = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year > 3 && currentYear - h.birthDate?.Year <= 10),
+                AgeGroup_10_19 = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year > 10 && currentYear - h.birthDate?.Year <= 19),
+                AgeGroup_19_Plus = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year > 19)
+            };
+
+            return Json(horseAgeGroups);
+        }
     }
 }
