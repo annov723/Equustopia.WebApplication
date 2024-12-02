@@ -116,11 +116,18 @@ function generateChart(id){
 }
 
 function generateViewsChart(id, startDate, endDate){
-    fetch(`/EquestrianCentre/GetCentreViews?centreId=${id}&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
+    let startDateFormatted = startDate.toISOString();
+    let endDateFormatted = endDate.toISOString();
+    
+    fetch(`/EquestrianCentre/GetCentreViews?centreId=${id}&startDate=${startDateFormatted}&endDate=${endDateFormatted}`)
         .then(response => response.json())
         .then(data => {
-            const labels = data.map(item => item.date);
+            const labels = data.map(item => item.date.split('T')[0]);
             const views = data.map(item => item.views);
+
+
+            console.log("data:", data);
+            console.log("labels:", labels);
 
             if (window.myChart) {
                 window.myChart.destroy();
@@ -182,10 +189,6 @@ function generateHorseAgeChart(id){
             if (window.myChart) {
                 window.myChart.destroy();
             }
-
-
-
-            console.log("Data:", data);
 
             window.myChart = new Chart(ctx, {
                 type: 'pie',

@@ -113,7 +113,7 @@
                 .GroupBy(pv => pv.timestamp.Date)
                 .Select(g => new 
                 {
-                    Date = g.Key,
+                    Date = g.Key.Date,
                     Views = g.Count()
                 })
                 .OrderBy(g => g.Date)
