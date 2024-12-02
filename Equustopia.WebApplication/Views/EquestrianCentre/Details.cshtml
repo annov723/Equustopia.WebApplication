@@ -9,16 +9,17 @@
     <link rel="stylesheet" href="~/css/details/details.css" />
     <link rel="stylesheet" href="~/css/frames-storage.css" />
     <link rel="stylesheet" href="~/css/buttons.css" />
+    <link rel="stylesheet" href="~/css/equestrianCentre/equestrian-centre-charts.css" />
 </head>
 
 <div class="main-info">
     <div class="details-green-rectangle">
         @if ((bool)ViewBag.IsOwner)
         {
-        <div class="owner-buttons">
-            <button class="classic-button" onclick="openEditCentreView()">edit</button>
-            <button class="classic-button" onclick="openRemoveCentreView()">remove</button>
-        </div>
+            <div class="owner-buttons">
+                <button class="classic-button" onclick="openEditCentreView()">edit</button>
+                <button class="classic-button" onclick="openRemoveCentreView()">remove</button>
+            </div>
         }
     </div>
     <div class="details-info">
@@ -32,23 +33,47 @@
     </div>
 
     <div class="frames-storage" style="margin-bottom: 50px">
-        <span class="left-aligned-text">My horses</span>
-        <div id="my-horses" class="items-frame">
-            @foreach (var horse in Model.Horses)
-            {
-                <button class="element-button" onclick="viewHorseDetails(@horse.id)">
-                    <img src="" class="horse-photo" alt="horse photo"/>
-                    <span class="horse-name">@horse.name
-                        <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
-                    </span>
-                </button>
-            }
-        </div>
+        @if (Model.Horses is { Count: > 0 })
+        {
+            <span class="left-aligned-text">My horses</span>
+            <div id="my-horses" class="items-frame">
+                @foreach (var horse in Model.Horses)
+                {
+                    <button class="element-button" onclick="viewHorseDetails(@horse.id)">
+                        <img src="" class="item-photo" alt="horse photo"/>
+                        <span class="item-name">@horse.name
+                            <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
+                        </span>
+                    </button>
+                }
+            </div>
+        }
+
+        @if ((bool)ViewBag.IsOwner)
+        {
+            <div class="charts-frame">
+                <div class="select-content">
+                    <select id="chartSelect" class="chart-select">
+                        <option value="dailyViews">daily views</option>
+                        <option value="weeklyViews">weekly views</option>
+                        <option value="monthlyViews">monthly views</option>
+                        @* <option value="horseBreed">horse breed</option> *@
+                        <option value="horseAge">horse age</option>
+                    </select>
+                    <button class="classic-button" onclick="generateChart(@Model.id)">generate</button>
+                </div>
+                <div class="chart-place">
+                    <canvas id="chartCanvas" class="chart-canvas"style="display: none;"></canvas>
+                </div>
+                
+            </div>
+        }
     </div>
 </div>
 
 <script src="~/js/shared.js"></script>
 <script src="~/js/details/equestrianCentreDetails.js"></script>
+<script src="~/js/external/chart.js"></script>
 
 @await Html.PartialAsync("EditEquestrianCentrePartialView")
 @await Html.PartialAsync("RemoveEquestrianCentrePartialView")

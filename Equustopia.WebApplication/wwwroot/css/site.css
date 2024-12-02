@@ -2,6 +2,7 @@
   --blue-color: #3cb3d7;
   --hover-blue-color: #2895b5;
   --light-blue-color: #d3eef6;
+  --mid-blue-color: #a3d7e7;
   --white-color: #ffffff;
   --hover-white-color: #e0e0e0;
   --white-color-semitransparent-25: rgba(255, 255, 255, 0.25);
@@ -27,4 +28,8 @@ body {
   background-color: var(--light-blue-color);
   display: flex;
   flex-direction: column;
+}
+
+.main-content, .main-info{
+  flex: 1;
 }

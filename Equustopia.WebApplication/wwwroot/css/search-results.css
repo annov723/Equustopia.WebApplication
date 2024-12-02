@@ -41,6 +41,10 @@
     border: none;
 }
 
+.search-results-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--mid-blue-color);
+}
+
 .search-results-container::-webkit-scrollbar-track {
     background-color: transparent;
     border-radius: 10px;

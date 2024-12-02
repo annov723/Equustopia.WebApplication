@@ -21,31 +21,37 @@
     </div>
 
     <div class="frames-storage" style="margin-bottom: 50px">
-        <span class="left-aligned-text">Horses</span>
-        <div id="my-horses" class="items-frame">
-            @foreach (var horse in Model.Horses)
-            {
-                <button class="element-button" onclick="viewHorseDetails(@horse.id)">
-                    <img src="" class="horse-photo" alt="horse photo"/>
-                    <span class="horse-name">@horse.name
-                        <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
-                    </span>
-                </button>
-            }
-        </div>
+        @if (Model.Horses is { Count: > 0 })
+        {
+            <span class="left-aligned-text">Horses</span>
+            <div id="my-horses" class="items-frame">
+                @foreach (var horse in Model.Horses)
+                {
+                    <button class="element-button" onclick="viewHorseDetails(@horse.id)">
+                        <img src="" class="item-photo" alt="horse photo"/>
+                        <span class="item-name">@horse.name
+                            <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
+                        </span>
+                    </button>
+                }
+            </div>
+        }
 
-        <span class="left-aligned-text">Riding centres</span>
-        <div id="my-centres" class="items-frame">
-            @foreach (var centre in Model.EquestrianCentres)
-            {
-                <button class="element-button" onclick="viewCentreDetails(@centre.id)">
-                    <img src="" class="horse-photo" alt="centre photo"/>
-                    <span class="horse-name">@centre.name
-                        <p class="horse-date">@centre.address</p>
-                    </span>
-                </button>
-            }
-        </div>
+        @if (Model.EquestrianCentres is { Count: > 0 })
+        {
+            <span class="left-aligned-text">Riding centres</span>
+            <div id="my-centres" class="items-frame">
+                @foreach (var centre in Model.EquestrianCentres)
+                {
+                    <button class="element-button" onclick="viewCentreDetails(@centre.id)">
+                        <img src="" class="item-photo" alt="centre photo"/>
+                        <span class="item-name">@centre.name
+                            <p class="horse-date">@centre.address</p>
+                        </span>
+                    </button>
+                }
+            </div>
+        }
     </div>
 </div>
 

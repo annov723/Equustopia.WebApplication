@@ -2,6 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Analytics;
 
     [Table("userData", Schema = "main")]
     public class UserData
@@ -25,6 +26,6 @@
         
         public ICollection<EquestrianCentre> EquestrianCentres { get; set; }
         public ICollection<Horse> Horses { get; set; }
-        public ICollection<PageViews> pagesViews { get; set; }
+        public ICollection<pagesViews> pagesViews { get; set; }
     }
 }

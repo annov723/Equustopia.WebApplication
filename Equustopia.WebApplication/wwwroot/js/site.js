@@ -60,18 +60,6 @@ window.onblur = function() {
 };
 
 
-// hiding footer
-window.addEventListener('scroll', function () {
-    let footer = document.querySelector('.footer-content');
-
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-        footer.classList.add('show');
-    } else {
-        footer.classList.remove('show');
-    }
-});
-
-
 
 function handleSearch(event) {
     if (event.key === "Enter") {
@@ -124,7 +112,7 @@ function displayEmpty(){
     resultsContainer.innerHTML = "";
     const item = document.createElement("div");
     item.classList.add("search-result-item");
-    const elem = document.createElement("p");
+    const elem = document.createElement("a");
     elem.textContent = `No results found.`;
     item.appendChild(elem);
     resultsContainer.appendChild(item);

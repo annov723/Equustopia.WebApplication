@@ -1,30 +1,42 @@
-﻿namespace Equustopia.WebApplication.Controllers.EquestrianCentre
+﻿namespace Equustopia.WebApplication.Controllers
 {
     using Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Models.Requests;
     using Npgsql;
+    using Services;
 
     public class EquestrianCentreController : Controller
     {
+        private readonly PageViewLoggerService _pageViewLogger;
         private readonly AppDbContext _context;
 
-        public EquestrianCentreController(AppDbContext context)
+        public EquestrianCentreController(AppDbContext context, PageViewLoggerService pageViewLogger)
         {
             _context = context;
+            _pageViewLogger = pageViewLogger;
         }
 
         // GET: /EquestrianCentre/Details/{id}
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var centre = _context.EquestrianCentres.Include(h => h.UserData).Include(h => h.Horses).FirstOrDefault(s => s.id == id);
+            var centre = _context.EquestrianCentres.Include(h => h.UserData).
+                Include(h => h.Horses).FirstOrDefault(s => s.id == id);
             if (centre == null)
             {
                 return NotFound("Equestrian centre not found");
             }
-            var isOwner = HttpContext.Session.GetInt32("UserId") != null && centre.userId == HttpContext.Session.GetInt32("UserId");
+            
+            int? userId = HttpContext.Session.GetInt32("UserId") ?? null;
+            var isOwner = userId != null && centre.userId == userId;
             ViewBag.IsOwner = isOwner;
+
+            if (!isOwner)
+            {
+                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                await _pageViewLogger.LogPageViewAsync(userId, "equestrianCentre", id, ipAddress);
+            }
 
             return View(centre);
         }
@@ -89,6 +101,45 @@
             _context.SaveChanges();
 
             return Json(new { success = true });
+        }
+        
+        public async Task<IActionResult> GetCentreViews(int centreId, DateTime startDate, DateTime endDate)
+        {
+            startDate = startDate.ToUniversalTime();
+            endDate = endDate.ToUniversalTime();
+            
+            var viewsData = await _context.PagesViews
+                .Where(pv => pv.pageType == "equestrianCentre" && pv.pageId == centreId && pv.timestamp >= startDate && pv.timestamp <= endDate)
+                .GroupBy(pv => pv.timestamp.Date)
+                .Select(g => new 
+                {
+                    Date = g.Key.Date,
+                    Views = g.Count()
+                })
+                .OrderBy(g => g.Date)
+                .ToListAsync();
+
+            return Json(viewsData);
+        }
+        
+        public async Task<IActionResult> GetHorsesAgeGroups(int centreId)
+        {
+            var equestrianCentre = _context.EquestrianCentres.Include(h => h.UserData).
+                Include(h => h.Horses).FirstOrDefault(s => s.id == centreId);
+        
+            if (equestrianCentre?.Horses == null) return NotFound();
+    
+            var currentYear = DateTime.UtcNow.Year;
+    
+            var horseAgeGroups = new
+            {
+                AgeGroup_0_3 = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year <= 3),
+                AgeGroup_3_10 = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year > 3 && currentYear - h.birthDate?.Year <= 10),
+                AgeGroup_10_19 = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year > 10 && currentYear - h.birthDate?.Year <= 19),
+                AgeGroup_19_Plus = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year > 19)
+            };
+
+            return Json(horseAgeGroups);
         }
     }
 }

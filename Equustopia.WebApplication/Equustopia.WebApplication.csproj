@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Controllers\EquestrianCentre\" />
       <Folder Include="Migrations\" />
       <Folder Include="wwwroot\resources\" />
     </ItemGroup>
