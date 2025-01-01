@@ -105,3 +105,65 @@ ORDER BY 4 DESC;
 --ośrodki które mają więcej niż 1 konia
 WITH statementCTE AS (SELECT "centreId", COUNT(*) AS num FROM main.horse GROUP BY "centreId")
 SELECT e.name FROM statementCTE JOIN main."equestrianCentre" e on "centreId" = e.id WHERE num >= 2;
+
+--27.11.2024
+CREATE OR REPLACE FUNCTION "horsesInCentre"(centreId INT)
+RETURNS TABLE(name VARCHAR, birthDate DATE, userId INT) AS
+$$
+    SELECT h.name, h."birthDate", h."userId"
+    FROM main.horse h
+    WHERE h."centreId" = centreId;
+$$ LANGUAGE sql;
+SELECT "horsesInCentre"(5);
+
+CREATE OR REPLACE FUNCTION "userName" (int)
+RETURNS text AS
+$$
+    DECLARE
+        "idUser" ALIAS FOR $1;
+        namee main."userData".name%TYPE;
+    BEGIN
+        SELECT INTO namee name FROM main."userData"
+        WHERE id = "idUser";
+        RETURN namee;
+    END;
+$$ LANGUAGE 'plpgsql';
+SELECT "userName"(1);
+
+CREATE OR REPLACE FUNCTION "userNameAndEmail" (int)
+RETURNS text AS
+$$
+    DECLARE
+        "idUser" ALIAS FOR $1;
+        namee RECORD;
+    BEGIN
+        SELECT name, email INTO namee FROM main."userData"
+        WHERE id = "idUser";
+        RETURN namee.name || ' ' || namee.email;
+    END;
+$$ LANGUAGE 'plpgsql';
+SELECT "userNameAndEmail"(1);
+
+DO $$
+    BEGIN
+        RAISE SQLSTATE '00200'; --wysłanie kodu błędu
+END $$;
+
+CREATE OR REPLACE FUNCTION "showUserWithError" ("userId" int) RETURNS text AS $$
+DECLARE
+    owner main."userData"%ROWTYPE;
+BEGIN
+    SELECT INTO owner * FROM main."userData" WHERE id = "userId";
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'No owner in base!';
+    END IF;
+    RETURN owner.name || ' ' || owner.email;
+END;
+$$
+LANGUAGE 'plpgsql';
+SELECT "showUserWithError"(1);
+
+--29.11.2024
+ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_page_type_length CHECK (LENGTH("pageType") BETWEEN 2 AND 50);
+ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_ip_address_length CHECK (LENGTH("ipAddress") BETWEEN 2 AND 45);
+
