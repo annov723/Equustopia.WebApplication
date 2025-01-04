@@ -319,11 +319,11 @@ CREATE TABLE "centreServicesMapping"(
 );
 
 CREATE TABLE "horseQualitiesMapping"(
-    "horseId" INTEGER NOT NULL,
+    "tradeId" INTEGER NOT NULL,
     "qualityId" INTEGER NOT NULL,
-    PRIMARY KEY ("horseId", "qualityId"),
+    PRIMARY KEY ("tradeId", "qualityId"),
     FOREIGN KEY ("qualityId") REFERENCES reference."horseQualities"(id) ON DELETE CASCADE,
-    FOREIGN KEY ("horseId") REFERENCES "horse"(id) ON DELETE CASCADE
+    FOREIGN KEY ("tradeId") REFERENCES "trade"(id) ON DELETE CASCADE
 );
 
 
@@ -388,6 +388,7 @@ CREATE TABLE "schedule"(
     FOREIGN KEY ("choreId") REFERENCES reference."workerChores"(id) ON DELETE SET NULL,
     price DOUBLE PRECISION
 );
+ALTER TABLE "schedule" ADD COLUMN "numberOfParticipants" INTEGER;
 
 CREATE TYPE reference."requestStatus" AS ENUM ('new', 'in progress', 'approved', 'declined');
 
@@ -418,9 +419,19 @@ CREATE TABLE "badgeApprovalRequest"(
     "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---ilość przepracowanych godzin prze pracowników
+CREATE TABLE main."bookedActivities" (
+    "userId" INTEGER NOT NULL,
+    "scheduleId" INTEGER,
+    participated BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY ("userId", "scheduleId"),
+    FOREIGN KEY ("userId") REFERENCES main."userData" (id) ON DELETE CASCADE,
+    FOREIGN KEY ("scheduleId") REFERENCES main."schedule" (id) ON DELETE CASCADE
+);
+
+--ilość przepracowanych godzin przez pracowników
 --zarobek ze schedule
 --ilość obowiązków wykonanych w danym czasie przez pracowników
 --podział obowiązków ze względu na typ
 
 --żeby dodać pracownika pracodawca musi wpisać kod, który pracownik dostanie na maila? (zabezpieczenie)
+--przy approve odznaki nawet jak instruktor/stajnia usunie konto ciągle będzie informacja, że jest approved bo mamy ApprovedAt variable
