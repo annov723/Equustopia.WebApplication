@@ -305,7 +305,7 @@ ALTER TABLE "userBadge" DROP CONSTRAINT "userBadge_approvedBy_fkey";
 ALTER TABLE "userBadge" DROP CONSTRAINT "userBadge_centreId_fkey";
 ALTER TABLE "userBadge"
 ADD CONSTRAINT "userBadge_approvedBy_fkey"
-FOREIGN KEY ("approvedBy") REFERENCES main."userData"(id) ON DELETE SET NULL;
+FOREIGN KEY ("approvedBy") REFERENCES main."worker"(id) ON DELETE SET NULL;
 ALTER TABLE "userBadge"
 ADD CONSTRAINT "userBadge_centreId_fkey"
 FOREIGN KEY ("centreId") REFERENCES main."equestrianCentre"(id) ON DELETE SET NULL;
@@ -355,7 +355,7 @@ CREATE TABLE "serviceProvider"(
     "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE "workers"(
+CREATE TABLE "worker"(
     id SERIAL PRIMARY KEY,
     "userId" INTEGER NOT NULL,
     FOREIGN KEY ("userId") REFERENCES "userData"(id) ON DELETE CASCADE,
@@ -391,15 +391,30 @@ CREATE TABLE "schedule"(
 
 CREATE TYPE reference."requestStatus" AS ENUM ('new', 'in progress', 'approved', 'declined');
 
-CREATE TABLE "request"(
+CREATE TABLE "centreCreateRequest"(
     id SERIAL PRIMARY KEY,
-    "senderId" INTEGER NOT NULL,
-    FOREIGN KEY ("senderId") REFERENCES "userData"(id) ON DELETE CASCADE,
-    "typeId" INTEGER NOT NULL,
-    FOREIGN KEY ("typeId") REFERENCES reference."requestTypes"(id) ON DELETE CASCADE,
-    "pageId" INTEGER NOT NULL,
     status reference."requestStatus" NOT NULL DEFAULT 'new',
-    "createAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE "centreCreateRequest"
+ADD COLUMN "centreId" INTEGER NOT NULL,
+ADD CONSTRAINT fk_centre
+    FOREIGN KEY ("centreId")
+    REFERENCES "equestrianCentre"("id")
+    ON DELETE CASCADE;
+
+ALTER TABLE "equestrianCentre" ADD COLUMN "approved" BOOLEAN DEFAULT false;
+ALTER TABLE "worker" ADD COLUMN "certifiedInstructor" BOOLEAN DEFAULT false;
+
+CREATE TABLE "badgeApprovalRequest"(
+    id SERIAL PRIMARY KEY,
+    "receiverId" INTEGER NOT NULL,
+    FOREIGN KEY ("receiverId") REFERENCES "worker"(id) ON DELETE CASCADE,
+    "badgeId" INTEGER NOT NULL,
+    FOREIGN KEY ("badgeId") REFERENCES "userBadge"(id) ON DELETE CASCADE,
+    status reference."requestStatus" NOT NULL DEFAULT 'new',
+    "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -407,3 +422,5 @@ CREATE TABLE "request"(
 --zarobek ze schedule
 --ilość obowiązków wykonanych w danym czasie przez pracowników
 --podział obowiązków ze względu na typ
+
+--żeby dodać pracownika pracodawca musi wpisać kod, który pracownik dostanie na maila? (zabezpieczenie)
