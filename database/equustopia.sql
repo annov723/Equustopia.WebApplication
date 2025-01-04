@@ -167,3 +167,129 @@ SELECT "showUserWithError"(1);
 ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_page_type_length CHECK (LENGTH("pageType") BETWEEN 2 AND 50);
 ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_ip_address_length CHECK (LENGTH("ipAddress") BETWEEN 2 AND 45);
 
+--updating whole project and creating sensible database with logic
+CREATE SCHEMA reference;
+SET search_path TO main;
+
+CREATE TABLE badges(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    iconPath VARCHAR(1000) NOT NULL
+);
+
+CREATE TABLE "centreServices"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL,
+    description VARCHAR(1000) NOT NULL
+);
+
+CREATE TABLE "horseQualities"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL,
+    description VARCHAR(1000) NOT NULL
+);
+
+CREATE TABLE "serviceTypes"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL,
+    description VARCHAR(1000) NOT NULL
+);
+
+ALTER TABLE "badges" ALTER COLUMN iconPath TYPE VARCHAR(1000);
+
+CREATE TABLE "requestTypes"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL,
+    description VARCHAR(1000) NOT NULL
+);
+
+ALTER TABLE "requestTypes" ADD CONSTRAINT unique_requestTypes_name UNIQUE (name);
+
+CREATE TABLE analytics.favorites(
+    id SERIAL PRIMARY KEY,
+    "userId" INTEGER,
+    "pageId" INTEGER,
+    "pageType" VARCHAR(50) CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProviders')) NOT NULL,
+    "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE analytics.favorites ALTER COLUMN "pageId" SET NOT NULL;
+ALTER TABLE analytics."pagesViews" ADD CONSTRAINT pagesviews_pagetype_check CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProviders'));
+ALTER TABLE analytics.favorites ALTER COLUMN "pageId" SET NOT NULL;
+
+ALTER TABLE "userData" ADD COLUMN "birthDate" DATE;
+ALTER TABLE "userData" ADD COLUMN "profilePhoto" VARCHAR(1000);
+ALTER TABLE "userData" ADD COLUMN "moderator" BOOLEAN DEFAULT FALSE;
+ALTER TABLE "userData" ADD COLUMN "private" BOOLEAN DEFAULT TRUE;
+
+ALTER TABLE "horse" ADD COLUMN "breed" VARCHAR(100);
+ALTER TABLE "horse" ADD COLUMN "private" BOOLEAN DEFAULT TRUE;
+ALTER TABLE "horse" ADD COLUMN "photo" VARCHAR(1000);
+ALTER TABLE "horse" ADD COLUMN "height" DOUBLE PRECISION;
+ALTER TABLE "horse" ADD COLUMN "feedingSchedule" JSONB;
+
+ALTER TABLE "equestrianCentre" ADD COLUMN "openHours" JSONB;
+ALTER TABLE "equestrianCentre" ADD COLUMN "contactInformation" JSONB;
+
+ALTER TABLE analytics.favorites
+ADD CONSTRAINT fk_favorites_userid FOREIGN KEY ("userId")
+REFERENCES main."userData" (id)
+ON DELETE CASCADE;
+
+
+
+--usuwanie z favorites stron, które już nie istnieją
+CREATE OR REPLACE FUNCTION analytics.delete_favorites()
+RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM analytics.favorites
+    WHERE "pageId" = OLD.id AND "pageType" = tg_table_name;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER horse_delete_trigger
+AFTER DELETE ON horse
+FOR EACH ROW
+EXECUTE FUNCTION analytics.delete_favorites();
+
+CREATE TRIGGER equestrian_centre_delete_trigger
+AFTER DELETE ON "equestrianCentre"
+FOR EACH ROW
+EXECUTE FUNCTION analytics.delete_favorites();
+
+--DODAĆ TO SAMO DLA trade & serviceProviders!!!
+
+--trzeba teź kaskadowo usuwać z top wyświetlanych jak strona została usunięta!!!
+CREATE OR REPLACE FUNCTION analytics.delete_page_views()
+RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM analytics."pagesViews"
+    WHERE "pageId" = OLD.id AND "pageType" = tg_table_name;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+CREATE TABLE "userBadges"(
+    id SERIAL PRIMARY KEY,
+    "userId" INTEGER NOT NULL,
+    FOREIGN KEY ("userId") REFERENCES main."userData"(id) ON DELETE CASCADE,
+    "badgeId" INTEGER NOT NULL,
+    FOREIGN KEY ("badgeId") REFERENCES reference."badges"(id) ON DELETE CASCADE,
+    "approvedBy" INTEGER,
+    FOREIGN KEY ("approvedBy") REFERENCES main."userData"(id),
+    "centreId" INTEGER,
+    FOREIGN KEY ("centreId") REFERENCES main."equestrianCentre"(id),
+    "approvedAt" TIMESTAMP
+);
+
+CREATE TABLE "centreServicesMapping"(
+    "centreId" INTEGER NOT NULL,
+    "serviceId" INTEGER NOT NULL,
+    PRIMARY KEY ("centreId", "serviceId") REFERENCES "equestrianCentre"(id), reference."centreServices"(id) ON DELETE CASCADE
+)
