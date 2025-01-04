@@ -107,7 +107,7 @@ WITH statementCTE AS (SELECT "centreId", COUNT(*) AS num FROM main.horse GROUP B
 SELECT e.name FROM statementCTE JOIN main."equestrianCentre" e on "centreId" = e.id WHERE num >= 2;
 
 --27.11.2024
-CREATE OR REPLACE FUNCTION "horsesInCentre"(centreId INT)
+CREATE OR REPLACE FUNCTION main."horsesInCentre"(centreId INT)
 RETURNS TABLE(name VARCHAR, birthDate DATE, userId INT) AS
 $$
     SELECT h.name, h."birthDate", h."userId"
@@ -116,7 +116,7 @@ $$
 $$ LANGUAGE sql;
 SELECT "horsesInCentre"(5);
 
-CREATE OR REPLACE FUNCTION "userName" (int)
+CREATE OR REPLACE FUNCTION main."userName" (int)
 RETURNS text AS
 $$
     DECLARE
@@ -130,7 +130,7 @@ $$
 $$ LANGUAGE 'plpgsql';
 SELECT "userName"(1);
 
-CREATE OR REPLACE FUNCTION "userNameAndEmail" (int)
+CREATE OR REPLACE FUNCTION main."userNameAndEmail" (int)
 RETURNS text AS
 $$
     DECLARE
@@ -149,7 +149,7 @@ DO $$
         RAISE SQLSTATE '00200'; --wysłanie kodu błędu
 END $$;
 
-CREATE OR REPLACE FUNCTION "showUserWithError" ("userId" int) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION main."showUserWithError" ("userId" int) RETURNS text AS $$
 DECLARE
     owner main."userData"%ROWTYPE;
 BEGIN
@@ -177,6 +177,7 @@ CREATE TABLE badges(
     description VARCHAR(1000) NOT NULL,
     iconPath VARCHAR(1000) NOT NULL
 );
+
 
 CREATE TABLE "centreServices"(
     id SERIAL PRIMARY KEY,
@@ -206,16 +207,22 @@ CREATE TABLE "requestTypes"(
 
 ALTER TABLE "requestTypes" ADD CONSTRAINT unique_requestTypes_name UNIQUE (name);
 
+CREATE TABLE reference."workerChores"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL
+);
+ALTER TABLE reference."badges" ADD CONSTRAINT unique_badges_icon_path UNIQUE ("iconPath");
+
 CREATE TABLE analytics.favorites(
     id SERIAL PRIMARY KEY,
     "userId" INTEGER,
     "pageId" INTEGER,
-    "pageType" VARCHAR(50) CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProviders')) NOT NULL,
+    "pageType" VARCHAR(50) CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProvider')) NOT NULL,
     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE analytics.favorites ALTER COLUMN "pageId" SET NOT NULL;
-ALTER TABLE analytics."pagesViews" ADD CONSTRAINT pagesviews_pagetype_check CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProviders'));
+ALTER TABLE analytics."pagesViews" ADD CONSTRAINT pagesviews_pagetype_check CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProvider'));
 ALTER TABLE analytics.favorites ALTER COLUMN "pageId" SET NOT NULL;
 
 ALTER TABLE "userData" ADD COLUMN "birthDate" DATE;
@@ -259,9 +266,11 @@ AFTER DELETE ON "equestrianCentre"
 FOR EACH ROW
 EXECUTE FUNCTION analytics.delete_favorites();
 
---DODAĆ TO SAMO DLA trade & serviceProviders!!!
+CREATE TRIGGER trade_delete_trigger
+AFTER DELETE ON "trade"
+FOR EACH ROW
+EXECUTE FUNCTION analytics.delete_favorites();
 
---trzeba teź kaskadowo usuwać z top wyświetlanych jak strona została usunięta!!!
 CREATE OR REPLACE FUNCTION analytics.delete_page_views()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -271,11 +280,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE TRIGGER service_provider_delete_trigger
+AFTER DELETE ON "serviceProvider"
+FOR EACH ROW
+EXECUTE FUNCTION analytics.delete_favorites();
 
 
 
 
-CREATE TABLE "userBadges"(
+
+CREATE TABLE "userBadge"(
     id SERIAL PRIMARY KEY,
     "userId" INTEGER NOT NULL,
     FOREIGN KEY ("userId") REFERENCES main."userData"(id) ON DELETE CASCADE,
@@ -287,9 +301,109 @@ CREATE TABLE "userBadges"(
     FOREIGN KEY ("centreId") REFERENCES main."equestrianCentre"(id),
     "approvedAt" TIMESTAMP
 );
+ALTER TABLE "userBadge" DROP CONSTRAINT "userBadge_approvedBy_fkey";
+ALTER TABLE "userBadge" DROP CONSTRAINT "userBadge_centreId_fkey";
+ALTER TABLE "userBadge"
+ADD CONSTRAINT "userBadge_approvedBy_fkey"
+FOREIGN KEY ("approvedBy") REFERENCES main."userData"(id) ON DELETE SET NULL;
+ALTER TABLE "userBadge"
+ADD CONSTRAINT "userBadge_centreId_fkey"
+FOREIGN KEY ("centreId") REFERENCES main."equestrianCentre"(id) ON DELETE SET NULL;
 
 CREATE TABLE "centreServicesMapping"(
     "centreId" INTEGER NOT NULL,
     "serviceId" INTEGER NOT NULL,
-    PRIMARY KEY ("centreId", "serviceId") REFERENCES "equestrianCentre"(id), reference."centreServices"(id) ON DELETE CASCADE
-)
+    PRIMARY KEY ("centreId", "serviceId"),
+    FOREIGN KEY ("serviceId") REFERENCES reference."centreServices"(id) ON DELETE CASCADE,
+    FOREIGN KEY ("centreId") REFERENCES "equestrianCentre"(id) ON DELETE CASCADE
+);
+
+CREATE TABLE "horseQualitiesMapping"(
+    "horseId" INTEGER NOT NULL,
+    "qualityId" INTEGER NOT NULL,
+    PRIMARY KEY ("horseId", "qualityId"),
+    FOREIGN KEY ("qualityId") REFERENCES reference."horseQualities"(id) ON DELETE CASCADE,
+    FOREIGN KEY ("horseId") REFERENCES "horse"(id) ON DELETE CASCADE
+);
+
+
+
+
+
+CREATE TABLE trade(
+    id SERIAL PRIMARY KEY,
+    "horseId" INTEGER NOT NULL,
+    price DOUBLE PRECISION,
+    location VARCHAR(250) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    "contactInformation" JSONB NOT NULL,
+    "createAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("horseId") REFERENCES "horse"(id) ON DELETE CASCADE
+);
+
+CREATE TABLE "serviceProvider"(
+    id SERIAL PRIMARY KEY,
+    "userId" INTEGER NOT NULL,
+    FOREIGN KEY ("userId") REFERENCES "userData"(id) ON DELETE CASCADE,
+    "typeId" INTEGER NOT NULL,
+    FOREIGN KEY ("typeId") REFERENCES reference."serviceTypes"(id) ON DELETE CASCADE,
+    description VARCHAR(1000) NOT NULL,
+    "contactInformation" JSONB NOT NULL,
+    location VARCHAR(250) NOT NULL,
+    "createAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "workers"(
+    id SERIAL PRIMARY KEY,
+    "userId" INTEGER NOT NULL,
+    FOREIGN KEY ("userId") REFERENCES "userData"(id) ON DELETE CASCADE,
+    "centreId" INTEGER NOT NULL,
+    FOREIGN KEY ("centreId") REFERENCES "equestrianCentre"(id) ON DELETE CASCADE,
+    "jobTitle" VARCHAR(250),
+    salary DOUBLE PRECISION,
+    "hireDate" DATE DEFAULT CURRENT_DATE,
+    "contactInformation" JSONB NOT NULL
+);
+
+CREATE TABLE "workerChoresMapping"(
+    "workerId" INTEGER NOT NULL,
+    "choreId" INTEGER NOT NULL,
+    PRIMARY KEY ("workerId", "choreId"),
+    FOREIGN KEY ("choreId") REFERENCES reference."workerChores"(id) ON DELETE CASCADE,
+    FOREIGN KEY ("workerId") REFERENCES worker (id) ON DELETE CASCADE
+);
+
+CREATE TABLE "schedule"(
+    id SERIAL PRIMARY KEY,
+    "centreId" INTEGER NOT NULL,
+    FOREIGN KEY ("centreId") REFERENCES "equestrianCentre"(id) ON DELETE CASCADE,
+    "workerId" INTEGER,
+    FOREIGN KEY ("workerId") REFERENCES worker (id) ON DELETE SET NULL,
+    "name" VARCHAR (250) NOT NULL,
+    "startDateTime" TIMESTAMP NOT NULL,
+    "endDateTime" TIMESTAMP NOT NULL,
+    "choreId" INTEGER,
+    FOREIGN KEY ("choreId") REFERENCES reference."workerChores"(id) ON DELETE SET NULL,
+    price DOUBLE PRECISION
+);
+
+CREATE TYPE reference."requestStatus" AS ENUM ('new', 'in progress', 'approved', 'declined');
+
+CREATE TABLE "request"(
+    id SERIAL PRIMARY KEY,
+    "senderId" INTEGER NOT NULL,
+    FOREIGN KEY ("senderId") REFERENCES "userData"(id) ON DELETE CASCADE,
+    "typeId" INTEGER NOT NULL,
+    FOREIGN KEY ("typeId") REFERENCES reference."requestTypes"(id) ON DELETE CASCADE,
+    "pageId" INTEGER NOT NULL,
+    status reference."requestStatus" NOT NULL DEFAULT 'new',
+    "createAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--ilość przepracowanych godzin prze pracowników
+--zarobek ze schedule
+--ilość obowiązków wykonanych w danym czasie przez pracowników
+--podział obowiązków ze względu na typ
