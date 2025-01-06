@@ -242,119 +242,69 @@ ALTER TABLE main."equestrianCentre" ADD CONSTRAINT chk_name_length CHECK (LENGTH
 ALTER TABLE main."equestrianCentre" ADD CONSTRAINT chk_address_length CHECK (LENGTH(address) BETWEEN 2 AND 250);
 ALTER TABLE main."equestrianCentre" ADD CONSTRAINT unique_latitude_longitude UNIQUE (latitude, longitude);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---podział konisiów na wiek
-SELECT name, "userId",
-        CASE
-            WHEN "birthDate" < (CURRENT_DATE - INTERVAL '15 years') THEN 'gen X'
-            WHEN "birthDate" > (CURRENT_DATE - INTERVAL '15 years') AND "birthDate" < (CURRENT_DATE - INTERVAL '5 years') THEN 'millennials'
-            WHEN "birthDate" > (CURRENT_DATE - INTERVAL '5 years') THEN 'gen Z'
-            ELSE 'no birthdate'
-        END
-FROM main.horse;
-
---liczenie ile w danej stajni jest koni o danym wieku
-SELECT e.name,
-       SUM(CASE WHEN h."birthDate" < (CURRENT_DATE - INTERVAL '15 years') THEN 1 ELSE 0 END) as genX,
-       SUM(CASE WHEN h."birthDate" > (CURRENT_DATE - INTERVAL '15 years') AND h."birthDate" < (CURRENT_DATE - INTERVAL '5 years') THEN 1 ELSE 0 END) as millennials,
-       SUM(CASE WHEN h."birthDate" > (CURRENT_DATE - INTERVAL '5 years') THEN 1 ELSE 0 END) as genZ,
-       SUM(CASE WHEN h."birthDate" is NULL THEN 1 ELSE 0 END) as empty
-FROM main.horse h JOIN main."equestrianCentre" e on h."centreId" = e.id
-GROUP BY e.name, h."centreId"
-ORDER BY e.name;
-
---lista użytkowników, którzy mają konia starszego niż 10 lat jeśli mieszka w ośrodku 2
---konia starszego niż 5 lat jeśli mieszka w ośrodku 5
---konia starszego niż 1 rok jeśli mieszka w ośrodku 1
-SELECT u.email, u.name, h.name, h."birthDate"
-FROM main."userData" u JOIN main.horse h on u.id = h."userId"
-WHERE h."birthDate" <
-CASE
-    WHEN h."centreId" IN (2) THEN (CURRENT_DATE - INTERVAL '10 years')
-    WHEN h."centreId" IN (5) THEN (CURRENT_DATE - INTERVAL '5 years')
-    WHEN h."centreId" IN (1) THEN (CURRENT_DATE - INTERVAL '1 years')
-END
-ORDER BY 4 DESC;
-
---ośrodki które mają więcej niż 1 konia
-WITH statementCTE AS (SELECT "centreId", COUNT(*) AS num FROM main.horse GROUP BY "centreId")
-SELECT e.name FROM statementCTE JOIN main."equestrianCentre" e on "centreId" = e.id WHERE num >= 2;
-
---27.11.2024
-CREATE OR REPLACE FUNCTION main."horsesInCentre"(centreId INT)
-RETURNS TABLE(name VARCHAR, birthDate DATE, userId INT) AS
-$$
-    SELECT h.name, h."birthDate", h."userId"
-    FROM main.horse h
-    WHERE h."centreId" = centreId;
-$$ LANGUAGE sql;
-SELECT "horsesInCentre"(5);
-
-CREATE OR REPLACE FUNCTION main."userName" (int)
-RETURNS text AS
-$$
-    DECLARE
-        "idUser" ALIAS FOR $1;
-        namee main."userData".name%TYPE;
-    BEGIN
-        SELECT INTO namee name FROM main."userData"
-        WHERE id = "idUser";
-        RETURN namee;
-    END;
-$$ LANGUAGE 'plpgsql';
-SELECT main.user_name(1);
-
-CREATE OR REPLACE FUNCTION main."userNameAndEmail" (int)
-RETURNS text AS
-$$
-    DECLARE
-        "idUser" ALIAS FOR $1;
-        namee RECORD;
-    BEGIN
-        SELECT name, email INTO namee FROM main."userData"
-        WHERE id = "idUser";
-        RETURN namee.name || ' ' || namee.email;
-    END;
-$$ LANGUAGE 'plpgsql';
-SELECT "userNameAndEmail"(1);
-
-DO $$
-    BEGIN
-        RAISE SQLSTATE '00200'; --wysłanie kodu błędu
-END $$;
-
-CREATE OR REPLACE FUNCTION main."showUserWithError" ("userId" int) RETURNS text AS $$
-DECLARE
-    owner main."userData"%ROWTYPE;
+CREATE OR REPLACE FUNCTION main.get_horse_counts_by_age_group(centreId INTEGER)
+RETURNS TABLE(age_group VARCHAR, horse_count INTEGER) AS $$
 BEGIN
-    SELECT INTO owner * FROM main."userData" WHERE id = "userId";
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'No owner in base!';
-    END IF;
-    RETURN owner.name || ' ' || owner.email;
+    RETURN QUERY
+    SELECT
+        CAST(
+            CASE
+                WHEN EXTRACT(YEAR FROM AGE(horse."birthDate")) <= 3 THEN '0-3'
+                WHEN EXTRACT(YEAR FROM AGE(horse."birthDate")) <= 10 THEN '3-10'
+                WHEN EXTRACT(YEAR FROM AGE(horse."birthDate")) <= 19 THEN '10-19'
+                ELSE '19+'
+            END AS VARCHAR
+        ) AS age_group,
+        COUNT(*)::INTEGER AS horse_count
+    FROM main.horse AS horse
+    WHERE horse."centreId" = centreId
+    GROUP BY age_group
+    ORDER BY age_group;
 END;
-$$
-LANGUAGE 'plpgsql';
-SELECT "showUserWithError"(1);
+$$ LANGUAGE plpgsql;
 
-CREATE TABLE "userBadge"(
+SELECT * FROM main.get_horse_counts_by_age_group(1);
+
+CREATE OR REPLACE FUNCTION main.get_horses_by_centre(centreId INTEGER)
+RETURNS TABLE(horse_id INTEGER, horse_name VARCHAR, birth_date DATE, breed VARCHAR, photo VARCHAR, height DOUBLE PRECISION, feeding_schedule JSONB) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        horse.id AS horse_id,
+        horse.name AS horse_name,
+        horse."birthDate" AS birth_date,
+        horse.breed,
+        horse.photo,
+        horse.height,
+        horse."feedingSchedule"
+    FROM main.horse AS horse
+    WHERE horse."centreId" = centreId;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE TABLE main.trade(
+    id SERIAL PRIMARY KEY,
+    "horseId" INTEGER NOT NULL,
+    price DOUBLE PRECISION,
+    location VARCHAR(250) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    "contactInformation" JSONB NOT NULL,
+    "createAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("horseId") REFERENCES main."horse"(id) ON DELETE CASCADE
+);
+
+
+
+
+
+
+
+
+
+CREATE TABLE main."userBadge"(
     id SERIAL PRIMARY KEY,
     "userId" INTEGER NOT NULL,
     FOREIGN KEY ("userId") REFERENCES main."userData"(id) ON DELETE CASCADE,
@@ -366,24 +316,24 @@ CREATE TABLE "userBadge"(
     FOREIGN KEY ("centreId") REFERENCES main."equestrianCentre"(id),
     "approvedAt" TIMESTAMP
 );
-ALTER TABLE "userBadge" DROP CONSTRAINT "userBadge_approvedBy_fkey";
-ALTER TABLE "userBadge" DROP CONSTRAINT "userBadge_centreId_fkey";
-ALTER TABLE "userBadge"
+ALTER TABLE main."userBadge" DROP CONSTRAINT "userBadge_approvedBy_fkey";
+ALTER TABLE main."userBadge" DROP CONSTRAINT "userBadge_centreId_fkey";
+ALTER TABLE main."userBadge"
 ADD CONSTRAINT "userBadge_approvedBy_fkey"
 FOREIGN KEY ("approvedBy") REFERENCES main."worker"(id) ON DELETE SET NULL;
-ALTER TABLE "userBadge"
+ALTER TABLE main."userBadge"
 ADD CONSTRAINT "userBadge_centreId_fkey"
 FOREIGN KEY ("centreId") REFERENCES main."equestrianCentre"(id) ON DELETE SET NULL;
 
-CREATE TABLE "centreServicesMapping"(
+CREATE TABLE main."centreServicesMapping"(
     "centreId" INTEGER NOT NULL,
     "serviceId" INTEGER NOT NULL,
     PRIMARY KEY ("centreId", "serviceId"),
     FOREIGN KEY ("serviceId") REFERENCES reference."centreServices"(id) ON DELETE CASCADE,
-    FOREIGN KEY ("centreId") REFERENCES "equestrianCentre"(id) ON DELETE CASCADE
+    FOREIGN KEY ("centreId") REFERENCES main."equestrianCentre"(id) ON DELETE CASCADE
 );
 
-CREATE TABLE "horseQualitiesMapping"(
+CREATE TABLE main."horseQualitiesMapping"(
     "tradeId" INTEGER NOT NULL,
     "qualityId" INTEGER NOT NULL,
     PRIMARY KEY ("tradeId", "qualityId"),
@@ -391,19 +341,9 @@ CREATE TABLE "horseQualitiesMapping"(
     FOREIGN KEY ("tradeId") REFERENCES "trade"(id) ON DELETE CASCADE
 );
 
-CREATE TABLE trade(
-    id SERIAL PRIMARY KEY,
-    "horseId" INTEGER NOT NULL,
-    price DOUBLE PRECISION,
-    location VARCHAR(250) NOT NULL,
-    description VARCHAR(1000) NOT NULL,
-    "contactInformation" JSONB NOT NULL,
-    "createAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("horseId") REFERENCES "horse"(id) ON DELETE CASCADE
-);
 
-CREATE TABLE "serviceProvider"(
+
+CREATE TABLE main."serviceProvider"(
     id SERIAL PRIMARY KEY,
     "userId" INTEGER NOT NULL,
     FOREIGN KEY ("userId") REFERENCES "userData"(id) ON DELETE CASCADE,
@@ -416,7 +356,7 @@ CREATE TABLE "serviceProvider"(
     "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE "worker"(
+CREATE TABLE main."worker"(
     id SERIAL PRIMARY KEY,
     "userId" INTEGER NOT NULL,
     FOREIGN KEY ("userId") REFERENCES "userData"(id) ON DELETE CASCADE,
@@ -428,7 +368,7 @@ CREATE TABLE "worker"(
     "contactInformation" JSONB NOT NULL
 );
 
-CREATE TABLE "workerChoresMapping"(
+CREATE TABLE main."workerChoresMapping"(
     "workerId" INTEGER NOT NULL,
     "choreId" INTEGER NOT NULL,
     PRIMARY KEY ("workerId", "choreId"),
@@ -436,7 +376,7 @@ CREATE TABLE "workerChoresMapping"(
     FOREIGN KEY ("workerId") REFERENCES worker (id) ON DELETE CASCADE
 );
 
-CREATE TABLE "schedule"(
+CREATE TABLE main."schedule"(
     id SERIAL PRIMARY KEY,
     "centreId" INTEGER NOT NULL,
     FOREIGN KEY ("centreId") REFERENCES "equestrianCentre"(id) ON DELETE CASCADE,
@@ -449,25 +389,25 @@ CREATE TABLE "schedule"(
     FOREIGN KEY ("choreId") REFERENCES reference."workerChores"(id) ON DELETE SET NULL,
     price DOUBLE PRECISION
 );
-ALTER TABLE "schedule" ADD COLUMN "numberOfParticipants" INTEGER;
+ALTER TABLE main."schedule" ADD COLUMN "numberOfParticipants" INTEGER;
 
-CREATE TABLE "centreCreateRequest"(
+CREATE TABLE main."centreCreateRequest"(
     id SERIAL PRIMARY KEY,
     status reference."requestStatus" NOT NULL DEFAULT 'new',
     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE "centreCreateRequest"
+ALTER TABLE main."centreCreateRequest"
 ADD COLUMN "centreId" INTEGER NOT NULL,
 ADD CONSTRAINT fk_centre
     FOREIGN KEY ("centreId")
     REFERENCES "equestrianCentre"("id")
     ON DELETE CASCADE;
 
-ALTER TABLE "equestrianCentre" ADD COLUMN "approved" BOOLEAN DEFAULT false;
-ALTER TABLE "worker" ADD COLUMN "certifiedInstructor" BOOLEAN DEFAULT false;
+ALTER TABLE main."equestrianCentre" ADD COLUMN "approved" BOOLEAN DEFAULT false;
+ALTER TABLE main."worker" ADD COLUMN "certifiedInstructor" BOOLEAN DEFAULT false;
 
-CREATE TABLE "badgeApprovalRequest"(
+CREATE TABLE main."badgeApprovalRequest"(
     id SERIAL PRIMARY KEY,
     "receiverId" INTEGER NOT NULL,
     FOREIGN KEY ("receiverId") REFERENCES "worker"(id) ON DELETE CASCADE,
