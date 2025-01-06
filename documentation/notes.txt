@@ -1,1 +1,11 @@
 15px corner radius on  home fields
+
+ilość przepracowanych godzin przez pracowników
+zarobek ze schedule
+ilość obowiązków wykonanych w danym czasie przez pracowników
+podział obowiązków ze względu na typ
+
+żeby dodać pracownika pracodawca musi wpisać kod, który pracownik dostanie na maila? (zabezpieczenie)
+przy approve odznaki nawet jak instruktor/stajnia usunie konto ciągle będzie informacja, że jest approved bo mamy ApprovedAt variable
+
+view dla wszystkich publicznych obiektów żeby tylko z nich wyszukiwać! i je wyświetlać

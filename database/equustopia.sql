@@ -1,22 +1,199 @@
-CREATE SCHEMA main;
 CREATE SCHEMA analytics;
+CREATE TABLE analytics."pagesViews"(
+    id SERIAL PRIMARY KEY,
+    "userId" INTEGER,
+    "pageId" INTEGER NOT NULL,
+    "pageType" VARCHAR(50) CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProvider')) NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "ipAddress" VARCHAR(45),
+    FOREIGN KEY ("userId") REFERENCES main."userData"(id) ON DELETE SET NULL
+);
+ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_page_type_length CHECK (LENGTH("pageType") BETWEEN 2 AND 50);
+ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_ip_address_length CHECK (LENGTH("ipAddress") BETWEEN 2 AND 45);
 
+--usuwanie z pagesViews stron, które już nie istnieją
+CREATE OR REPLACE FUNCTION analytics.delete_page_views()
+RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM analytics."pagesViews"
+    WHERE "pageId" = OLD.id AND "pageType" = tg_table_name;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER horse_delete_trigger2 AFTER DELETE ON main.horse FOR EACH ROW EXECUTE FUNCTION analytics.delete_page_views();
+CREATE TRIGGER equestrian_centre_delete_trigger2 AFTER DELETE ON main."equestrianCentre" FOR EACH ROW EXECUTE FUNCTION analytics.delete_page_views();
+CREATE TRIGGER trade_delete_trigger2 AFTER DELETE ON main."trade" FOR EACH ROW EXECUTE FUNCTION analytics.delete_page_views();
+CREATE TRIGGER service_provider_delete_trigger2 AFTER DELETE ON main."serviceProvider" FOR EACH ROW EXECUTE FUNCTION analytics.delete_page_views();
+
+CREATE VIEW analytics."mostViewedPages" AS
+    SELECT "pageId", "pageType",
+           COUNT(*) AS "viewsCount",
+           RANK() OVER (ORDER BY COUNT(*) DESC) AS "position"
+FROM analytics."pagesViews"
+GROUP BY "pageId", "pageType"
+ORDER BY "viewsCount" DESC
+LIMIT 10;
+
+CREATE OR REPLACE FUNCTION analytics.get_last_viewed_pages(user_id INTEGER)
+RETURNS TABLE (
+    "pageId" INTEGER,
+    "pageType" VARCHAR(50),
+    "timestamp" TIMESTAMP
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT "pageId", "pageType", "timestamp"
+    FROM analytics."pagesViews"
+    WHERE "userId" = user_id
+    ORDER BY "timestamp" DESC
+    LIMIT 10;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION analytics.get_centre_views_by_date(
+    startDate TIMESTAMP,
+    endDate TIMESTAMP,
+    centreId INTEGER
+)
+RETURNS TABLE ("date" DATE, "viewsCount" INTEGER) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT timestamp::DATE AS "date", COUNT(*)::INTEGER AS "viewsCount"
+    FROM analytics."pagesViews"
+    WHERE "pageType" = 'equestrianCentre'
+      AND "pageId" = centreId
+      AND timestamp BETWEEN startDate AND endDate
+    GROUP BY timestamp::DATE
+    ORDER BY "date";
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM analytics.get_centre_views_by_date(
+    '2024-01-01 00:00:00'::TIMESTAMP,
+    CURRENT_TIMESTAMP::TIMESTAMP,
+    6
+);
+
+
+
+CREATE TABLE analytics.favorites(
+    id SERIAL PRIMARY KEY,
+    "userId" INTEGER NOT NULL,
+    "pageId" INTEGER NOT NULL,
+    "pageType" VARCHAR(50) CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProvider')) NOT NULL,
+    "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE analytics."favorites" ADD CONSTRAINT chk_page_type_length CHECK (LENGTH("pageType") BETWEEN 2 AND 50);
+ALTER TABLE analytics.favorites ADD CONSTRAINT fk_favorites_userid FOREIGN KEY ("userId") REFERENCES main."userData" (id) ON DELETE CASCADE;
+
+CREATE OR REPLACE FUNCTION analytics.get_favorites(user_id INTEGER)
+RETURNS TABLE(
+    pageId INTEGER,
+    pageType VARCHAR,
+    createdAt TIMESTAMP
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT "pageId", "pageType", "createdAt"
+    FROM analytics.favorites
+    WHERE "userId" = user_id
+    ORDER BY "createdAt" DESC;
+END;
+$$ LANGUAGE plpgsql;
+
+--usuwanie z favorites stron, które już nie istnieją
+CREATE OR REPLACE FUNCTION analytics.delete_favorites()
+RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM analytics.favorites
+    WHERE "pageId" = OLD.id AND "pageType" = tg_table_name;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER horse_delete_trigger AFTER DELETE ON main.horse FOR EACH ROW EXECUTE FUNCTION analytics.delete_favorites();
+CREATE TRIGGER equestrian_centre_delete_trigger AFTER DELETE ON main."equestrianCentre" FOR EACH ROW EXECUTE FUNCTION analytics.delete_favorites();
+CREATE TRIGGER trade_delete_trigger AFTER DELETE ON main."trade" FOR EACH ROW EXECUTE FUNCTION analytics.delete_favorites();
+CREATE TRIGGER service_provider_delete_trigger AFTER DELETE ON main."serviceProvider" FOR EACH ROW EXECUTE FUNCTION analytics.delete_favorites();
+
+CREATE VIEW analytics."mostFavorites" AS
+SELECT "pageId", "pageType",
+    COUNT(*) AS "favoritesCount",
+    RANK() OVER (ORDER BY COUNT(*) DESC) AS "position"
+FROM analytics."favorites"
+GROUP BY "pageId", "pageType"
+ORDER BY "favoritesCount" DESC
+LIMIT 10;
+
+
+
+
+
+CREATE SCHEMA reference;
+CREATE TYPE reference."requestStatus" AS ENUM ('new', 'in progress', 'approved', 'declined');
+
+CREATE TABLE badges(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL UNIQUE,
+    description VARCHAR(1000) NOT NULL,
+    iconPath VARCHAR(1000) NOT NULL UNIQUE
+);
+
+CREATE TABLE "centreServices"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL UNIQUE,
+    description VARCHAR(1000) NOT NULL
+);
+
+CREATE TABLE "horseQualities"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL UNIQUE,
+    description VARCHAR(1000) NOT NULL
+);
+
+CREATE TABLE "serviceTypes"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL UNIQUE,
+    description VARCHAR(1000) NOT NULL
+);
+
+CREATE TABLE reference."workerChores"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL UNIQUE
+);
+
+
+
+
+
+CREATE SCHEMA main;
 CREATE TABLE main."userData"(
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(60) NOT NULL
 );
-CREATE TABLE main."equestrianCentre"(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(250) NOT NULL,
-    "userId" INTEGER NOT NULL,
-    latitude DOUBLE PRECISION,
-    longitude DOUBLE PRECISION,
-    address VARCHAR(250),
-    UNIQUE (latitude, longitude),
-    FOREIGN KEY ("userId") REFERENCES main."userData"(id) ON DELETE CASCADE
-);
+ALTER TABLE main."userData" ADD COLUMN "birthDate" DATE;
+ALTER TABLE main."userData" ADD COLUMN "profilePhoto" VARCHAR(1000);
+ALTER TABLE main."userData" ADD COLUMN "moderator" BOOLEAN DEFAULT FALSE;
+ALTER TABLE main."userData" ADD COLUMN "private" BOOLEAN DEFAULT TRUE;
+
+INSERT INTO main."userData" (name, email, password) VALUES ('User2', 'user2@gmail.com', 'haslohaslo');
+SELECT * FROM main."userData";
+
+ALTER TABLE main."userData" ADD CONSTRAINT chk_name_length CHECK (LENGTH(name) BETWEEN 2 AND 50);
+ALTER TABLE main."userData" ADD CONSTRAINT chk_email_length CHECK (LENGTH(email) BETWEEN 5 AND 255);
+ALTER TABLE main."userData" ADD CONSTRAINT chk_password_length CHECK (LENGTH(password) BETWEEN 4 AND 60);
+ALTER TABLE main."userData" ADD CONSTRAINT chk_birth_date CHECK ("birthDate" <= CURRENT_DATE);
+
+CREATE VIEW main."publicUsers" AS
+SELECT id, name, email, "birthDate", "profilePhoto"
+FROM main."userData"
+WHERE "private" = FALSE;
+
+
+
 CREATE TABLE main.horse(
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
@@ -25,50 +202,64 @@ CREATE TABLE main.horse(
     FOREIGN KEY ("userId") REFERENCES main."userData"(id) ON DELETE CASCADE,
     FOREIGN KEY ("centreId") REFERENCES main."equestrianCentre"(id) ON DELETE SET NULL
 );
-
-CREATE TABLE analytics."pagesViews"(
-    id SERIAL PRIMARY KEY,
-    "userId" INTEGER,
-    "pageId" INTEGER NOT NULL,
-    "pageType" VARCHAR(50) CHECK ("pageType" IN ('equestrianCentre', 'horse')) NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    "ipAddress" VARCHAR(45),
-    FOREIGN KEY ("userId") REFERENCES main."userData"(id)
-);
-
-CREATE VIEW analytics."mostViewedPages" AS
-    SELECT "pageId", "pageType",
-           COUNT(*) AS "viewsCount",
-           RANK() OVER (ORDER BY COUNT(*) DESC) AS Pozycja
-FROM analytics."pagesViews"
-GROUP BY "pageId", "pageType"
-ORDER BY "viewsCount" DESC
-LIMIT 10;
-
-INSERT INTO main."userData" (name, email, password)
-VALUES ('User2', 'user2@gmail.com', 'haslohaslo');
-
-SELECT * FROM main."userData";
-
-ALTER TABLE main."userData" ADD CONSTRAINT chk_name_length CHECK (LENGTH(name) BETWEEN 2 AND 50);
-ALTER TABLE main."userData" ADD CONSTRAINT chk_email_length CHECK (LENGTH(email) BETWEEN 5 AND 255);
-ALTER TABLE main."userData" ADD CONSTRAINT chk_password_length CHECK (LENGTH(password) BETWEEN 4 AND 60);
+ALTER TABLE main.horse ADD COLUMN "birthDate" DATE;
+ALTER TABLE main.horse ADD COLUMN "breed" VARCHAR(100);
+ALTER TABLE main.horse ADD COLUMN "private" BOOLEAN DEFAULT TRUE;
+ALTER TABLE main.horse ADD COLUMN "photo" VARCHAR(1000);
+ALTER TABLE main.horse ADD COLUMN "height" DOUBLE PRECISION;
+ALTER TABLE main.horse ADD COLUMN "feedingSchedule" JSONB;
 
 INSERT INTO main.horse (name, "userId") VALUES ('Blobiczek', 36);
 INSERT INTO main.horse (name, "userId") VALUES ('Juglaś', 36);
 
-ALTER TABLE main.horse ADD COLUMN "birthDate" DATE;
-
 ALTER TABLE main.horse ADD CONSTRAINT chk_name_length CHECK (LENGTH(name) BETWEEN 2 AND 50);
+ALTER TABLE main.horse ADD CONSTRAINT chk_breed_length CHECK (LENGTH(breed) BETWEEN 2 AND 100);
+ALTER TABLE main.horse ADD CONSTRAINT chk_birth_date CHECK ("birthDate" <= CURRENT_DATE);
+
+CREATE VIEW main."publicHorses" AS
+SELECT id, name, "userId", "birthDate", "breed", "photo", "height"
+FROM main.horse
+WHERE "private" = FALSE;
 
 
---15.11.2024
+
+CREATE TABLE main."equestrianCentre"(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(250) NOT NULL,
+    "userId" INTEGER NOT NULL,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    address VARCHAR(250),
+    FOREIGN KEY ("userId") REFERENCES main."userData"(id) ON DELETE CASCADE
+);
+ALTER TABLE main."equestrianCentre" ADD COLUMN "openHours" JSONB;
+ALTER TABLE main."equestrianCentre" ADD COLUMN "contactInformation" JSONB;
+ALTER TABLE main."equestrianCentre" ADD COLUMN approved BOOLEAN DEFAULT false;
+
 INSERT INTO main."equestrianCentre" (name, "userId") VALUES ('Jazda Konna Blobi', 32);
 
---19.11.2024
 ALTER TABLE main."equestrianCentre" ADD CONSTRAINT chk_name_length CHECK (LENGTH(name) BETWEEN 2 AND 250);
+ALTER TABLE main."equestrianCentre" ADD CONSTRAINT chk_address_length CHECK (LENGTH(address) BETWEEN 2 AND 250);
+ALTER TABLE main."equestrianCentre" ADD CONSTRAINT unique_latitude_longitude UNIQUE (latitude, longitude);
 
---20.11.2024
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --podział konisiów na wiek
 SELECT name, "userId",
         CASE
@@ -128,7 +319,7 @@ $$
         RETURN namee;
     END;
 $$ LANGUAGE 'plpgsql';
-SELECT "userName"(1);
+SELECT main.user_name(1);
 
 CREATE OR REPLACE FUNCTION main."userNameAndEmail" (int)
 RETURNS text AS
@@ -162,132 +353,6 @@ END;
 $$
 LANGUAGE 'plpgsql';
 SELECT "showUserWithError"(1);
-
---29.11.2024
-ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_page_type_length CHECK (LENGTH("pageType") BETWEEN 2 AND 50);
-ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_ip_address_length CHECK (LENGTH("ipAddress") BETWEEN 2 AND 45);
-
---updating whole project and creating sensible database with logic
-CREATE SCHEMA reference;
-SET search_path TO main;
-
-CREATE TABLE badges(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(250) NOT NULL,
-    description VARCHAR(1000) NOT NULL,
-    iconPath VARCHAR(1000) NOT NULL
-);
-
-
-CREATE TABLE "centreServices"(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(250) NOT NULL,
-    description VARCHAR(1000) NOT NULL
-);
-
-CREATE TABLE "horseQualities"(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(250) NOT NULL,
-    description VARCHAR(1000) NOT NULL
-);
-
-CREATE TABLE "serviceTypes"(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(250) NOT NULL,
-    description VARCHAR(1000) NOT NULL
-);
-
-ALTER TABLE "badges" ALTER COLUMN iconPath TYPE VARCHAR(1000);
-
-CREATE TABLE "requestTypes"(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(250) NOT NULL,
-    description VARCHAR(1000) NOT NULL
-);
-
-ALTER TABLE "requestTypes" ADD CONSTRAINT unique_requestTypes_name UNIQUE (name);
-
-CREATE TABLE reference."workerChores"(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(250) NOT NULL
-);
-ALTER TABLE reference."badges" ADD CONSTRAINT unique_badges_icon_path UNIQUE ("iconPath");
-
-CREATE TABLE analytics.favorites(
-    id SERIAL PRIMARY KEY,
-    "userId" INTEGER,
-    "pageId" INTEGER,
-    "pageType" VARCHAR(50) CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProvider')) NOT NULL,
-    "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-ALTER TABLE analytics.favorites ALTER COLUMN "pageId" SET NOT NULL;
-ALTER TABLE analytics."pagesViews" ADD CONSTRAINT pagesviews_pagetype_check CHECK ("pageType" IN ('equestrianCentre', 'horse', 'trade', 'serviceProvider'));
-ALTER TABLE analytics.favorites ALTER COLUMN "pageId" SET NOT NULL;
-
-ALTER TABLE "userData" ADD COLUMN "birthDate" DATE;
-ALTER TABLE "userData" ADD COLUMN "profilePhoto" VARCHAR(1000);
-ALTER TABLE "userData" ADD COLUMN "moderator" BOOLEAN DEFAULT FALSE;
-ALTER TABLE "userData" ADD COLUMN "private" BOOLEAN DEFAULT TRUE;
-
-ALTER TABLE "horse" ADD COLUMN "breed" VARCHAR(100);
-ALTER TABLE "horse" ADD COLUMN "private" BOOLEAN DEFAULT TRUE;
-ALTER TABLE "horse" ADD COLUMN "photo" VARCHAR(1000);
-ALTER TABLE "horse" ADD COLUMN "height" DOUBLE PRECISION;
-ALTER TABLE "horse" ADD COLUMN "feedingSchedule" JSONB;
-
-ALTER TABLE "equestrianCentre" ADD COLUMN "openHours" JSONB;
-ALTER TABLE "equestrianCentre" ADD COLUMN "contactInformation" JSONB;
-
-ALTER TABLE analytics.favorites
-ADD CONSTRAINT fk_favorites_userid FOREIGN KEY ("userId")
-REFERENCES main."userData" (id)
-ON DELETE CASCADE;
-
-
-
---usuwanie z favorites stron, które już nie istnieją
-CREATE OR REPLACE FUNCTION analytics.delete_favorites()
-RETURNS TRIGGER AS $$
-BEGIN
-    DELETE FROM analytics.favorites
-    WHERE "pageId" = OLD.id AND "pageType" = tg_table_name;
-    RETURN OLD;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER horse_delete_trigger
-AFTER DELETE ON horse
-FOR EACH ROW
-EXECUTE FUNCTION analytics.delete_favorites();
-
-CREATE TRIGGER equestrian_centre_delete_trigger
-AFTER DELETE ON "equestrianCentre"
-FOR EACH ROW
-EXECUTE FUNCTION analytics.delete_favorites();
-
-CREATE TRIGGER trade_delete_trigger
-AFTER DELETE ON "trade"
-FOR EACH ROW
-EXECUTE FUNCTION analytics.delete_favorites();
-
-CREATE OR REPLACE FUNCTION analytics.delete_page_views()
-RETURNS TRIGGER AS $$
-BEGIN
-    DELETE FROM analytics."pagesViews"
-    WHERE "pageId" = OLD.id AND "pageType" = tg_table_name;
-    RETURN OLD;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER service_provider_delete_trigger
-AFTER DELETE ON "serviceProvider"
-FOR EACH ROW
-EXECUTE FUNCTION analytics.delete_favorites();
-
-
-
-
 
 CREATE TABLE "userBadge"(
     id SERIAL PRIMARY KEY,
@@ -325,10 +390,6 @@ CREATE TABLE "horseQualitiesMapping"(
     FOREIGN KEY ("qualityId") REFERENCES reference."horseQualities"(id) ON DELETE CASCADE,
     FOREIGN KEY ("tradeId") REFERENCES "trade"(id) ON DELETE CASCADE
 );
-
-
-
-
 
 CREATE TABLE trade(
     id SERIAL PRIMARY KEY,
@@ -390,8 +451,6 @@ CREATE TABLE "schedule"(
 );
 ALTER TABLE "schedule" ADD COLUMN "numberOfParticipants" INTEGER;
 
-CREATE TYPE reference."requestStatus" AS ENUM ('new', 'in progress', 'approved', 'declined');
-
 CREATE TABLE "centreCreateRequest"(
     id SERIAL PRIMARY KEY,
     status reference."requestStatus" NOT NULL DEFAULT 'new',
@@ -427,11 +486,3 @@ CREATE TABLE main."bookedActivities" (
     FOREIGN KEY ("userId") REFERENCES main."userData" (id) ON DELETE CASCADE,
     FOREIGN KEY ("scheduleId") REFERENCES main."schedule" (id) ON DELETE CASCADE
 );
-
---ilość przepracowanych godzin przez pracowników
---zarobek ze schedule
---ilość obowiązków wykonanych w danym czasie przez pracowników
---podział obowiązków ze względu na typ
-
---żeby dodać pracownika pracodawca musi wpisać kod, który pracownik dostanie na maila? (zabezpieczenie)
---przy approve odznaki nawet jak instruktor/stajnia usunie konto ciągle będzie informacja, że jest approved bo mamy ApprovedAt variable
