@@ -158,9 +158,9 @@
         }
         
         [HttpGet]
-        public IActionResult GetEquestrianCentres()
+        public IActionResult GetApprovedEquestrianCentres()
         {
-            var centres = _context.EquestrianCentres
+            var centres = _context.ApprovedEquestrianCentres
                 .Select(s => new { s.id, s.name })
                 .ToList();
 

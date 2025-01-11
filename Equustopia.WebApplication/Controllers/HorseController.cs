@@ -21,7 +21,8 @@
         // GET: /Horse/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
-            var horse = _context.Horses.Include(h => h.UserData).Include(h => h.EquestrianCentre).FirstOrDefault(h => h.id == id);
+            var horse = _context.Horses.Include(h => h.UserData).
+                Include(h => h.EquestrianCentre).FirstOrDefault(h => h.id == id);
             if (horse == null)
             {
                 return NotFound("Horse not found");

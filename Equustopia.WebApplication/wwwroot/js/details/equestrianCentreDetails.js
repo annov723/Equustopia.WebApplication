@@ -226,6 +226,10 @@ function generateHorseAgeChart(id){
         .catch(error => console.error("Error fetching horse age data:", error));
 }
 
+function openCentreVerificationView(){
+    
+}
+
 
 
 const centreNameConstraint = "chk_name_length";

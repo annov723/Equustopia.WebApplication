@@ -7,7 +7,7 @@ function viewCentreDetails(centreId){
 }
 
 function populateCentreDropdown(selectName) {
-    fetch("/User/GetEquestrianCentres")
+    fetch("/User/GetApprovedEquestrianCentres")
         .then(response => response.json())
         .then(data => {
             const stableSelect = document.getElementById(selectName);

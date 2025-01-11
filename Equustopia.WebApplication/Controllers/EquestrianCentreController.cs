@@ -31,6 +31,15 @@
             int? userId = HttpContext.Session.GetInt32("UserId") ?? null;
             var isOwner = userId != null && centre.userId == userId;
             ViewBag.IsOwner = isOwner;
+            if (userId != null)
+            {
+                ViewBag.UserId = userId;
+            }
+            else
+            {
+                ViewBag.userId = -1;
+            }
+            
 
             if (!isOwner)
             {

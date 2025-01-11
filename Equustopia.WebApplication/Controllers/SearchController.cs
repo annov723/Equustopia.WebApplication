@@ -25,7 +25,7 @@
                 .Select(h => new { Type = "Horse", Id = h.id, Name = h.name })
                 .ToList();
 
-            var stables = _context.EquestrianCentres
+            var stables = _context.ApprovedEquestrianCentres
                 .Where(s => s.name.ToLower().Contains(query.ToLower()))
                 .Select(s => new { Type = "EquestrianCentre", Id = s.id, Name = s.name })
                 .ToList();

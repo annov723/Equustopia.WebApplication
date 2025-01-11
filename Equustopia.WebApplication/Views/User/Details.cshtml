@@ -47,6 +47,10 @@
             <div id="my-centres" class="items-frame">
                 @foreach (var centre in Model.EquestrianCentres)
                 {
+                    @if (!centre.approved)
+                    {
+                        continue;
+                    }
                     <button class="element-button" onclick="viewCentreDetails(@centre.id)">
                         <img src="" class="item-photo" alt="centre photo"/>
                         <span class="item-name">@centre.name

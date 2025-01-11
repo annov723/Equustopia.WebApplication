@@ -31,11 +31,5 @@
         
         [NumberPositive(ErrorMessage = "Height must be grater than 0.")]
         public double? height { get; set; }
-
-        public required UserData UserData { get; set; }
-        public EquestrianCentre? EquestrianCentre { get; set; }
-        
-        [NotMapped]
-        public bool IsOwnerLogged { get; set; }
     }
 }

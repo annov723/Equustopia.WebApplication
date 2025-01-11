@@ -38,6 +38,6 @@
         
         public ICollection<EquestrianCentre> EquestrianCentres { get; set; }
         public ICollection<Horse> Horses { get; set; }
-        public ICollection<pagesViews> pagesViews { get; set; }
+        public ICollection<PagesViews> PagesViews { get; set; }
     }
 }
