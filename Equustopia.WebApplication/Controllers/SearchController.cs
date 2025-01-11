@@ -20,7 +20,7 @@
                 return BadRequest(new { success = false, message = "Search query cannot be empty." });
             }
 
-            var horses = _context.Horses
+            var horses = _context.PublicHorses
                 .Where(h => h.name.ToLower().Contains(query.ToLower()))
                 .Select(h => new { Type = "Horse", Id = h.id, Name = h.name })
                 .ToList();
@@ -30,7 +30,7 @@
                 .Select(s => new { Type = "EquestrianCentre", Id = s.id, Name = s.name })
                 .ToList();
 
-            var users = _context.UsersData
+            var users = _context.PublicUsers
                 .Where(u => u.name.ToLower().Contains(query.ToLower()))
                 .Select(u => new { Type = "User", Id = u.id, Name = u.name })
                 .ToList();

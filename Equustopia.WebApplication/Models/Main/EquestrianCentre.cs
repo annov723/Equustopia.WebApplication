@@ -2,7 +2,6 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Main;
 
     [Table("equestrianCentre", Schema = "main")]
     public class EquestrianCentre
@@ -23,6 +22,14 @@
 
         [StringLength(250, MinimumLength = 2, ErrorMessage = "Address must be between 2 and 250 characters.")]
         public string? address { get; set; }
+        
+        [Column(TypeName = "jsonb")]
+        public string? contactInformation { get; set; }
+        
+        [Column(TypeName = "jsonb")]
+        public string? openHours { get; set; }
+        
+        public bool approved { get; set; }
         
         public required UserData UserData { get; set; }
         public ICollection<Horse>? Horses { get; set; }

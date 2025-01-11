@@ -27,6 +27,10 @@
             <div id="my-horses" class="items-frame">
                 @foreach (var horse in Model.Horses)
                 {
+                    @if (horse.isPrivate)
+                    {
+                        continue;
+                    }
                     <button class="element-button" onclick="viewHorseDetails(@horse.id)">
                         <img src="" class="item-photo" alt="horse photo"/>
                         <span class="item-name">@horse.name

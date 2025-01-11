@@ -2,9 +2,9 @@
 {
     public class HorseRequest
     {
-        public int? Id { get; set; } = null;
-        public string Name { get; set; }
-        //public string Breed { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; } = null;
+        public string? Breed { get; set; } = null;
         public DateTime? BirthDate { get; set; } = null;
         public int? EquestrianCentreId { get; set; } = null;
     }

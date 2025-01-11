@@ -12,12 +12,26 @@
 
 <div class="main-info">
     <div class="details-green-rectangle">
-        @if((bool)ViewBag.IsOwner)
+        
+        @if ((bool)ViewBag.IsOwner)
         {
-        <div class="owner-buttons">
-            <button class="classic-button" onclick="openEditHorseView()">edit</button>
-            <button class="classic-button" onclick="openRemoveHorseView()">remove</button>
-        </div>
+            <div style="margin-right: 50px">
+                @if(Model.isPrivate)
+                {
+                    <button class="classic-button" id="horse-privacy-1" onclick="horsePrivacyChange(@Model.id)" style="margin-right: 0" disabled="disabled">private</button>
+                    <button class="classic-button" id="horse-privacy-2" onclick="horsePrivacyChange(@Model.id)" style="margin-left: 0">public</button>
+                }
+                else
+                {
+                    <button class="classic-button" id="horse-privacy-1" onclick="horsePrivacyChange(@Model.id)" style="margin-right: 0">private</button>
+                    <button class="classic-button" id="horse-privacy-2" onclick="horsePrivacyChange(@Model.id)" style="margin-left: 0" disabled="disabled">public</button>
+                }
+            </div>
+            
+            <div class="owner-buttons">
+                <button class="classic-button" onclick="openEditHorseView()">edit</button>
+                <button class="classic-button" onclick="openRemoveHorseView()">remove</button>
+            </div>
         }
     </div>
     <div class="details-info">
@@ -26,7 +40,14 @@
         <div class="text-info">
             <span class="user-name">@Model.name</span>
             <span class="birth-date">@Model.birthDate?.ToString("dd/MM/yyyy")</span>
+            @if (!Model.UserData.isPrivate || (bool)ViewBag.IsOwner)
+            {
             <a class="owner" href="~/User/Details/@Model.UserData.id">@Model.UserData.name</a>
+            }
+            else
+            {
+            <span class="owner">@Model.UserData.name</span>
+            }
             <a class="home" href="~/EquestrianCentre/Details/@Model.EquestrianCentre?.id">@Model.EquestrianCentre?.name</a>
         </div>
     </div>

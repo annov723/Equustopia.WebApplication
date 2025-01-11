@@ -18,6 +18,9 @@
         public DbSet<pagesViews> PagesViews { get; set; }
         public DbSet<MostViewedPages> MostViewedPages { get; set; }
         
+        public DbSet<PublicHorses> PublicHorses { get; set; }
+        public DbSet<PublicUsers> PublicUsers { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -49,6 +52,9 @@
                 .HasForeignKey(ws => ws.userId).OnDelete(DeleteBehavior.NoAction);
             
             modelBuilder.Entity<MostViewedPages>().HasNoKey().ToView("mostViewedPages", "analytics");
+            
+            modelBuilder.Entity<PublicHorses>().HasNoKey().ToView("publicHorses", "main");
+            modelBuilder.Entity<PublicUsers>().HasNoKey().ToView("publicUsers", "main");
         }
     }
 

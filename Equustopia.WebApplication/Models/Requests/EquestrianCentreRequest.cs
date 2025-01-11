@@ -2,11 +2,11 @@
 {
     public class EquestrianCentreRequest
     {
-        public int? Id { get; set; } = null;
-        public required string Name { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; } = null;
         public string? Address{ get; set; } = null;
         public double? Latitude { get; set; } = null;
         public double? Longitude { get; set; } = null;
-        public int UserId { get; set; }
+        public int? UserId { get; set; } = null;
     }
 }

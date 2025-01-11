@@ -68,7 +68,7 @@ function removeEquestrianCentre(id) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ id: id })
+        body: JSON.stringify({ Id: id })
     })
         .then(response => response.json())
         .then(data => {
@@ -76,7 +76,7 @@ function removeEquestrianCentre(id) {
                 window.location.href = `/User/UserMainPage`;
                 closeRemoveCentreView();
             } else {
-                document.getElementById("removeCentreError").textContent = "An error occurred while removing a centre.";
+                document.getElementById("removeCentreError").textContent = "An error occurred while removing a centre. " + data.message;
             }
         })
         .catch(error => console.error("Error removing centre:", error));
