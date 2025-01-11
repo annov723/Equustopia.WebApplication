@@ -520,6 +520,25 @@ EXECUTE FUNCTION main.remove_page_views_on_unapproved_centre_change();
 
 
 
+CREATE OR REPLACE FUNCTION main.remove_horses_centre_on_unapproved_centre_change()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW."approved" = false AND OLD."approved" = true THEN
+        UPDATE main.horse
+        SET "centreId" = NULL
+        WHERE "centreId" = OLD.id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_remove_horses_centre_on_unapproved_centre_change
+AFTER UPDATE OF "approved" ON main."equestrianCentre"
+FOR EACH ROW
+EXECUTE FUNCTION main.remove_horses_centre_on_unapproved_centre_change();
+
+
+
 
 
 
