@@ -2,6 +2,7 @@
 {
     using Microsoft.EntityFrameworkCore;
     using Models.Analytics;
+    using Models.Helpers;
     using Models.Main;
 
     public class AppDbContext : DbContext
@@ -56,6 +57,10 @@
             modelBuilder.Entity<PublicHorses>().HasNoKey().ToView("publicHorses", "main");
             modelBuilder.Entity<PublicUsers>().HasNoKey().ToView("publicUsers", "main");
             modelBuilder.Entity<ApprovedEquestrianCentres>().HasNoKey().ToView("approvedEquestrianCentres", "main");
+            
+            modelBuilder.Entity<HorseAgeGroup>().HasNoKey();
+            modelBuilder.Entity<HorseBreedGroup>().HasNoKey();
+            modelBuilder.Entity<CentreViewsByDate>().HasNoKey();
         }
     }
 

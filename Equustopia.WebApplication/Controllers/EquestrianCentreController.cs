@@ -3,6 +3,7 @@
     using Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Models.Helpers;
     using Models.Requests;
     using Npgsql;
     using Services;
@@ -112,43 +113,66 @@
             return Json(new { success = true });
         }
         
+        [HttpGet]
         public async Task<IActionResult> GetCentreViews(int centreId, DateTime startDate, DateTime endDate)
         {
-            startDate = startDate.ToUniversalTime();
-            endDate = endDate.ToUniversalTime();
-            
-            var viewsData = await _context.PagesViews
-                .Where(pv => pv.pageType == "equestrianCentre" && pv.pageId == centreId && pv.timestamp >= startDate && pv.timestamp <= endDate)
-                .GroupBy(pv => pv.timestamp.Date)
-                .Select(g => new 
-                {
-                    Date = g.Key.Date,
-                    Views = g.Count()
-                })
-                .OrderBy(g => g.Date)
+            var centreViewsByDate = await _context.Set<CentreViewsByDate>()
+                .FromSqlRaw(
+                    @"SELECT * FROM analytics.get_centre_views_by_date({0}, {1}, {2})", 
+                    startDate, endDate, centreId)
                 .ToListAsync();
+        
+            if (centreViewsByDate.Count == 0) return NotFound();
 
-            return Json(viewsData);
+            return Json(centreViewsByDate);
         }
         
+        [HttpGet]
+        public async Task<IActionResult> GetHourlyViews(int centreId)
+        {
+            var hourlyViews = await _context.Set<CentreViewsByDate>() // Assume HourlyViews is a model class
+                .FromSqlRaw("SELECT * FROM analytics.get_centre_views_by_hour({0})", centreId)
+                .ToListAsync();
+
+            if (hourlyViews.Count == 0) return NotFound();
+
+            return Json(hourlyViews);
+        }
+        
+        [HttpGet]
         public async Task<IActionResult> GetHorsesAgeGroups(int centreId)
         {
-            var equestrianCentre = _context.EquestrianCentres.Include(h => h.UserData).
-                Include(h => h.Horses).FirstOrDefault(s => s.id == centreId);
+            var horseAgeGroups = await _context.Set<HorseAgeGroup>()
+                .FromSqlRaw(
+                    @"SELECT * FROM main.get_horse_counts_by_age_group({0})", 
+                    centreId)
+                .ToListAsync();
         
-            if (equestrianCentre?.Horses == null) return NotFound();
-    
-            var currentYear = DateTime.UtcNow.Year;
-    
-            var horseAgeGroups = new
+            if (horseAgeGroups.Count == 0) return NotFound();
+            
+            var result = new
             {
-                AgeGroup_0_3 = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year <= 3),
-                AgeGroup_3_10 = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year > 3 && currentYear - h.birthDate?.Year <= 10),
-                AgeGroup_10_19 = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year > 10 && currentYear - h.birthDate?.Year <= 19),
-                AgeGroup_19_Plus = equestrianCentre.Horses.Count(h => currentYear - h.birthDate?.Year > 19)
+                ageGroup_0_3 = horseAgeGroups.FirstOrDefault(x => x.age_group == "0_3")?.horse_count ?? 0,
+                ageGroup_3_10 = horseAgeGroups.FirstOrDefault(x => x.age_group == "3_10")?.horse_count ?? 0,
+                ageGroup_10_19 = horseAgeGroups.FirstOrDefault(x => x.age_group == "10_19")?.horse_count ?? 0,
+                ageGroup_19_Plus = horseAgeGroups.FirstOrDefault(x => x.age_group == "19_")?.horse_count ?? 0,
             };
-
-            return Json(horseAgeGroups);
+            
+            return Json(result);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetHorsesBreedGroups(int centreId)
+        {
+            var horseBreedGroups = await _context.Set<HorseBreedGroup>()
+                .FromSqlRaw(
+                    @"SELECT * FROM main.get_horse_count_by_breed({0})", 
+                    centreId)
+                .ToListAsync();
+        
+            if (horseBreedGroups.Count == 0) return NotFound();
+            
+            return Json(horseBreedGroups);
         }
     }
 }

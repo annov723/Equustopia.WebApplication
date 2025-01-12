@@ -89,10 +89,7 @@ function generateChart(id){
     
     switch(selectedOption){
         case 'dailyViews':
-            const endDateDay = new Date();
-            const startDateDay = new Date();
-            startDateDay.setDate(endDateDay.getDate() - 1);
-            generateViewsChart(id, startDateDay, endDateDay);
+            generateHourlyViewsChart(id);
             break;
         case 'weeklyViews':
             const endDateWeek = new Date();
@@ -109,10 +106,78 @@ function generateChart(id){
         case 'horseAge':
             generateHorseAgeChart(id);
             break;
+        case 'horseBreed':
+            generateHorseBreedChart(id);
+            break;
         default:
             console.error('Invalid option selected.');
             return;
     }
+}
+
+function generateHourlyViewsChart(centreId) {
+    fetch(`/EquestrianCentre/GetHourlyViews?centreId=${centreId}`)
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+            const views = data.map(item => item.viewsCount);
+
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+
+            const ctx = document.getElementById('chartCanvas').getContext('2d');
+            window.myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Views in last 24 hours',
+                        data: views,
+                        fill: true,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0,123,255,0.2)',
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Centre Views'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Hour'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Number of Views'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById("chartCanvas").style.display = "block";
+        })
+        .catch(error => {
+            if (error.message.includes("NotFound")) {
+                document.getElementById("chartCanvas").innerText = "No views found for the last 24 hours.";
+            } else {
+                console.error("Error fetching hourly views data:", error);
+            }
+        });
 }
 
 function generateViewsChart(id, startDate, endDate){
@@ -123,7 +188,7 @@ function generateViewsChart(id, startDate, endDate){
         .then(response => response.json())
         .then(data => {
             const labels = data.map(item => item.date.split('T')[0]);
-            const views = data.map(item => item.views);
+            const views = data.map(item => item.viewsCount);
 
 
             console.log("data:", data);
@@ -176,8 +241,12 @@ function generateViewsChart(id, startDate, endDate){
             });
             document.getElementById("chartCanvas").style.display = "block";
         })
-        .catch(error => console.error("Error fetching views data:", error));
-    
+        .catch(error => {
+            if (error.message.includes("NotFound")) {
+                document.getElementById("chartCanvas").innerText = "No views found.";
+            } else {
+                console.error("Error fetching views data:", error);
+            }});
 }
 
 function generateHorseAgeChart(id){
@@ -216,15 +285,79 @@ function generateHorseAgeChart(id){
                         },
                         title: {
                             display: true,
-                            text: 'Horse Age Distribution'
+                            text: 'Horses Age '
                         }
                     }
                 }
             });
             document.getElementById("chartCanvas").style.display = "block";
         })
-        .catch(error => console.error("Error fetching horse age data:", error));
+        .catch(error => {
+            if (error.message.includes("NotFound")) {
+                document.getElementById("chartCanvas").innerText = "No horses found.";
+            } else {
+                console.error("Error fetching horse age data:", error);
+            }});
 }
+
+function generateHorseBreedChart(id){
+    fetch(`/EquestrianCentre/GetHorsesBreedGroups?centreId=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(group => group.breed);
+            const counts = data.map(group => group.horse_count);
+            
+            const ctx = document.getElementById('chartCanvas').getContext('2d');
+
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+
+            window.myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Horse Breed Groups',
+                        data: counts,
+                        backgroundColor: generateColors(labels.length),
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Horses Breed'
+                        }
+                    }
+                }
+            });
+            document.getElementById("chartCanvas").style.display = "block";
+        })
+        .catch(error => {
+            if (error.message.includes("NotFound")) {
+                document.getElementById("chartCanvas").innerText = "No horses found.";
+            } else {
+                console.error("Error fetching horse breed data:", error);
+            }
+        });
+}
+
+function generateColors(count) {
+    const colors = ['#3cb3d7', '#f4b400', '#f15c24', '#6a737b', '#8e44ad', '#27ae60', '#e67e22', '#d35400'];
+    while (colors.length < count) {
+        colors.push(`#${Math.floor(Math.random() * 16777215).toString(16)}`);
+    }
+    return colors.slice(0, count);
+}
+
+
+
 
 function openCentreVerificationView(){
     
