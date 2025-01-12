@@ -52,28 +52,67 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION analytics.get_centre_views_by_date(
-    startDate TIMESTAMP,
-    endDate TIMESTAMP,
-    centreId INTEGER
-)
+    startDate timestamp with time zone, endDate timestamp with time zone, centreId INTEGER)
 RETURNS TABLE ("date" DATE, "viewsCount" INTEGER) AS $$
 BEGIN
     RETURN QUERY
-    SELECT timestamp::DATE AS "date", COUNT(*)::INTEGER AS "viewsCount"
-    FROM analytics."pagesViews"
-    WHERE "pageType" = 'equestrianCentre'
-      AND "pageId" = centreId
-      AND timestamp BETWEEN startDate AND endDate
-    GROUP BY timestamp::DATE
-    ORDER BY "date";
+    WITH date_series AS (
+        SELECT generate_series(startDate::DATE, endDate::DATE, '1 day') AS "date"
+    ),
+    views AS (
+        SELECT
+            timestamp::DATE AS "date",
+            COUNT(*)::INTEGER AS "viewsCount"
+        FROM analytics."pagesViews"
+        WHERE "pageType" = 'equestrianCentre'
+          AND "pageId" = centreId
+          AND timestamp BETWEEN startDate AND endDate
+        GROUP BY timestamp::DATE
+    )
+    SELECT
+        d."date"::DATE,
+        COALESCE(v."viewsCount", 0)::INTEGER AS "viewsCount"
+    FROM date_series d
+    LEFT JOIN views v ON d."date" = v."date"
+    ORDER BY d."date";
 END;
 $$ LANGUAGE plpgsql;
 
 SELECT * FROM analytics.get_centre_views_by_date(
-    '2024-01-01 00:00:00'::TIMESTAMP,
+    '2025-01-06 00:00:00'::TIMESTAMP,
     CURRENT_TIMESTAMP::TIMESTAMP,
-    6
+    5
 );
+
+CREATE OR REPLACE FUNCTION analytics.get_centre_views_by_hour(centre_id INTEGER)
+RETURNS TABLE(date TIMESTAMP, "viewsCount" INTEGER) AS $$
+BEGIN
+    RETURN QUERY
+    WITH hours AS (
+        SELECT generate_series(
+            date_trunc('hour', NOW() - INTERVAL '23 hours')::TIMESTAMP,
+            date_trunc('hour', NOW())::TIMESTAMP,
+            '1 hour'
+        ) AS date
+    ),
+    views AS (
+        SELECT
+            date_trunc('hour', timestamp)::TIMESTAMP AS date,
+            COUNT(*)::INTEGER AS "viewsCount"
+        FROM analytics."pagesViews"
+        WHERE "pageType" = 'equestrianCentre'
+          AND "pageId" = centre_id
+          AND timestamp >= NOW() - INTERVAL '24 hours'
+        GROUP BY date_trunc('hour', timestamp)::TIMESTAMP
+    )
+    SELECT h.date, COALESCE(v."viewsCount", 0)::INTEGER AS "viewsCount"
+    FROM hours h
+    LEFT JOIN views v ON h.date = v.date
+    ORDER BY h.date;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM analytics.get_centre_views_by_hour(5);
 
 
 
@@ -252,10 +291,10 @@ BEGIN
     SELECT
         CAST(
             CASE
-                WHEN EXTRACT(YEAR FROM AGE(horse."birthDate")) <= 3 THEN '0-3'
-                WHEN EXTRACT(YEAR FROM AGE(horse."birthDate")) <= 10 THEN '3-10'
-                WHEN EXTRACT(YEAR FROM AGE(horse."birthDate")) <= 19 THEN '10-19'
-                ELSE '19+'
+                WHEN EXTRACT(YEAR FROM AGE(horse."birthDate")) <= 3 THEN '0_3'
+                WHEN EXTRACT(YEAR FROM AGE(horse."birthDate")) <= 10 THEN '3_10'
+                WHEN EXTRACT(YEAR FROM AGE(horse."birthDate")) <= 19 THEN '10_19'
+                ELSE '19_'
             END AS VARCHAR
         ) AS age_group,
         COUNT(*)::INTEGER AS horse_count
@@ -536,6 +575,38 @@ CREATE TRIGGER trigger_remove_horses_centre_on_unapproved_centre_change
 AFTER UPDATE OF "approved" ON main."equestrianCentre"
 FOR EACH ROW
 EXECUTE FUNCTION main.remove_horses_centre_on_unapproved_centre_change();
+
+
+
+-- 100 rows of fake data - analytics."pagesViews"
+DO $$
+BEGIN
+    FOR i IN 1..100 LOOP
+        INSERT INTO analytics."pagesViews" ("userId", "pageId", "pageType", timestamp, "ipAddress")
+        VALUES (
+            (SELECT id FROM main."userData" ORDER BY RANDOM() LIMIT 1),
+            CASE WHEN RANDOM() < 0.5 THEN 5 ELSE 8 END,
+            'equestrianCentre',
+            NOW() - (RANDOM() * INTERVAL '30 days'),
+            FORMAT('%s.%s.%s.%s',
+                FLOOR(RANDOM() * 256),
+                FLOOR(RANDOM() * 256),
+                FLOOR(RANDOM() * 256),
+                FLOOR(RANDOM() * 256)
+            )
+        );
+    END LOOP;
+END $$;
+
+
+
+
+
+
+
+
+
+
 
 
 

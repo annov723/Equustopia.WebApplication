@@ -119,7 +119,7 @@
             var centreViewsByDate = await _context.Set<CentreViewsByDate>()
                 .FromSqlRaw(
                     @"SELECT * FROM analytics.get_centre_views_by_date({0}, {1}, {2})", 
-                    startDate, endDate, centreId)
+                    startDate.Date, endDate.Date, centreId)
                 .ToListAsync();
         
             if (centreViewsByDate.Count == 0) return NotFound();

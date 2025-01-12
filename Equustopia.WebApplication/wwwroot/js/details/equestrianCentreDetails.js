@@ -132,7 +132,7 @@ function generateHourlyViewsChart(centreId) {
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Views in last 24 hours',
+                        label: 'views count',
                         data: views,
                         fill: true,
                         borderColor: '#007bff',
@@ -204,7 +204,7 @@ function generateViewsChart(id, startDate, endDate){
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: `Views (${startDate} to ${endDate})`,
+                        label: `views count`,
                         data: views,
                         backgroundColor: '#2895b5',
                         borderColor: '#1c6d8c',
@@ -246,7 +246,8 @@ function generateViewsChart(id, startDate, endDate){
                 document.getElementById("chartCanvas").innerText = "No views found.";
             } else {
                 console.error("Error fetching views data:", error);
-            }});
+            }
+        });
 }
 
 function generateHorseAgeChart(id){
@@ -264,7 +265,7 @@ function generateHorseAgeChart(id){
                 data: {
                     labels: ['0-3 years', '3-10 years', '10-19 years', '19+ years'],
                     datasets: [{
-                        label: 'Horse Age Groups',
+                        label: 'count',
                         data: [
                             data.ageGroup_0_3,
                             data.ageGroup_3_10,
@@ -285,7 +286,7 @@ function generateHorseAgeChart(id){
                         },
                         title: {
                             display: true,
-                            text: 'Horses Age '
+                            text: 'Horse Age'
                         }
                     }
                 }
@@ -318,7 +319,7 @@ function generateHorseBreedChart(id){
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Horse Breed Groups',
+                        label: 'count',
                         data: counts,
                         backgroundColor: generateColors(labels.length),
                         hoverOffset: 4
@@ -332,7 +333,7 @@ function generateHorseBreedChart(id){
                         },
                         title: {
                             display: true,
-                            text: 'Horses Breed'
+                            text: 'Horse Breed'
                         }
                     }
                 }
