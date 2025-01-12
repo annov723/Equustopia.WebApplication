@@ -12,11 +12,23 @@
 
 <div class="user-main-container">
     <div class="green-rectangle">
+        <div style="margin-right: 50px">
+            @if(Model.IsPrivate)
+            {
+                <button class="classic-button" id="user-privacy-1" onclick="userPrivacyChange(@Model.Id)" style="margin-right: 0" disabled="disabled">private</button>
+                <button class="classic-button" id="user-privacy-2" onclick="userPrivacyChange(@Model.Id)" style="margin-left: 0">public</button>
+            }
+            else
+            {
+                <button class="classic-button" id="user-privacy-1" onclick="userPrivacyChange(@Model.Id)" style="margin-right: 0">private</button>
+                <button class="classic-button" id="user-privacy-2" onclick="userPrivacyChange(@Model.Id)" style="margin-left: 0" disabled="disabled">public</button>
+            }
+        </div>
         <button class="border-button-green" onclick="openRemoveUserView()">remove</button>
     </div>
     <img src="~/resources/icons/profile-picture-icon.svg" class="user-icon" alt="user profile icon"/>
     <span class="user-name">@Model.Name</span>
-    
+
     <div class="frames-storage" style="margin-bottom: 50px">
         @if (Model.Horses is { Count: > 0 })
         {

@@ -56,6 +56,7 @@
                 Id = userData.id,
                 Name = userData.name,
                 Email = userData.email,
+                IsPrivate = userData.isPrivate,
                 Horses = userHorses,
                 EquestrianCentres = userCentres
             };
@@ -157,9 +158,9 @@
         }
         
         [HttpGet]
-        public IActionResult GetEquestrianCentres()
+        public IActionResult GetApprovedEquestrianCentres()
         {
-            var centres = _context.EquestrianCentres
+            var centres = _context.ApprovedEquestrianCentres
                 .Select(s => new { s.id, s.name })
                 .ToList();
 
@@ -192,6 +193,33 @@
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "An error occurred while removing the user. " + ex });
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> PrivacyChange([FromBody] UserRequest? request)
+        {
+            if (request == null || request.Id <= 0)
+            {
+                return Json(new { success = false, message = "Invalid user id " + request?.Id + "." });
+            }
+            
+            try
+            {
+                var user = await _context.UsersData.FindAsync(request.Id);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "User not found." });
+                }
+
+                user.isPrivate = !user.isPrivate;
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while changing user privacy setting." + ex });
             }
         }
     }

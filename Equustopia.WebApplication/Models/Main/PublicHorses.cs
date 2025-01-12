@@ -4,8 +4,8 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using Attributes;
 
-    [Table("horse", Schema = "main")]
-    public class Horse
+    [Table("publicHorses", Schema = "main")]
+    public class PublicHorses
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -17,30 +17,19 @@
 
         [Required]
         public required int userId { get; set; }
-
-        public int? centreId { get; set; }
         
+        public int? centreId { get; set; }
+
         [DateNotInFuture(ErrorMessage = "Birth date cannot be in the future.")]
         public DateTime? birthDate { get; set; }
         
         [StringLength(100, MinimumLength = 2, ErrorMessage = "Breed must be between 2 and 100 characters.")]
         public string? breed { get; set; }
-
-        public bool isPrivate { get; set; } = true;
         
-        [StringLength(1000, MinimumLength = 2, ErrorMessage = "Photo path must be between 2 and 1000 characters.")]
+        [StringLength(1000, MinimumLength = 2, ErrorMessage = "Breed must be between 2 and 1000 characters.")]
         public string? photo { get; set; }
         
         [NumberPositive(ErrorMessage = "Height must be grater than 0.")]
         public double? height { get; set; }
-
-        public required UserData UserData { get; set; }
-        public EquestrianCentre? EquestrianCentre { get; set; }
-        
-        [Column(TypeName = "jsonb")]
-        public string? feedingSchedule { get; set; }
-        
-        [NotMapped]
-        public bool IsOwnerLogged { get; set; }
     }
 }

@@ -3,8 +3,8 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("equestrianCentre", Schema = "main")]
-    public class EquestrianCentre
+    [Table("approvedEquestrianCentres", Schema = "main")]
+    public class ApprovedEquestrianCentres
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,7 +12,7 @@
         
         [Required]
         [StringLength(250, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 250 characters.")]
-        public required string? name { get; set; }
+        public required string name { get; set; }
         
         [Required]
         public required int userId { get; set; }
@@ -28,12 +28,5 @@
         
         [Column(TypeName = "jsonb")]
         public string? openHours { get; set; }
-        
-        public bool approved { get; set; }
-        
-        public required UserData UserData { get; set; }
-        public ICollection<Horse>? Horses { get; set; }
-        
-        
     }
 }

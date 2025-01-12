@@ -85,4 +85,33 @@ function removeHorse(id) {
         .catch(error => console.error("Error removing horse:", error));
 }
 
+function horsePrivacyChange(id) {
+
+    fetch(`/Horse/PrivacyChange`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ Id: id })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const button1 = document.getElementById('horse-privacy-1');
+                const button2 = document.getElementById('horse-privacy-2');
+                if(button1.disabled) {
+                    button1.disabled=false;
+                    button2.disabled=true;
+                }
+                else {
+                    button1.disabled=true;
+                    button2.disabled=false;
+                }
+            } else {
+                alert("An error occurred while updating privacy. " + data.message);
+            }
+        })
+        .catch(error => console.error("Error updating privacy:", error));
+}
+
 const horseNameConstraint = "chk_name_length";

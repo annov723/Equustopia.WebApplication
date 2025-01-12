@@ -1,4 +1,4 @@
-﻿namespace Equustopia.WebApplication.Controllers.Horse
+﻿namespace Equustopia.WebApplication.Controllers
 {
     using Data;
     using Microsoft.AspNetCore.Mvc;
@@ -21,7 +21,8 @@
         // GET: /Horse/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
-            var horse = _context.Horses.Include(h => h.UserData).Include(h => h.EquestrianCentre).FirstOrDefault(h => h.id == id);
+            var horse = _context.Horses.Include(h => h.UserData).
+                Include(h => h.EquestrianCentre).FirstOrDefault(h => h.id == id);
             if (horse == null)
             {
                 return NotFound("Horse not found");
@@ -94,6 +95,34 @@
             _context.SaveChanges();
 
             return Json(new { success = true });
+        }
+        
+        // POST: /Horse/PrivacyChange
+        [HttpPost]
+        public async Task<IActionResult> PrivacyChange([FromBody] HorseRequest? request)
+        {
+            if (request == null || request.Id <= 0)
+            {
+                return Json(new { success = false, message = "Invalid horse id." });
+            }
+            
+            try
+            {
+                var horse = await _context.Horses.FindAsync(request.Id);
+                if (horse == null)
+                {
+                    return Json(new { success = false, message = "Horse not found." });
+                }
+
+                horse.isPrivate = !horse.isPrivate;
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while changing horse privacy setting." + ex });
+            }
         }
     }
 }

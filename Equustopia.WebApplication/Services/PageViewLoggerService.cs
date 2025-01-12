@@ -26,7 +26,7 @@
                 return;
             }
             
-            var pageView = new pagesViews
+            var pageView = new PagesViews
             {
                 userId = userId,
                 pageId = pageId,

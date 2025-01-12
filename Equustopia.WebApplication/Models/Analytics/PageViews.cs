@@ -5,7 +5,7 @@
     using Equustopia.WebApplication.Models.Main;
 
     [Table("pagesViews", Schema = "analytics")]
-    public class pagesViews
+    public class PagesViews
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

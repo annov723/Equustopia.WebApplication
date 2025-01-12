@@ -1,10 +1,8 @@
-﻿namespace Equustopia.WebApplication.Controllers.Account
+﻿namespace Equustopia.WebApplication.Controllers
 {
     using Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Internal;
-    using Models;
     using Models.Main;
     using Models.Requests;
     using Npgsql;

@@ -38,3 +38,9 @@
     border: 2px solid var(--hover-brown-color);
     transform: translateY(-2px);
 }
+
+.classic-button:disabled{
+    background-color: var(--disabled-color);
+    color: var(--white-color);
+    cursor: not-allowed;
+}
