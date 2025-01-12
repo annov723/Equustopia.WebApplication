@@ -11,7 +11,7 @@
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-#addCentreModal .modal-content, #editCentreModal .modal-content {
+#addCentreModal .modal-content, #editCentreModal .modal-content{
     background-color: var(--green-color);
     display: flex;
     flex-direction: row;
@@ -27,7 +27,7 @@
     box-shadow: 0 17px 15px rgba(0, 0, 0, 0.25);
 }
 
-.form-content{
+#addCentreModal .form-content, #editCentreModal .form-content{
     display: flex;
     flex-direction: column;
     justify-content: center;

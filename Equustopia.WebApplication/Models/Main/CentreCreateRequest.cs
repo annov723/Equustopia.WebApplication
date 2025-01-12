@@ -9,13 +9,18 @@
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int id { get; set; }
+        
+        [Required]
+        public int centreId { get; set; }
 
         [Column(TypeName = "requestStatus")]
-        public RequestStatus Status { get; set; } = RequestStatus.New;
+        public RequestStatus status { get; set; } = RequestStatus.New;
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime createdAt { get; set; } = DateTime.UtcNow;
         
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime updatedAt { get; set; } = DateTime.UtcNow;
+        
+        public required EquestrianCentre EquestrianCentre { get; set; }
     }
 }

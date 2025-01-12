@@ -65,6 +65,13 @@
     color: var(--white-color);
 }
 
+.breed{
+    font-size: 22px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--white-color);
+}
+
 .birth-date{
     font-size: 22px;
     margin-top: 10px;

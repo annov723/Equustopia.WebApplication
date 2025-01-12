@@ -1,5 +1,6 @@
 ﻿function addNewHorse(){
     const name = document.getElementById("horseName").value;
+    const breed = document.getElementById("breed").value;
     const birthDateValue = document.getElementById("birthDate").value;
     const birthDate = birthDateValue ? new Date(birthDateValue).toISOString() : null;
     const centre = document.getElementById("equestrianCentreSelect").value;
@@ -13,7 +14,7 @@
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ Name: name, BirthDate: birthDate, EquestrianCentreId: centreId })
+        body: JSON.stringify({ Name: name, Breed: breed, BirthDate: birthDate, EquestrianCentreId: centreId })
     })
         .then(response => response.json())
         .then(data => {

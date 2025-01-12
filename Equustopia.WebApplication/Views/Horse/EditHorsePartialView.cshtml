@@ -20,6 +20,10 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="editBreed">breed</label>
+                <input type="text" id="editBreed" name="breed" class="form-control" data-default-value="@Model.breed" value="@Model.breed"/>
+            </div>
+            <div class="form-group">
                 <label for="editBirthDate">birth date</label>
                 <input type="date" id="editBirthDate" name="birthDate" class="form-control" data-default-value="@Model.birthDate?.ToString("yyyy-MM-dd")" value="@Model.birthDate?.ToString("yyyy-MM-dd")" required/>
             </div>
