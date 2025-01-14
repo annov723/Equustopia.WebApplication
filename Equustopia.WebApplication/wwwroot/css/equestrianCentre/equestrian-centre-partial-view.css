@@ -188,3 +188,30 @@
     align-items: center;
     margin-top: 20px;
 }
+
+.request-modal-content{
+    background-color: var(--green-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    margin-left: calc(50% - 350px);
+    border: none;
+    width: 700px;
+    height: 300px;
+    position: relative;
+    border-radius: 15px;
+    box-shadow: 0 17px 15px rgba(0, 0, 0, 0.25);
+}
+
+.request-info{
+    margin: 30px 20px;
+}
+
+.request-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+}

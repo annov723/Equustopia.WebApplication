@@ -12,7 +12,7 @@
         
         [Required]
         [StringLength(250, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 250 characters.")]
-        public required string? name { get; set; }
+        public required string name { get; set; }
         
         [Required]
         public required int userId { get; set; }

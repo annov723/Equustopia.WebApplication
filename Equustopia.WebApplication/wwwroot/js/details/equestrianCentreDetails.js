@@ -360,8 +360,71 @@ function generateColors(count) {
 
 
 
-function openCentreVerificationView(){
-    
+function openCentreVerificationView(centreId) {
+    fetch(`/EquestrianCentre/GetCentreRequestView?centreId=${centreId}`, {
+        method: "GET"
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to load centre verification view.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                if(data.id !== 0){
+                    console.log(data);
+                    document.getElementById("verification-modal-body").innerHTML = `
+                        <p><strong>Centre Name:</strong> ${data.centreName}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <p><strong>Created At:</strong> ${data.createdAt}</p>
+                        <p><strong>Last Updated:</strong> ${data.updatedAt}</p>
+                    `;
+                    document.getElementById("new-request-button").style.display = "none";
+                } else {
+                    console.log(data);
+                    document.getElementById("verification-modal-body").innerHTML = `<p>Request is not created yet for this centre.</p>`;
+                    document.getElementById("new-request-button").style.display = "block";
+                }
+                document.getElementById("verification-modal").style.display = "block";
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+}
+
+function closeCentreVerificationView() {
+    document.getElementById("verification-modal").style.display = "none";
+}
+
+function createNewCentreRequest(centreId) {
+    fetch(`/EquestrianCentre/CreateNewCentreRequest`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(centreId)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("verification-modal-body").innerHTML = `
+                <p><strong>Centre Name:</strong> ${data.centreName}</p>
+                <p><strong>Status:</strong> ${data.status}</p>
+                <p><strong>Created At:</strong> ${data.createdAt}</p>
+                <p><strong>Last Updated:</strong> ${data.updatedAt}</p>
+            `;
+                document.getElementById("new-request-button").style.display = "none";
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            alert("Failed to create a new request. " + error.message);
+        });
 }
 
 
