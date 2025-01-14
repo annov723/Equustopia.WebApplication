@@ -298,12 +298,13 @@ BEGIN
         COUNT(*)::INTEGER AS horse_count
     FROM main.horse AS horse
     WHERE horse."centreId" = centreId
+      AND horse."birthDate" IS NOT NULL
     GROUP BY age_group
     ORDER BY age_group;
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT * FROM main.get_horse_counts_by_age_group(1);
+SELECT * FROM main.get_horse_counts_by_age_group(5);
 
 CREATE OR REPLACE FUNCTION main.get_horses_from_centre(centre_id INTEGER)
 RETURNS TABLE("id" INTEGER, "name" VARCHAR, "userId" INTEGER, "centreId" INTEGER, "birthDate" DATE, "breed" VARCHAR, "isPrivate" BOOLEAN, "photo" VARCHAR, "height" DOUBLE PRECISION, "feedingSchedule" JSONB) AS $$

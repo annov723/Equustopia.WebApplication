@@ -32,9 +32,17 @@ namespace Equustopia.WebApplication.Controllers
                 }
             ).ToListAsync();
             
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var isModerator = userId != null && await _context.UsersData
+                .AnyAsync(u => u.id == userId && u.moderator);
+            var requests = isModerator ? await _context.CentreCreateRequests
+                    .Include(r => r.EquestrianCentre).ToListAsync() : null;
+            
             var viewModel = new IndexViewModel
             {
-                MostViewedPages = results
+                MostViewedPages = results,
+                IsModerator = isModerator,
+                Requests = requests
             };
             
             return View(viewModel);

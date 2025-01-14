@@ -243,5 +243,29 @@
                 updatedAt = existingRequest.updatedAt.ToString("dd/MM/yyyy HH:mm")
             });
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> UpdateRequestStatus([FromBody] UpdateRequestStatusRequest request)
+        {
+            var centreRequest = await _context.CentreCreateRequests.FindAsync(request.RequestId);
+            if (centreRequest == null)
+            {
+                return Json(new { success = false, message = "Request not found." });
+            }
+
+            try
+            {
+                centreRequest.status = (int)request.Status;
+                centreRequest.updatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }

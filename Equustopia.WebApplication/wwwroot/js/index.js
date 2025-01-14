@@ -7,3 +7,25 @@
         console.error("Error opening items details page.");
     }
 }
+
+function updateRequestStatus(requestId, status) {
+    fetch(`/EquestrianCentre/UpdateRequestStatus`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ requestId, status })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Status updated successfully!");
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                alert("Failed to update status: " + data.message);
+            }
+        })
+        .catch(error => {
+            alert("Error: " + error.message);
+        });
+}
