@@ -170,8 +170,6 @@ LIMIT 10;
 
 
 CREATE SCHEMA reference;
-CREATE TYPE reference."requestStatus" AS ENUM ('new', 'in progress', 'approved', 'declined');
-
 CREATE TABLE badges(
     id SERIAL PRIMARY KEY,
     name VARCHAR(250) NOT NULL UNIQUE,
@@ -444,10 +442,11 @@ $$ LANGUAGE plpgsql;
 
 CREATE TABLE main."centreCreateRequest"(
     id SERIAL PRIMARY KEY,
-    status reference."requestStatus" NOT NULL DEFAULT 'new',
     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE main."centreCreateRequest" ADD COLUMN "status" INTEGER NOT NULL;
+ALTER TABLE main."centreCreateRequest" ADD CONSTRAINT chk_request_status_range CHECK (status BETWEEN 0 AND 3);
 ALTER TABLE main."centreCreateRequest" ADD COLUMN "centreId" INTEGER NOT NULL,
 ADD CONSTRAINT fk_centre FOREIGN KEY ("centreId") REFERENCES "equestrianCentre"("id") ON DELETE CASCADE;
 

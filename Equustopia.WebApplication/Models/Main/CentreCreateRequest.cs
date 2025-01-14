@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Reference;
+    using Helpers;
 
     [Table("centreCreateRequest", Schema = "main")]
     public class CentreCreateRequest
@@ -14,8 +14,8 @@
         [Required]
         public int centreId { get; set; }
 
-        [Column(TypeName = "requestStatus")]
-        public RequestStatus status { get; set; } = RequestStatus.New;
+        [Required]
+        public int status { get; set; } = (int)RequestStatus.New;
 
         public DateTime createdAt { get; set; } = DateTime.UtcNow;
         

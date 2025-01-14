@@ -5,7 +5,6 @@
     using Microsoft.EntityFrameworkCore;
     using Models.Helpers;
     using Models.Main;
-    using Models.Reference;
     using Models.Requests;
     using Npgsql;
     using Services;
@@ -239,7 +238,7 @@
                 success = true,
                 existingRequest.id,
                 centreName = centre.name,
-                status = existingRequest.status.ToString(),
+                status = ((RequestStatus)existingRequest.status).ToString(),
                 createdAt = existingRequest.createdAt.ToString("dd/MM/yyyy HH:mm"),
                 updatedAt = existingRequest.updatedAt.ToString("dd/MM/yyyy HH:mm")
             });

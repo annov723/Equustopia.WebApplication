@@ -375,10 +375,18 @@ function openCentreVerificationView(centreId) {
                 if(data.id !== 0){
                     console.log(data);
                     document.getElementById("verification-modal-body").innerHTML = `
-                        <p><strong>Centre Name:</strong> ${data.centreName}</p>
-                        <p><strong>Status:</strong> ${data.status}</p>
-                        <p><strong>Created At:</strong> ${data.createdAt}</p>
-                        <p><strong>Last Updated:</strong> ${data.updatedAt}</p>
+                        <div class="request-row">
+                            <p class="request-p"><strong>Centre Name</strong></p>
+                            <p class="request-p"><strong>Status</strong></p>
+                            <p class="request-p"><strong>Created At</strong></p>
+                            <p class="request-p"><strong>Last Updated</strong></p>
+                        </div>
+                        <div class="request-row">
+                            <p class="request-p">${data.centreName}</p>
+                            <p class="request-p">${data.status}</p>
+                            <p class="request-p">${data.createdAt}</p>
+                            <p class="request-p">${data.updatedAt}</p>
+                        </div>
                     `;
                     document.getElementById("new-request-button").style.display = "none";
                 } else {
@@ -411,11 +419,19 @@ function createNewCentreRequest(centreId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                document.getElementById("verification-modal-body").innerHTML = `
-                <p><strong>Centre Name:</strong> ${data.centreName}</p>
-                <p><strong>Status:</strong> ${data.status}</p>
-                <p><strong>Created At:</strong> ${data.createdAt}</p>
-                <p><strong>Last Updated:</strong> ${data.updatedAt}</p>
+                document.getElementById("verification-modal-body").innerHTML = `                
+                <div class="request-row">
+                    <p><strong>Centre Name</strong></p>
+                    <p><strong>Status</strong></p>
+                    <p><strong>Created At</strong></p>
+                    <p><strong>Last Updated</strong></p>
+                </div>
+                <div class="request-row">
+                    <p>${data.centreName}</p>
+                    <p>${data.status}</p>
+                    <p>${data.createdAt}</p>
+                    <p>${data.updatedAt}</p>
+                </div>
             `;
                 document.getElementById("new-request-button").style.display = "none";
             } else {
