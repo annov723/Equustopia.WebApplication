@@ -19,8 +19,7 @@ function updateRequestStatus(requestId, status) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert("Status updated successfully!");
-                location.reload(); // Reload the page to reflect changes
+                location.reload();
             } else {
                 alert("Failed to update status: " + data.message);
             }

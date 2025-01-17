@@ -24,11 +24,11 @@
                 {
                     <tr>
                         <td>@request.EquestrianCentre.name</td>
-                        <td>@request.status</td>
+                        <td>@Enum.GetName(typeof(Equustopia.WebApplication.Models.Helpers.RequestStatus), request.status)</td>
                         <td>
-                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 1)">In Progress</button>
-                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 2)">Approve</button>
-                            <button class="classic-button-decline" onclick="updateRequestStatus(@request.id, 3)">Decline</button>
+                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 1)" @(request.status == 1 ? "disabled" : "")>in progress</button>
+                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 2)" @(request.status == 2 ? "disabled" : "")>approve</button>
+                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 3)" @(request.status == 3 ? "disabled" : "")>decline</button>
                         </td>
                     </tr>
                 }

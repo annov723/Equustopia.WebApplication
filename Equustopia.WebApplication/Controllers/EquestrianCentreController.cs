@@ -257,7 +257,25 @@
             {
                 centreRequest.status = (int)request.Status;
                 centreRequest.updatedAt = DateTime.UtcNow;
-
+                
+                if(centreRequest.status == (int)RequestStatus.Approved)
+                {
+                    var centre = await _context.EquestrianCentres.FindAsync(centreRequest.centreId);
+                    if (centre == null)
+                    {
+                        return Json(new { success = false, message = "Centre not found." });
+                    }
+                    centre.approved = true;
+                }
+                else if (centreRequest.status == (int)RequestStatus.Declined)
+                {
+                    var centre = await _context.EquestrianCentres.FindAsync(centreRequest.centreId);
+                    if (centre == null)
+                    {
+                        return Json(new { success = false, message = "Centre not found." });
+                    }
+                    centre.approved = false;
+                }
                 await _context.SaveChangesAsync();
 
                 return Json(new { success = true });
