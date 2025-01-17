@@ -9,7 +9,7 @@ CREATE TABLE analytics."pagesViews"(
     FOREIGN KEY ("userId") REFERENCES main."userData"(id) ON DELETE SET NULL
 );
 ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_page_type_length CHECK (LENGTH("pageType") BETWEEN 2 AND 50);
-ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_ip_address_length CHECK (LENGTH("ipAddress") BETWEEN 2 AND 45);
+ALTER TABLE analytics."pagesViews" ADD CONSTRAINT chk_ip_address_length CHECK ("ipAddress" IS NULL OR LENGTH("ipAddress") BETWEEN 2 AND 45);
 
 --usuwanie z pagesViews stron, które już nie istnieją
 CREATE OR REPLACE FUNCTION analytics.delete_page_views()
@@ -176,29 +176,39 @@ CREATE TABLE badges(
     description VARCHAR(1000) NOT NULL,
     iconPath VARCHAR(1000) NOT NULL UNIQUE
 );
+ALTER TABLE reference."badges" ADD CONSTRAINT chk_badges_name_length CHECK (LENGTH("name") BETWEEN 2 AND 250);
+ALTER TABLE reference."badges" ADD CONSTRAINT chk_badges_description_length CHECK (LENGTH("description") BETWEEN 2 AND 1000);
+ALTER TABLE reference."badges" ADD CONSTRAINT chk_badges_icon_path_length CHECK (LENGTH("iconPath") BETWEEN 2 AND 1000);
 
 CREATE TABLE "centreServices"(
     id SERIAL PRIMARY KEY,
     name VARCHAR(250) NOT NULL UNIQUE,
     description VARCHAR(1000) NOT NULL
 );
+ALTER TABLE reference."centreServices" ADD CONSTRAINT chk_centre_services_name_length CHECK (LENGTH("name") BETWEEN 2 AND 250);
+ALTER TABLE reference."centreServices" ADD CONSTRAINT chk_centre_services_description_length CHECK (LENGTH("description") BETWEEN 2 AND 1000);
 
 CREATE TABLE "horseQualities"(
     id SERIAL PRIMARY KEY,
     name VARCHAR(250) NOT NULL UNIQUE,
     description VARCHAR(1000) NOT NULL
 );
+ALTER TABLE reference."horseQualities" ADD CONSTRAINT chk_horse_qualities_name_length CHECK (LENGTH("name") BETWEEN 2 AND 250);
+ALTER TABLE reference."horseQualities" ADD CONSTRAINT chk_horse_qualities_description_length CHECK (LENGTH("description") BETWEEN 2 AND 1000);
 
 CREATE TABLE "serviceTypes"(
     id SERIAL PRIMARY KEY,
     name VARCHAR(250) NOT NULL UNIQUE,
     description VARCHAR(1000) NOT NULL
 );
+ALTER TABLE reference."serviceTypes" ADD CONSTRAINT chk_service_types_name_length CHECK (LENGTH("name") BETWEEN 2 AND 250);
+ALTER TABLE reference."serviceTypes" ADD CONSTRAINT chk_service_types_description_length CHECK (LENGTH("description") BETWEEN 2 AND 1000);
 
 CREATE TABLE reference."workerChores"(
     id SERIAL PRIMARY KEY,
     name VARCHAR(250) NOT NULL UNIQUE
 );
+ALTER TABLE reference."workerChores" ADD CONSTRAINT chk_worker_chores_name_length CHECK (LENGTH("name") BETWEEN 2 AND 250);
 
 
 
@@ -222,8 +232,8 @@ SELECT * FROM main."userData";
 ALTER TABLE main."userData" ADD CONSTRAINT chk_name_length CHECK (LENGTH(name) BETWEEN 2 AND 50);
 ALTER TABLE main."userData" ADD CONSTRAINT chk_email_length CHECK (LENGTH(email) BETWEEN 5 AND 255);
 ALTER TABLE main."userData" ADD CONSTRAINT chk_password_length CHECK (LENGTH(password) BETWEEN 4 AND 60);
-ALTER TABLE main."userData" ADD CONSTRAINT chk_birth_date CHECK ("birthDate" <= CURRENT_DATE);
-ALTER TABLE main."userData" ADD CONSTRAINT chk_profile_photo_length CHECK (LENGTH("profilePhoto") BETWEEN 2 AND 1000);
+ALTER TABLE main."userData" ADD CONSTRAINT chk_birth_date CHECK ("birthDate" IS NULL OR "birthDate" <= CURRENT_DATE);
+ALTER TABLE main."userData" ADD CONSTRAINT chk_profile_photo_length CHECK ("profilePhoto" IS NULL OR LENGTH("profilePhoto") BETWEEN 2 AND 1000);
 
 CREATE VIEW main."publicUsers" AS
 SELECT id, name, email, "birthDate", "profilePhoto"
@@ -251,9 +261,9 @@ INSERT INTO main.horse (name, "userId") VALUES ('Blobiczek', 36);
 INSERT INTO main.horse (name, "userId") VALUES ('Juglaś', 36);
 
 ALTER TABLE main.horse ADD CONSTRAINT chk_name_length CHECK (LENGTH(name) BETWEEN 2 AND 50);
-ALTER TABLE main.horse ADD CONSTRAINT chk_breed_length CHECK (LENGTH(breed) BETWEEN 2 AND 100);
-ALTER TABLE main.horse ADD CONSTRAINT chk_birth_date CHECK ("birthDate" <= CURRENT_DATE);
-ALTER TABLE main.horse ADD CONSTRAINT chk_photo_length CHECK (LENGTH(photo) BETWEEN 2 AND 1000);
+ALTER TABLE main.horse ADD CONSTRAINT chk_breed_length CHECK (breed IS NULL OR LENGTH(breed) BETWEEN 2 AND 100);
+ALTER TABLE main.horse ADD CONSTRAINT chk_birth_date CHECK ("birthDate" IS NULL OR "birthDate" <= CURRENT_DATE);
+ALTER TABLE main.horse ADD CONSTRAINT chk_photo_length CHECK (photo IS NULL OR LENGTH(photo) BETWEEN 2 AND 1000);
 ALTER TABLE main.horse ADD CONSTRAINT check_height_value CHECK (height IS NULL OR height > 0);
 
 CREATE VIEW main."publicHorses" AS
@@ -279,7 +289,7 @@ ALTER TABLE main."equestrianCentre" ADD COLUMN approved BOOLEAN DEFAULT false;
 INSERT INTO main."equestrianCentre" (name, "userId") VALUES ('Jazda Konna Blobi', 32);
 
 ALTER TABLE main."equestrianCentre" ADD CONSTRAINT chk_name_length CHECK (LENGTH(name) BETWEEN 2 AND 250);
-ALTER TABLE main."equestrianCentre" ADD CONSTRAINT chk_address_length CHECK (LENGTH(address) BETWEEN 2 AND 250);
+ALTER TABLE main."equestrianCentre" ADD CONSTRAINT chk_address_length CHECK (address IS NULL OR LENGTH(address) BETWEEN 2 AND 250);
 ALTER TABLE main."equestrianCentre" ADD CONSTRAINT unique_latitude_longitude UNIQUE (latitude, longitude);
 
 CREATE OR REPLACE FUNCTION main.get_horse_counts_by_age_group(centreId INTEGER)
@@ -597,6 +607,10 @@ BEGIN
         );
     END LOOP;
 END $$;
+
+
+
+
 
 
 

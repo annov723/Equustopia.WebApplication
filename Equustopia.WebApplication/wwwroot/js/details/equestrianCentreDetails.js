@@ -420,18 +420,18 @@ function createNewCentreRequest(centreId) {
         .then(data => {
             if (data.success) {
                 document.getElementById("verification-modal-body").innerHTML = `                
-                <div class="request-row">
-                    <p><strong>Centre Name</strong></p>
-                    <p><strong>Status</strong></p>
-                    <p><strong>Created At</strong></p>
-                    <p><strong>Last Updated</strong></p>
-                </div>
-                <div class="request-row">
-                    <p>${data.centreName}</p>
-                    <p>${data.status}</p>
-                    <p>${data.createdAt}</p>
-                    <p>${data.updatedAt}</p>
-                </div>
+                <tr class="request-row">
+                    <td><strong>Centre Name</strong></td>
+                    <td><strong>Status</strong></td>
+                    <td><strong>Created At</strong></td>
+                    <td><strong>Last Updated</strong></td>
+                </td>
+                <tr class="request-row">
+                    <td>${data.centreName}</td>
+                    <td><script>document.write(getStatusName(${data.status}));</script></td>
+                    <td>${data.createdAt}</td>
+                    <td>${data.updatedAt}</td>
+                </td>
             `;
                 document.getElementById("new-request-button").style.display = "none";
             } else {

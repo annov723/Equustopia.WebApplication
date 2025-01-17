@@ -4,6 +4,7 @@ namespace Equustopia.WebApplication.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Models.Main;
+    using Models.Requests;
     using ViewModels;
     using ViewModels.Helpers;
 
@@ -49,27 +50,26 @@ namespace Equustopia.WebApplication.Controllers
             return View(viewModel);
         }
         
-        [HttpGet]
-        public async Task<IActionResult> GetRequestsByUserId(int userId)
+        [HttpPost]
+        public async Task<IActionResult> GetRequestsByUserId(string email)
         {
+            var user = await _context.UsersData.FirstOrDefaultAsync(u => u.email == email);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
             var userRequests = await _context.Set<CentreCreateRequest>()
                 .FromSqlRaw(
                     @"SELECT * FROM main.get_user_equestrian_centre_requests({0})", 
-                    userId)
-                .ToListAsync();
+                    user.id)
+                .Include(r => r.EquestrianCentre).ToListAsync();
 
-            return Json(userRequests);
-        }
-        
-        [HttpGet]
-        public async Task<IActionResult> GetUsersWithCentres()
-        {
-            var users = await _context.UsersData
-                .Where(u => _context.EquestrianCentres.Any(ec => ec.userId == u.id))
-                .Select(u => new { u.id, u.email })
-                .ToListAsync();
-
-            return Json(users);
+            return Json(new
+            {
+                success = true,
+                userRequests
+            });
         }
     }
 }

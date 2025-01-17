@@ -13,20 +13,22 @@
             <span class="left-aligned-text">Centre Requests</span>
             <table class="moderator-requests-table">
                 <thead>
-                <tr>
-                    <td colspan="3">
-                        <select id="request-user-select" class="form-control">
-                            <option value="-1">choose an email address</option>
-                        </select>
+                <tr class="search-request-row">
+                    <td colspan="3" class="search-request-cell">
+                        <div id="searchContainerRequests" class="search-requests-container">
+                            <img src="~/resources/icons/search-semitransparent.svg" height="20" width="20" alt="search icon" class="search-icon" />
+                            <input type="text" id="search-bar-requests" class="search-bar" placeholder="Search..." onkeydown="handleSearchRequests(event)" />
+                        </div>
                     </td>
                 </tr>
-                <tr>
+                <tr class="first-request-row">
                     <th>Centre Name</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="requests-board-search" style="display: none;"></tbody>
+                <tbody id="requests-board">
                 @foreach (var request in Model.Requests)
                 {
                     <tr>

@@ -23,52 +23,72 @@
 
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Populate user dropdown
-    fetch('/Moderator/GetUsersWithCentres')
-        .then(response => response.json())
-        .then(users => {
-            const userSelect = document.getElementById("request-user-select");
-            users.forEach(user => {
-                const option = document.createElement("option");
-                option.value = user.id;
-                option.textContent = user.email;
-                userSelect.appendChild(option);
-            });
-        })
-        .catch(() => alert("Failed to load users."));
+function handleSearchRequests(event) {
+    if (event.key === "Enter") {
+        const email = document.getElementById("search-bar-requests").value.trim();
+        console.log(email);
 
-    // Handle user selection change
-    document.getElementById("request-user-select").addEventListener("change", function () {
-        const userId = this.value;
+        if (email === "") {
+            alert("Please enter an email address to search.");
 
-        if (userId === "-1") {
-            // Clear the table if no user is selected
-            document.querySelector(".moderator-requests-table tbody").innerHTML = "";
+            const requestsTableMain = document.getElementById("requests-board-search");
+            requestsTableMain.style.display = "block";
+            const requestsTable = document.getElementById("requests-board-search");
+            requestsTable.style.display = "none";
             return;
         }
 
-        // Fetch filtered requests
-        fetch(`/Moderator/GetRequestsByUserId?userId=${userId}`)
+        fetch(`/IndexController/GetRequestsByUserId`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email })
+        })
             .then(response => response.json())
-            .then(requests => {
-                const tbody = document.querySelector(".moderator-requests-table tbody");
-                tbody.innerHTML = "";
-
-                requests.forEach(request => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${request.centreName}</td>
-                        <td>${request.status}</td>
-                        <td>
-                            <button class="classic-button" onclick="updateRequestStatus(${request.id}, 1)" ${request.status === 1 ? "disabled" : ""}>in progress</button>
-                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 2)" @(request.status === 2 ? "disabled" : "")>approve</button>
-                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 3)" @(request.status === 3 ? "disabled" : "")>decline</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
+            .then(data => {
+                if (Array.isArray(data) && data.length > 0) {
+                    displayRequests(data);
+                } else {
+                    alert("No requests found for this user.");
+                }
             })
-            .catch(() => alert("Failed to load requests."));
+            .catch(error => {
+                alert(error.message);
+            });
+    }
+}
+
+function displayRequests(requests) {
+    const requestsTableMain = document.getElementById("requests-board-search");
+    requestsTableMain.style.display = "none";
+    const requestsTable = document.getElementById("requests-board-search");
+    
+    requestsTable.innerHTML = "";
+    requests.forEach(request => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${request.EquestrianCentre.name}</td>
+            <td>${getStatusName(request.status)}</td>
+             <td>
+                <button class="classic-button" onclick="updateRequestStatus(${request.id}, 1)" ${request.status === 1 ? "disabled" : ""}>in progress</button>
+                <button class="classic-button" onclick="updateRequestStatus(${request.id}, 2)" ${request.status === 2 ? "disabled" : ""}>approve</button>
+                <button class="classic-button" onclick="updateRequestStatus(${request.id}, 3)" ${request.status === 3 ? "disabled" : ""}>decline</button>
+             </td>
+        `;
+
+        requestsTable.appendChild(row);
     });
-});
+    requestsTableMain.style.display = "block";
+}
+
+function getStatusName(statusCode) {
+    const statusMap = {
+        0: "New",
+        1: "In Progress",
+        2: "Approved",
+        3: "Declined"
+    };
+    return statusMap[statusCode];
+}

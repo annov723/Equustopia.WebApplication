@@ -123,9 +123,12 @@
             {
                 return Json(new { success = false, message = "Name cannot be empty.", constraintName = "" });
             }
-            
-            if (!string.IsNullOrEmpty(equestrianCentreRequest.Address) && (equestrianCentreRequest.Address.Length > 250 
-                                                                           || equestrianCentreRequest.Address.Length < 2))
+
+            if (string.IsNullOrEmpty(equestrianCentreRequest.Address))
+            {
+                equestrianCentreRequest.Address = null;
+            }
+            else if (equestrianCentreRequest.Address.Length > 250 || equestrianCentreRequest.Address.Length < 2)
             {
                 return Json(new { success = false, message = "", constraintName = "chk_address_length" });
             }
