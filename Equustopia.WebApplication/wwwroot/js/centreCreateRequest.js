@@ -26,29 +26,29 @@
 function handleSearchRequests(event) {
     if (event.key === "Enter") {
         const email = document.getElementById("search-bar-requests").value.trim();
-        console.log(email);
 
         if (email === "") {
             alert("Please enter an email address to search.");
 
-            const requestsTableMain = document.getElementById("requests-board-search");
+            const requestsTableMain = document.getElementById("requests-board");
             requestsTableMain.style.display = "block";
             const requestsTable = document.getElementById("requests-board-search");
             requestsTable.style.display = "none";
             return;
         }
 
-        fetch(`/IndexController/GetRequestsByUserId`, {
+        fetch(`/Index/GetRequestsByUserId`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ email: email })
         })
             .then(response => response.json())
             .then(data => {
-                if (Array.isArray(data) && data.length > 0) {
-                    displayRequests(data);
+                if (Array.isArray(data.userRequests) && data.userRequests.length > 0) {
+                    console.log(email);
+                    displayRequests(data.userRequests);
                 } else {
                     alert("No requests found for this user.");
                 }
@@ -60,7 +60,7 @@ function handleSearchRequests(event) {
 }
 
 function displayRequests(requests) {
-    const requestsTableMain = document.getElementById("requests-board-search");
+    const requestsTableMain = document.getElementById("requests-board");
     requestsTableMain.style.display = "none";
     const requestsTable = document.getElementById("requests-board-search");
     
@@ -69,18 +69,18 @@ function displayRequests(requests) {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${request.EquestrianCentre.name}</td>
+            <td>${request.equestrianCentreName}</td>
             <td>${getStatusName(request.status)}</td>
              <td>
-                <button class="classic-button" onclick="updateRequestStatus(${request.id}, 1)" ${request.status === 1 ? "disabled" : ""}>in progress</button>
-                <button class="classic-button" onclick="updateRequestStatus(${request.id}, 2)" ${request.status === 2 ? "disabled" : ""}>approve</button>
-                <button class="classic-button" onclick="updateRequestStatus(${request.id}, 3)" ${request.status === 3 ? "disabled" : ""}>decline</button>
+                <button class="classic-button" onclick="updateRequestStatus(${request.id}, 1)" ${request.Status === 1 ? "disabled" : ""}>in progress</button>
+                <button class="classic-button" onclick="updateRequestStatus(${request.id}, 2)" ${request.Status === 2 ? "disabled" : ""}>approve</button>
+                <button class="classic-button" onclick="updateRequestStatus(${request.id}, 3)" ${request.Status === 3 ? "disabled" : ""}>decline</button>
              </td>
         `;
 
         requestsTable.appendChild(row);
     });
-    requestsTableMain.style.display = "block";
+    requestsTable.style.display = "block";
 }
 
 function getStatusName(statusCode) {

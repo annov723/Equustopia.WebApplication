@@ -51,25 +51,31 @@ namespace Equustopia.WebApplication.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> GetRequestsByUserId(string email)
+        public async Task<IActionResult> GetRequestsByUserId([FromBody] EmailRequest payload)
         {
+            string? email = payload.Email; // Extract the email from the dynamic payload
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return Json(new { success = false, message = "Email is missing or invalid." });
+            }
+            
             var user = await _context.UsersData.FirstOrDefaultAsync(u => u.email == email);
             if (user == null)
             {
-                return NotFound("User not found");
+                return Json(new { success = false, message = "User not found" });
             }
 
-            var userRequests = await _context.Set<CentreCreateRequest>()
-                .FromSqlRaw(
-                    @"SELECT * FROM main.get_user_equestrian_centre_requests({0})", 
-                    user.id)
-                .Include(r => r.EquestrianCentre).ToListAsync();
+            var userRequests = await _context.CentreCreateRequests
+                .FromSqlRaw(@"SELECT * FROM main.get_user_equestrian_centre_requests({0})", user.id)
+                .Include(r => r.EquestrianCentre).Select(r => new CentreCreateRequestDto
+                {
+                    Id = r.id,
+                    Status = r.status,
+                    EquestrianCentreName = r.EquestrianCentre.name
+                }).ToListAsync();
 
-            return Json(new
-            {
-                success = true,
-                userRequests
-            });
+            return Json(new { success = true, userRequests });
         }
     }
 }
