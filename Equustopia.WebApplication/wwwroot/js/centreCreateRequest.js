@@ -31,7 +31,7 @@ function handleSearchRequests(event) {
             alert("Please enter an email address to search.");
 
             const requestsTableMain = document.getElementById("requests-board");
-            requestsTableMain.style.display = "block";
+            requestsTableMain.style.display = "table-row-group";
             const requestsTable = document.getElementById("requests-board-search");
             requestsTable.style.display = "none";
             return;
@@ -80,7 +80,8 @@ function displayRequests(requests) {
 
         requestsTable.appendChild(row);
     });
-    requestsTable.style.display = "block";
+    requestsTable.style.width = "100%";
+    requestsTable.style.display = "table-row-group";
 }
 
 function getStatusName(statusCode) {
