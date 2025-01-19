@@ -4,6 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Models.Helpers;
+    using Models.Main;
     using Models.Requests;
     using Npgsql;
     using Services;
@@ -23,7 +24,7 @@
         public async Task<IActionResult> Details(int id)
         {
             var centre = _context.EquestrianCentres.Include(h => h.UserData).
-                Include(h => h.Horses).FirstOrDefault(s => s.id == id);
+                Include(h => h.Horses)!.ThenInclude(h => h.UserData).FirstOrDefault(s => s.id == id);
             if (centre == null)
             {
                 return NotFound("Equestrian centre not found");
@@ -173,6 +174,116 @@
             if (horseBreedGroups.Count == 0) return NotFound();
             
             return Json(horseBreedGroups);
+        }
+        
+        
+        
+        [HttpPost]
+        public async Task<IActionResult> CreateNewCentreRequest([FromBody] int centreId)
+        {
+            var centre = await _context.EquestrianCentres.FindAsync(centreId);
+            if (centre == null)
+            {
+                return Json(new { success = false, message = "Centre not found." });
+            }
+
+            var newRequest = new CentreCreateRequest
+            {
+                centreId = centreId,
+                status = (int)RequestStatus.New,
+                createdAt = DateTime.UtcNow,
+                updatedAt = DateTime.UtcNow,
+                EquestrianCentre = centre
+            };
+
+            _context.CentreCreateRequests.Add(newRequest);
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true, 
+                newRequest.id,
+                centreName = centre.name,
+                status = newRequest.status.ToString(),
+                createdAt = newRequest.createdAt.ToString("dd/MM/yyyy HH:mm"),
+                updatedAt = newRequest.updatedAt.ToString("dd/MM/yyyy HH:mm")
+            });
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetCentreRequestView(int centreId)
+        {
+            var centre = _context.EquestrianCentres.FirstOrDefault(c => c.id == centreId);
+            if (centre == null)
+            {
+                return Json(new { success = false, message = "Centre not found." });
+            }
+
+            var existingRequest = _context.CentreCreateRequests
+                .Where(r => r.centreId == centreId)
+                .OrderByDescending(r => r.createdAt)
+                .FirstOrDefault();
+            
+            if (existingRequest == null)
+            {
+                return Json(new
+                {
+                    success = true,
+                    id = 0
+                });
+            }
+
+            return Json(new
+            {
+                success = true,
+                existingRequest.id,
+                centreName = centre.name,
+                status = ((RequestStatus)existingRequest.status).ToString(),
+                createdAt = existingRequest.createdAt.ToString("dd/MM/yyyy HH:mm"),
+                updatedAt = existingRequest.updatedAt.ToString("dd/MM/yyyy HH:mm")
+            });
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> UpdateRequestStatus([FromBody] UpdateRequestStatusRequest request)
+        {
+            var centreRequest = await _context.CentreCreateRequests.FindAsync(request.RequestId);
+            if (centreRequest == null)
+            {
+                return Json(new { success = false, message = "Request not found." });
+            }
+
+            try
+            {
+                centreRequest.status = (int)request.Status;
+                centreRequest.updatedAt = DateTime.UtcNow;
+                
+                if(centreRequest.status == (int)RequestStatus.Approved)
+                {
+                    var centre = await _context.EquestrianCentres.FindAsync(centreRequest.centreId);
+                    if (centre == null)
+                    {
+                        return Json(new { success = false, message = "Centre not found." });
+                    }
+                    centre.approved = true;
+                }
+                else if (centreRequest.status == (int)RequestStatus.Declined)
+                {
+                    var centre = await _context.EquestrianCentres.FindAsync(centreRequest.centreId);
+                    if (centre == null)
+                    {
+                        return Json(new { success = false, message = "Centre not found." });
+                    }
+                    centre.approved = false;
+                }
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 }

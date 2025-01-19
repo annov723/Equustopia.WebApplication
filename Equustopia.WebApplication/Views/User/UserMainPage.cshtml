@@ -30,45 +30,39 @@
     <span class="user-name">@Model.Name</span>
 
     <div class="frames-storage" style="margin-bottom: 50px">
-        @if (Model.Horses is { Count: > 0 })
-        {
-            <span class="left-aligned-text">My horses</span>
-            <div id="my-horses" class="items-frame">
-                @foreach (var horse in Model.Horses)
-                {
-                    <button class="element-button" onclick="viewHorseDetails(@horse.id)">
-                        <img src="" class="item-photo" alt="horse photo"/>
-                        <span class="item-name">@horse.name
-                            <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
-                        </span>
-                    </button>
-                }
-                <button id="new-horse-button" class="element-button" onclick="openAddHorseView()">
-                    <span class="new-element-text">add new <br/> horse</span>
-                    <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
+        <span class="left-aligned-text">My horses</span>
+        <div id="my-horses" class="items-frame">
+            @foreach (var horse in Model.Horses)
+            {
+                <button class="element-button" onclick="viewHorseDetails(@horse.id)">
+                    <img src="" class="item-photo" alt="horse photo"/>
+                    <span class="item-name">@horse.name
+                        <p class="horse-date">@horse.birthDate?.ToString("dd/MM/yyyy")</p>
+                    </span>
                 </button>
-            </div>
-        }
+            }
+            <button id="new-horse-button" class="element-button" onclick="openAddHorseView()">
+                <span class="new-element-text">add new <br/> horse</span>
+                <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
+            </button>
+        </div>
 
-        @if (Model.EquestrianCentres is { Count: > 0 })
-        {
-            <span class="left-aligned-text">My riding centres</span>
-            <div id="my-centres" class="items-frame">
-                @foreach (var centre in Model.EquestrianCentres)
-                {
-                    <button class="element-button" onclick="viewCentreDetails(@centre.id)">
-                        <img src="" class="item-photo" alt="centre photo"/>
-                        <span class="item-name">@centre.name
-                            <p class="horse-date">@centre.address</p>
-                        </span>
-                    </button>
-                }
-                <button id="new-centre-button" class="element-button" onclick="openAddEquestrianCentreView()">
-                    <span class="new-element-text">add new <br/> riding centre</span>
-                    <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
+        <span class="left-aligned-text">My riding centres</span>
+        <div id="my-centres" class="items-frame">
+            @foreach (var centre in Model.EquestrianCentres)
+            {
+                <button class="element-button" onclick="viewCentreDetails(@centre.id)">
+                    <img src="" class="item-photo" alt="centre photo"/>
+                    <span class="item-name">@centre.name
+                        <p class="horse-date">@centre.address</p>
+                    </span>
                 </button>
-            </div>
-        }
+            }
+            <button id="new-centre-button" class="element-button" onclick="openAddEquestrianCentreView()">
+                <span class="new-element-text">add new <br/> riding centre</span>
+                <img src="~/resources/icons/plus-blue.svg" class="plus-icon" alt="plus icon"/>
+            </button>
+        </div>
     </div>
 
 

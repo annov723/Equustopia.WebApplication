@@ -14,6 +14,7 @@
         public DbSet<Horse> Horses { get; set; }
         public DbSet<EquestrianCentre> EquestrianCentres { get; set; }
         public DbSet<UserData> UsersData { get; set; }
+        public DbSet<CentreCreateRequest> CentreCreateRequests { get; set; }
         
         public DbSet<PagesViews> PagesViews { get; set; }
         public DbSet<MostViewedPages> MostViewedPages { get; set; }
@@ -50,7 +51,10 @@
                 .HasForeignKey(k => k.centreId).OnDelete(DeleteBehavior.SetNull);
             
             modelBuilder.Entity<PagesViews>().HasOne(ws => ws.UserData).WithMany(u => u.PagesViews)
-                .HasForeignKey(ws => ws.userId).OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(ws => ws.userId).OnDelete(DeleteBehavior.SetNull);
+            
+            modelBuilder.Entity<CentreCreateRequest>().HasOne(cr => cr.EquestrianCentre).WithOne(u => u.ApprovalRequest)
+                .HasForeignKey<CentreCreateRequest>(cr => cr.centreId).OnDelete(DeleteBehavior.Cascade);
             
             modelBuilder.Entity<MostViewedPages>().HasNoKey().ToView("mostViewedPages", "analytics");
             

@@ -360,8 +360,87 @@ function generateColors(count) {
 
 
 
-function openCentreVerificationView(){
-    
+function openCentreVerificationView(centreId) {
+    fetch(`/EquestrianCentre/GetCentreRequestView?centreId=${centreId}`, {
+        method: "GET"
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to load centre verification view.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                if(data.id !== 0){
+                    console.log(data);
+                    document.getElementById("verification-modal-body").innerHTML = `
+                        <div class="request-row">
+                            <p class="request-p"><strong>Centre Name</strong></p>
+                            <p class="request-p"><strong>Status</strong></p>
+                            <p class="request-p"><strong>Created At</strong></p>
+                            <p class="request-p"><strong>Last Updated</strong></p>
+                        </div>
+                        <div class="request-row">
+                            <p class="request-p">${data.centreName}</p>
+                            <p class="request-p">${data.status}</p>
+                            <p class="request-p">${data.createdAt}</p>
+                            <p class="request-p">${data.updatedAt}</p>
+                        </div>
+                    `;
+                    document.getElementById("new-request-button").style.display = "none";
+                } else {
+                    console.log(data);
+                    document.getElementById("verification-modal-body").innerHTML = `<p>Request is not created yet for this centre.</p>`;
+                    document.getElementById("new-request-button").style.display = "block";
+                }
+                document.getElementById("verification-modal").style.display = "block";
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+}
+
+function closeCentreVerificationView() {
+    document.getElementById("verification-modal").style.display = "none";
+}
+
+function createNewCentreRequest(centreId) {
+    fetch(`/EquestrianCentre/CreateNewCentreRequest`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(centreId)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("verification-modal-body").innerHTML = `                
+                <tr class="request-row">
+                    <td><strong>Centre Name</strong></td>
+                    <td><strong>Status</strong></td>
+                    <td><strong>Created At</strong></td>
+                    <td><strong>Last Updated</strong></td>
+                </td>
+                <tr class="request-row">
+                    <td>${data.centreName}</td>
+                    <td><script>document.write(getStatusName(${data.status}));</script></td>
+                    <td>${data.createdAt}</td>
+                    <td>${data.updatedAt}</td>
+                </td>
+            `;
+                document.getElementById("new-request-button").style.display = "none";
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            alert("Failed to create a new request. " + error.message);
+        });
 }
 
 

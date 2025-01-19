@@ -57,6 +57,7 @@
             }
 
             horse.name = horseData.Name;
+            horse.breed = horseData.Breed;
             horse.birthDate = horseData.BirthDate;
             horse.centreId = horseData.EquestrianCentreId;
 

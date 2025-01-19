@@ -1,4 +1,4 @@
-﻿namespace Equustopia.WebApplication.Models.Reference
+﻿namespace Equustopia.WebApplication.Models.Helpers
 {
     public enum RequestStatus
     {

@@ -8,6 +8,43 @@
 
 <div class="index-container">
     <div class="frames-storage">
+        @if (Model.IsModerator && Model.Requests != null)
+        {
+            <span class="left-aligned-text">Centre Requests</span>
+            <table class="moderator-requests-table">
+                <thead>
+                <tr class="search-request-row">
+                    <td colspan="3" class="search-request-cell">
+                        <div id="searchContainerRequests" class="search-requests-container">
+                            <img src="~/resources/icons/search-semitransparent.svg" height="20" width="20" alt="search icon" class="search-icon" />
+                            <input type="text" id="search-bar-requests" class="search-bar" placeholder="Search..." onkeydown="handleSearchRequests(event)" />
+                        </div>
+                    </td>
+                </tr>
+                <tr class="first-request-row">
+                    <th>Centre Name</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="requests-board-search" style="display: none;"></tbody>
+                <tbody id="requests-board">
+                @foreach (var request in Model.Requests)
+                {
+                    <tr>
+                        <td>@request.EquestrianCentre.name</td>
+                        <td>@Enum.GetName(typeof(Equustopia.WebApplication.Models.Helpers.RequestStatus), request.status)</td>
+                        <td>
+                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 1)" @(request.status == 1 ? "disabled" : "")>in progress</button>
+                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 2)" @(request.status == 2 ? "disabled" : "")>approve</button>
+                            <button class="classic-button" onclick="updateRequestStatus(@request.id, 3)" @(request.status == 3 ? "disabled" : "")>decline</button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+
         <span class="left-aligned-text">Most viewed</span>
         <div id="most-viewed" class="items-frame">
             @foreach (var item in Model.MostViewedPages!)
@@ -23,4 +60,5 @@
 
 <script src="~/js/index.js"></script>
 <script src="~/js/shared.js"></script>
+<script src="~/js/centreCreateRequest.js"></script>
 

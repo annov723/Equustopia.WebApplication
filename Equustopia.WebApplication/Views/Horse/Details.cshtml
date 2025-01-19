@@ -39,7 +39,14 @@
 
         <div class="text-info">
             <span class="user-name">@Model.name</span>
+            @if(Model.breed != null)
+            {
+                <span class="breed">@Model.breed</span>
+            }
+            @if(Model.birthDate != null)
+            {
             <span class="birth-date">@Model.birthDate?.ToString("dd/MM/yyyy")</span>
+            }
             @if (!Model.UserData.isPrivate || (bool)ViewBag.IsOwner)
             {
             <a class="owner" href="~/User/Details/@Model.UserData.id">@Model.UserData.name</a>

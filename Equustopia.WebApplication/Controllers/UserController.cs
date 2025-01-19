@@ -49,7 +49,8 @@
             }
             
             var userHorses = _context.Horses.Where(h => h.userId == userId).ToList();
-            var userCentres = _context.EquestrianCentres.Where(h => h.userId == userId).ToList();
+            var userCentres = _context.EquestrianCentres.Where(h => h.userId == userId).
+                ToList();
 
             var userViewModel = new UserViewModel
             {
@@ -69,7 +70,8 @@
         {
             if (addHorseRequest == null)
             {
-                return Json(new { success = false, message = "An error occurred while creating a new horse.", constraintName = "" });
+                return Json(new { success = false, message = "An error occurred while creating a new horse.", 
+                    constraintName = "" });
             }
             
             if (string.IsNullOrEmpty(addHorseRequest.Name))
@@ -83,12 +85,13 @@
                 return Json(new { success = false, message = "Owner does not exist.", constraintName = "" });
             }
 
-            EquestrianCentre? centre;
-            centre = addHorseRequest.EquestrianCentreId == null ? null : _context.EquestrianCentres.FirstOrDefault(c => c.id == addHorseRequest.EquestrianCentreId);
+            var centre = addHorseRequest.EquestrianCentreId == null ? null : _context.EquestrianCentres.FirstOrDefault(
+                c => c.id == addHorseRequest.EquestrianCentreId);
             
-            var horse = new Models.Main.Horse
+            var horse = new Horse
             {
                 name = addHorseRequest.Name,
+                breed = addHorseRequest.Breed,
                 birthDate = addHorseRequest.BirthDate,
                 userId = owner.id,
                 centreId = addHorseRequest.EquestrianCentreId,
@@ -120,8 +123,12 @@
             {
                 return Json(new { success = false, message = "Name cannot be empty.", constraintName = "" });
             }
-            
-            if (!string.IsNullOrEmpty(equestrianCentreRequest.Address) && (equestrianCentreRequest.Address.Length > 250 || equestrianCentreRequest.Address.Length < 2))
+
+            if (string.IsNullOrEmpty(equestrianCentreRequest.Address))
+            {
+                equestrianCentreRequest.Address = null;
+            }
+            else if (equestrianCentreRequest.Address.Length > 250 || equestrianCentreRequest.Address.Length < 2)
             {
                 return Json(new { success = false, message = "", constraintName = "chk_address_length" });
             }
@@ -151,7 +158,8 @@
                 {
                     return Json(new { success = false, message = "", constraintName = postgresException.ConstraintName });
                 }
-                return Json(new { success = false, message = "An error occurred while creating a new equestrian centre.", constraintName = "" });
+                return Json(new { success = false, message = "An error occurred while creating a new equestrian centre.", 
+                    constraintName = "" });
             }
             
             return Json(new { success = true });

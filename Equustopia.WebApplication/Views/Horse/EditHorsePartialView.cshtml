@@ -20,6 +20,10 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="editBreed">breed</label>
+                <input type="text" id="editBreed" name="breed" class="form-control" data-default-value="@Model.breed" value="@Model.breed"/>
+            </div>
+            <div class="form-group">
                 <label for="editBirthDate">birth date</label>
                 <input type="date" id="editBirthDate" name="birthDate" class="form-control" data-default-value="@Model.birthDate?.ToString("yyyy-MM-dd")" value="@Model.birthDate?.ToString("yyyy-MM-dd")" required/>
             </div>
@@ -37,7 +41,7 @@
             <p class="form-title">upload horse photo</p>
             <img src="~/resources/icons/horse-icon.svg" class="horse-icon" alt="horse icon" />
             <input type="file" id="editHorsePhoto" name="photo" accept="image/*" style="display: none" />
-            <button class="upload-photo-button" onclick="document.getElementById('editHorsePhoto').click()">upload photo</button>
+            <button class="upload-photo-button" onclick="document.getElementById('editHorsePhoto').click()" disabled>upload photo</button>
             <span class="close" onclick="closeEditHorseView()">&times;</span>
         </div>
     </div>

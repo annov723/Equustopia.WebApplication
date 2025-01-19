@@ -43,15 +43,6 @@
     flex-shrink: 1;
 }
 
-@media (max-width: 600px) {
-    .site-title {
-        font-size: 24px;
-    }
-    .search-container{
-        display: none; !important;
-    }
-}
-
 .classic-button, .border-button-blue{
     margin: 0 10px 0 10px;
 }

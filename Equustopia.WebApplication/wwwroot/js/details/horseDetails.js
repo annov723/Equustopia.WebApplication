@@ -16,6 +16,7 @@ function closeEditHorseView(){
 
 function editHorse(id) {
     const name = document.getElementById("editHorseName").value;
+    const breed = document.getElementById("editBreed").value;
     const birthDateValue = document.getElementById("editBirthDate").value;
     const birthDate = birthDateValue ? new Date(birthDateValue).toISOString() : null;
     const centre = document.getElementById("editEquestrianCentreSelect").value;
@@ -29,7 +30,7 @@ function editHorse(id) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ Id: id, Name: name, BirthDate: birthDate, EquestrianCentreId: centreId })
+        body: JSON.stringify({ Id: id, Name: name, Breed: breed, BirthDate: birthDate, EquestrianCentreId: centreId })
     })
         .then(response => response.json())
         .then(data => {

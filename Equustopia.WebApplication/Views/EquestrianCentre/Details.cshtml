@@ -17,7 +17,7 @@
         @if ((bool)ViewBag.IsOwner)
         {
             <div class="owner-buttons">
-                <button class="classic-button" onclick="openCentreVerificationView()">verification</button>
+                <button class="classic-button" onclick="openCentreVerificationView(@Model.id)">verify</button>
                 <button class="classic-button" onclick="openEditCentreView()">edit</button>
                 <button class="classic-button" onclick="openRemoveCentreView()">remove</button>
             </div>
@@ -47,7 +47,7 @@
             <div id="my-horses" class="items-frame">
                 @foreach (var horse in Model.Horses)
                 {
-                    @if (horse.isPrivate && (!(bool)ViewBag.IsOwner && horse.UserData.id != ViewBag.UserId))
+                    @if (horse.isPrivate && !(bool)ViewBag.IsOwner && ViewBag.UserId != horse.UserData.id)
                     {
                         continue;
                     }
@@ -89,3 +89,4 @@
 
 @await Html.PartialAsync("EditEquestrianCentrePartialView")
 @await Html.PartialAsync("RemoveEquestrianCentrePartialView")
+@await Html.PartialAsync("CentreVerificationPartialView")

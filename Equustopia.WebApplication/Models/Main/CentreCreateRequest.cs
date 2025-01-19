@@ -2,20 +2,25 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Reference;
+    using Helpers;
 
     [Table("centreCreateRequest", Schema = "main")]
     public class CentreCreateRequest
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
-        [Column(TypeName = "requestStatus")]
-        public RequestStatus Status { get; set; } = RequestStatus.New;
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public int id { get; set; }
         
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        public int centreId { get; set; }
+
+        [Required]
+        public int status { get; set; } = (int)RequestStatus.New;
+
+        public DateTime createdAt { get; set; } = DateTime.UtcNow;
+        
+        public DateTime updatedAt { get; set; } = DateTime.UtcNow;
+        
+        public required EquestrianCentre EquestrianCentre { get; set; }
     }
 }

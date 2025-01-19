@@ -18,8 +18,12 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="breed">breed</label>
+                <input type="text" id="breed" name="breed" class="form-control"/>
+            </div>
+            <div class="form-group">
                 <label for="birthDate">birth date</label>
-                <input type="date" id="birthDate" name="birthDate" class="form-control" required/>
+                <input type="date" id="birthDate" name="birthDate" class="form-control"/>
             </div>
             <div class="form-group">
                 <label for="horseOwner">owner</label>
@@ -35,7 +39,7 @@
             <p class="form-title">upload horse photo</p>
             <img src="~/resources/icons/horse-icon.svg" class="horse-icon" alt="horse icon" />
             <input type="file" id="horsePhoto" name="photo" accept="image/*" style="display: none" />
-            <button class="upload-photo-button" onclick="document.getElementById('horsePhoto').click()">upload photo</button>
+            <button class="upload-photo-button" onclick="document.getElementById('horsePhoto').click()" disabled>upload photo</button>
             <span class="close" onclick="closeAddHorseView()">&times;</span>
         </div>
     </div>
