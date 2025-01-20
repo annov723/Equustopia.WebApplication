@@ -43,7 +43,7 @@
             }
             
 
-            if (!isOwner)
+            if (!isOwner && centre.approved)
             {
                 var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
                 await _pageViewLogger.LogPageViewAsync(userId, "equestrianCentre", id, ipAddress);
