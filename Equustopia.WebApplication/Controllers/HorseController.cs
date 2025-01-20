@@ -32,7 +32,7 @@
             var isOwner = userId != null && horse.userId == userId;
             ViewBag.IsOwner = isOwner;
 
-            if (!isOwner)
+            if (!isOwner && !horse.isPrivate)
             {
                 var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
                 await _pageViewLogger.LogPageViewAsync(userId, "horse", id, ipAddress);
